@@ -41,7 +41,7 @@ tasks.register('copyGitSubmodule', Copy) {
 	doFirst {
 		mkdir 'src/main/resources'
 	}
-	from '../config/benepick'
+	from 'config/benepick'
 	include '*.yml'
 	into 'src/main/resources'
 }
