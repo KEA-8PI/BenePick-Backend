@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@Tag(name = "Notices", description = "알림 API")
+@Tag(name = "Test", description = "test API")
+@RequestMapping("/api/tests")
 public class testController {
 
     @Operation(summary = "test api", description = "test api")
