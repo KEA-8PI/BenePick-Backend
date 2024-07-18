@@ -22,7 +22,6 @@ public class Wishlists extends BaseJPATimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //위시리스트_id
-    private Long memberId; //멤버_id
+    private String memberId; //멤버_id
     private Long goodsId; //상품_id
-    private Status status; //상태
 }

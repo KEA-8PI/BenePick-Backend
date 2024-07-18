@@ -20,8 +20,7 @@ import lombok.NoArgsConstructor;
 public class Members extends BaseJPATimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; //멤버_id
-    private String employeeNumber; //사원아이디
+    private String id; //멤버_id
     private String messengerId; //메신저아이디
     private String memberName; //사원 이름
     private String deptName; //소속부서
@@ -30,6 +29,4 @@ public class Members extends BaseJPATimeEntity {
     private Long remainPenalty; //잔여 패널티
     private Long point; //복지포인트
     private Role role; //역할
-    private Status status; //상태
-
 }

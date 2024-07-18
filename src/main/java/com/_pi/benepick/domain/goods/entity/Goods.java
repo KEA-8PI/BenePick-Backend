@@ -25,10 +25,8 @@ public class Goods extends BaseJPATimeEntity {
     private String itemStatus; //아이템상태
     private String seeds; //시드값
     private Long price; //정가
-    private Long discount; //할인율
+    private Long discount; //할인가
     private String goodsImage; //상품 사진
-    private String goodsThumb; //상품 썸네일
     private LocalDateTime raffleStartAt; //응모 시작일
     private LocalDateTime raffleEndAt; //응모 종료일
-    private Status status; //상태
 }
