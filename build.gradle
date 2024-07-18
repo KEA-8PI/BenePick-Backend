@@ -41,10 +41,11 @@ tasks.register('copyGitSubmodule', Copy) {
 	doFirst {
 		mkdir 'src/main/resources'
 	}
-	from '../config/user-service-module'
+	from '../config/benepick'
 	include '*.yml'
 	into 'src/main/resources'
 }
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
