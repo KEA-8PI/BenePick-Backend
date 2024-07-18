@@ -22,8 +22,8 @@ public class Raffles extends BaseJPATimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //응모_id
-    private Long userId; //사용자_id
-    private Long itemId; //아이템_id
+    private String memberId; //멤버_id
+    private Long goodsId; //상품_id
     private Long point; //사용포인트
     private Result raffleResult; //추첨 결과
     private Long waitlistNum; //대기번호

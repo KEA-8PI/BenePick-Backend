@@ -20,7 +20,7 @@ public class PointHists extends BaseJPATimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //히스토리_id
-    private Long memberId; //멤버_id
+    private String memberId; //멤버_id
     private Long pointChange; //증감포인트
     private Status status; //상태
 }

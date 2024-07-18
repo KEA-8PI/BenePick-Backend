@@ -20,8 +20,7 @@ import lombok.NoArgsConstructor;
 public class Members extends BaseJPATimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; //멤버_id
-    private String employeeNumber; //사원아이디
+    private String id; //멤버_id
     private String messengerId; //메신저아이디
     private String memberName; //사원 이름
     private String deptName; //소속부서
