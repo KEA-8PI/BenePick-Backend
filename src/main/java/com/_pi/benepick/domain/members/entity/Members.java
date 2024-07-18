@@ -29,6 +29,4 @@ public class Members extends BaseJPATimeEntity {
     private Long remainPenalty; //잔여 패널티
     private Long point; //복지포인트
     private Role role; //역할
-    private Status status; //상태
-
 }

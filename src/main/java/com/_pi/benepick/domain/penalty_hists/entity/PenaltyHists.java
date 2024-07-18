@@ -22,6 +22,5 @@ public class PenaltyHists extends BaseJPATimeEntity {
     private Long id; //히스토리_id
     private String memberId; //멤버_id
     private Long penaltyCount; //패널티 횟수
-    private Status status; //상태
 }
 

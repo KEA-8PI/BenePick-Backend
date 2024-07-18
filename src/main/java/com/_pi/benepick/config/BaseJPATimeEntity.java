@@ -1,5 +1,6 @@
 package com._pi.benepick.config;
 
+import com._pi.benepick.domain.Status;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
@@ -27,6 +28,9 @@ public abstract class BaseJPATimeEntity implements Serializable {
     @LastModifiedDate
     @Column(updatable = false, columnDefinition = "TEXT")
     private LocalDateTime updated_at;
+
+    // 삭제 여부 ( DELETED, NOT_DELETED )
+    private Status status;
 
     protected void update(){
         updated_at = LocalDateTime.now();
