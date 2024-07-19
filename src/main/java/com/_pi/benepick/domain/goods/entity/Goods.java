@@ -1,7 +1,6 @@
 package com._pi.benepick.domain.goods.entity;
 
 import com._pi.benepick.config.BaseJPATimeEntity;
-import com._pi.benepick.domain.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +21,7 @@ public class Goods extends BaseJPATimeEntity {
     private Long amounts; //수량
     private String description; //설명
     private String category; //카테고리
-    private String itemStatus; //아이템상태
+    private String goodsStatus; //상품응모상태
     private String seeds; //시드값
     private Long price; //정가
     private Long discount; //할인가
