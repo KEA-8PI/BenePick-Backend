@@ -1,7 +1,6 @@
 package com._pi.benepick.domain.point_hists.entity;
 
 import com._pi.benepick.config.BaseJPATimeEntity;
-import com._pi.benepick.domain.Status;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

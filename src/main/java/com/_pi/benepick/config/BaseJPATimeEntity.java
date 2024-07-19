@@ -1,6 +1,6 @@
 package com._pi.benepick.config;
 
-import com._pi.benepick.domain.Status;
+import com._pi.benepick.global.common.enums.Status;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 

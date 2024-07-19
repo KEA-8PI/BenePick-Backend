@@ -1,10 +1,7 @@
 package com._pi.benepick.domain.members.entity;
 
 import com._pi.benepick.config.BaseJPATimeEntity;
-import com._pi.benepick.domain.Status;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
