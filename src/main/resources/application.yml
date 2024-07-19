@@ -6,7 +6,6 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 
-
 springdoc:
   api-docs:
     enabled: true
