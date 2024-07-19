@@ -1,7 +1,6 @@
 package com._pi.benepick.domain.goods.entity;
 
 import com._pi.benepick.config.BaseJPATimeEntity;
-import com._pi.benepick.domain.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
