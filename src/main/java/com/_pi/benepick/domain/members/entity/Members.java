@@ -2,6 +2,8 @@ package com._pi.benepick.domain.members.entity;
 
 import com._pi.benepick.config.BaseJPATimeEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,5 +26,6 @@ public class Members extends BaseJPATimeEntity {
     private String pwd; //비밀번호
     private Long remainPenalty; //잔여 패널티
     private Long point; //복지포인트
+    @Enumerated(EnumType.ORDINAL)
     private Role role; //역할
 }
