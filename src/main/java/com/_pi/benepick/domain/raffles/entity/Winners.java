@@ -1,4 +1,4 @@
-package com._pi.benepick.domain.penalty_hists.entity;
+package com._pi.benepick.domain.raffles.entity;
 
 import com._pi.benepick.config.BaseJPATimeEntity;
 import jakarta.persistence.Entity;
@@ -15,12 +15,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PenaltyHists extends BaseJPATimeEntity {
+public class Winners extends BaseJPATimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; //히스토리_id
-    private String memberId; //멤버_id
-    private Long penaltyCount; //패널티 횟수
-    private String content; //내용
-}
+    private Long id; //추첨_id
+    private Long raffleId; //응모_id
+    private int sequence; // 순서
+    private Status status; // raffles/entity/Status WINNER, WAITLIST, NONWINNER
 
+}
