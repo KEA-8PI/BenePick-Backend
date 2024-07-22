@@ -21,7 +21,6 @@ public class GoodsResponse {
         private String description; //설명
         private String category; //카테고리
         private String goodsStatus; //상품응모상태
-        private String seeds; //시드값
         private Long price; //정가
         private Long discountPrice; //할인가
         private String goodsImage; //상품 사진

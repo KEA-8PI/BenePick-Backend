@@ -23,7 +23,7 @@ import java.util.List;
 public class GoodsController {
 
     private final GoodsQueryService goodsQueryService;
-    private final GoodsCommandService goodsCommandService;
+    //private final GoodsCommandService goodsCommandService;
 
     //상품 엑셀 파일로 추가
 
@@ -31,14 +31,20 @@ public class GoodsController {
 
     //상품 상세 조회 + 썸네일 조회
     @Operation(summary = "상품 상세 조회", description = "상품의 상세 정보를 조회합니다.")
-    @GetMapping("/view/{goodsId}")
+    @GetMapping("/{goodsId}")
     public ApiResponse<GoodsResponse.GoodsResponseDTO> getGoodsInfo(@PathVariable Long goodsId) {
         return ApiResponse.onSuccess(goodsQueryService.getGoodsInfo(goodsId));
     }
 
     //상품 목록 조회
+    @Operation(summary = "상품 목록 조회", description = "상품의 모든 목록을 조회합니다.")
+    @GetMapping("/list")
+    public ApiResponse<List> getGoodsList() {
+        return ApiResponse.onSuccess(goodsQueryService.getGoodsList());
+    }
 
     //시드 값 조회
+
 
     //상품 삭제
 
