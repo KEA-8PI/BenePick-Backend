@@ -1,4 +1,4 @@
-package com._pi.benepick.domain.penalty_hists.entity;
+package com._pi.benepick.domain.goods.entity;
 
 import com._pi.benepick.config.BaseJPATimeEntity;
 import jakarta.persistence.Entity;
@@ -15,12 +15,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PenaltyHists extends BaseJPATimeEntity {
+public class GoodsCategories extends BaseJPATimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; //히스토리_id
-    private String memberId; //멤버_id
-    private Long penaltyCount; //패널티 횟수
-    private String content; //내용
+    private Long id; //상품카테고리_id
+    private Long categoryId; //카테고리_id
+    private Long goodsId; //상품_id
 }
-
