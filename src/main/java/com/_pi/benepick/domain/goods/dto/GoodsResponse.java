@@ -1,13 +1,11 @@
 package com._pi.benepick.domain.goods.dto;
 
-import com._pi.benepick.domain.goods.entity.Categories;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class GoodsResponse {
 

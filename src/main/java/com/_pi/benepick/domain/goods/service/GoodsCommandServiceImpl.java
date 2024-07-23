@@ -1,13 +1,15 @@
 package com._pi.benepick.domain.goods.service;
 
+
+import com._pi.benepick.domain.categories.entity.Categories;
+import com._pi.benepick.domain.goods_categories.entity.GoodsCategories;
+import com._pi.benepick.domain.categories.repository.CategoriesRepository;
+import com._pi.benepick.domain.goods_categories.repository.GoodsCategoriesRepository;
 import com._pi.benepick.domain.goods.dto.GoodsRequest;
 import com._pi.benepick.domain.goods.dto.GoodsResponse;
-import com._pi.benepick.domain.goods.entity.Categories;
 import com._pi.benepick.domain.goods.entity.Goods;
-import com._pi.benepick.domain.goods.entity.GoodsCategories;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
-import com._pi.benepick.domain.goods.repository.CategoriesRepository;
-import com._pi.benepick.domain.goods.repository.GoodsCategoriesRepository;
+
 import com._pi.benepick.domain.goods.repository.GoodsRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;

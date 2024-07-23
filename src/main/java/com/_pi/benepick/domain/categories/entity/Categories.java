@@ -1,4 +1,4 @@
-package com._pi.benepick.domain.goods.entity;
+package com._pi.benepick.domain.categories.entity;
 
 import com._pi.benepick.config.BaseJPATimeEntity;
 import jakarta.persistence.Entity;
@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
@@ -18,11 +17,9 @@ import org.hibernate.annotations.SQLRestriction;
 @AllArgsConstructor
 @Builder
 @SQLRestriction("is_deleted = 'F'")
-@SQLDelete(sql = "UPDATE goods_categories SET is_deleted = 'T' WHERE goods_id = ?")
-public class GoodsCategories extends BaseJPATimeEntity {
+public class Categories extends BaseJPATimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; //상품카테고리_id
-    private Long categoryId; //카테고리_id
-    private Long goodsId; //상품_id
+    private Long id; //카테고리_id
+    private String name; //카테고리 이름
 }

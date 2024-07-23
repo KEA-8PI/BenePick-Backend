@@ -1,8 +1,6 @@
-package com._pi.benepick.domain.goods.repository;
+package com._pi.benepick.domain.categories.repository;
 
-import com._pi.benepick.domain.goods.entity.Categories;
-import com._pi.benepick.domain.goods.entity.Goods;
-import com._pi.benepick.domain.goods.entity.GoodsCategories;
+import com._pi.benepick.domain.categories.entity.Categories;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
