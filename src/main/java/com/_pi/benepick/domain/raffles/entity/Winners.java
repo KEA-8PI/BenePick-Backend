@@ -23,6 +23,6 @@ public class Winners extends BaseJPATimeEntity {
 
     private int sequence; // 순서
 
-    private Result status; // WINNER, WAITLIST, NONWINNER
+    private Status status; // WINNER, WAITLIST, CANCLE, NOSHOW
 
 }
