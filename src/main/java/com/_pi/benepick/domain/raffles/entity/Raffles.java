@@ -26,7 +26,5 @@ public class Raffles extends BaseJPATimeEntity {
     private Long point; //사용포인트
     private Result raffleResult; //추첨 결과
     private Long waitlistNum; //대기번호
-    private LocalDateTime raffleStartAt; //응모 시작일
-    private LocalDateTime raffleEndAt; //응모 종료일
 
 }
