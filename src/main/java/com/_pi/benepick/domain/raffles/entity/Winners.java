@@ -23,7 +23,7 @@ public class Winners extends BaseJPATimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Raffles.class)
     @JoinColumn(name = "raffle_id")
-    private Long raffleId; //응모_id
+    private Raffles raffleId; //응모_id
 
     private int sequence; // 순서
 
