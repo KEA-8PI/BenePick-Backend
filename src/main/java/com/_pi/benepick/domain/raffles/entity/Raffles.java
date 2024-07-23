@@ -1,10 +1,9 @@
 package com._pi.benepick.domain.raffles.entity;
 
 import com._pi.benepick.config.BaseJPATimeEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com._pi.benepick.domain.goods.entity.Goods;
+import com._pi.benepick.domain.members.entity.Members;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,10 +20,15 @@ public class Raffles extends BaseJPATimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //응모_id
+
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Members.class)
+    @JoinColumn(name = "member_id")
     private String memberId; //멤버_id
+
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Goods.class)
+    @JoinColumn(name = "goods_id")
     private Long goodsId; //상품_id
+
     private Long point; //사용포인트
-    private Result raffleResult; //추첨 결과
-    private Long waitlistNum; //대기번호
 
 }
