@@ -2,6 +2,7 @@ package com._pi.benepick.domain.goods.service;
 
 
 import com._pi.benepick.domain.categories.entity.Categories;
+import com._pi.benepick.domain.goods.dto.GoodsRequest.GoodsDeleteRequestDTO;
 import com._pi.benepick.domain.goodsCategories.entity.GoodsCategories;
 import com._pi.benepick.domain.categories.repository.CategoriesRepository;
 import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
@@ -123,7 +124,8 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
 
     // 상품 삭제
     @Override
-    public String deleteGoods(List<Long> goodsIds) {
+    public String deleteGoods(GoodsDeleteRequestDTO goodsDeleteRequestDTO) {
+        List<Long> goodsIds = goodsDeleteRequestDTO.getGoodsList();
         List<Goods> goodsList = goodsRepository.findAllById(goodsIds);
 
         if (goodsList.size() != goodsIds.size()) {
