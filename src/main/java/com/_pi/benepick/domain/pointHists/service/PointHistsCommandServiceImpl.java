@@ -1,4 +1,4 @@
-package com._pi.benepick.domain.point_hists.service;
+package com._pi.benepick.domain.pointHists.service;
 
 public class PointHistsCommandServiceImpl implements PointHistsCommandService{
 }

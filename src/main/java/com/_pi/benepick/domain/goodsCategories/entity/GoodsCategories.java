@@ -1,4 +1,4 @@
-package com._pi.benepick.domain.goods_categories.entity;
+package com._pi.benepick.domain.goodsCategories.entity;
 
 import com._pi.benepick.config.BaseJPATimeEntity;
 import jakarta.persistence.Entity;
