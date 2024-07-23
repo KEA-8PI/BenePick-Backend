@@ -42,8 +42,8 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
         Categories category = categoriesRepository.findByName(goodsAddDTO.getCategory()).orElseThrow(() -> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
 
         GoodsCategories goodsCategories = GoodsCategories.builder()
-                .goodsId(savedGoods.getId())
-                .categoryId(category.getId())
+                .goodsId(savedGoods)
+                .categoryId(category)
                 .build();
         goodsCategoriesRepository.save(goodsCategories);
 
@@ -83,12 +83,12 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
         );
 
         Categories category = categoriesRepository.findByName(goodsUpdateDTO.getCategory()).orElseThrow(() -> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
-        GoodsCategories goodsCategory = goodsCategoriesRepository.findByGoodsId(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_CATEGORY_NOT_FOUND));
+        GoodsCategories goodsCategory = goodsCategoriesRepository.findByGoodsId(goods).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_CATEGORY_NOT_FOUND));
 
         goodsCategory = GoodsCategories.builder()
                 .id(goodsCategory.getId())
-                .categoryId(category.getId())
-                .goodsId(goodsId)
+                .categoryId(category)
+                .goodsId(goods)
                 .build();
         goodsCategoriesRepository.save(goodsCategory);
 

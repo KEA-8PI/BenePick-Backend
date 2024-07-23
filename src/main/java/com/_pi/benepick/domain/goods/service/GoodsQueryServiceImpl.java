@@ -30,8 +30,8 @@ public class GoodsQueryServiceImpl implements GoodsQueryService{
     @Override
     public GoodsResponse.GoodsResponseDTO getGoodsInfo(Long goodsId) {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
-        GoodsCategories goodsCategories = goodsCategoriesRepository.findByGoodsId(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_CATEGORY_NOT_FOUND));
-        Categories category = categoriesRepository.findById(goodsCategories.getCategoryId()).orElseThrow(()-> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
+        GoodsCategories goodsCategories = goodsCategoriesRepository.findByGoodsId(goods).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_CATEGORY_NOT_FOUND));
+        Categories category = categoriesRepository.findById(goodsCategories.getCategoryId().getId()).orElseThrow(()-> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
         return GoodsResponse.GoodsResponseDTO.builder()
                 .id(goods.getId())
                 .name(goods.getName())
@@ -53,8 +53,8 @@ public class GoodsQueryServiceImpl implements GoodsQueryService{
 
         Map<Long, Long> goodsCategoryMap = goodsCategoriesRepository.findAll().stream()
                 .collect(Collectors.toMap(
-                        GoodsCategories::getGoodsId,
-                        GoodsCategories::getCategoryId
+                    goodsCategories -> goodsCategories.getGoodsId().getId(),
+                    goodsCategories -> goodsCategories.getCategoryId().getId()
                 ));
 
         Map<Long, String> categoriesMap = categoriesRepository.findAll().stream()
