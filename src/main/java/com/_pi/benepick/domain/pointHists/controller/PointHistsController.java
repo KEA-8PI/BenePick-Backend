@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "PointHists", description = "포인트 히스토리 API")
 @RequestMapping("/pointHists")
 public class PointHistsController {
-    
+
 }
