@@ -1,6 +1,7 @@
-package com._pi.benepick.domain.raffles.entity;
+package com._pi.benepick.domain.winners.entity;
 
 import com._pi.benepick.config.BaseJPATimeEntity;
+import com._pi.benepick.domain.raffles.entity.Raffles;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
