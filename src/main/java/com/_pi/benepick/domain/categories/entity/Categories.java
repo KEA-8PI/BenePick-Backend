@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
@@ -17,6 +18,7 @@ import org.hibernate.annotations.SQLRestriction;
 @AllArgsConstructor
 @Builder
 @SQLRestriction("is_deleted = 'F'")
+@SQLDelete(sql = "UPDATE categories SET is_deleted = 'T' WHERE id = ?")
 public class Categories extends BaseJPATimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
