@@ -33,12 +33,9 @@ public class GoodsQueryServiceImpl implements GoodsQueryService{
     // 상품 상세 조회
     @Override
     public GoodsResponse.GoodsResponseDTO getGoodsInfo(Long goodsId) {
-        Goods goods = goodsRepository.findById(goodsId)
-                .filter(g -> g.getIs_deleted() == 'F').orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
-        GoodsCategories goodsCategories = goodsCategoriesRepository.findByGoodsId(goodsId)
-                .filter(gc -> gc.getIs_deleted() == 'F').orElseThrow(() -> new ApiException(ErrorStatus._GOODS_CATEGORY_NOT_FOUND));
-        Categories category = categoriesRepository.findById(goodsCategories.getCategoryId())
-                .filter(c -> c.getIs_deleted() == 'F').orElseThrow(()-> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
+        Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
+        GoodsCategories goodsCategories = goodsCategoriesRepository.findByGoodsId(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_CATEGORY_NOT_FOUND));
+        Categories category = categoriesRepository.findById(goodsCategories.getCategoryId()).orElseThrow(()-> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
         return GoodsResponse.GoodsResponseDTO.builder()
                 .id(goods.getId())
                 .name(goods.getName())
@@ -59,18 +56,15 @@ public class GoodsQueryServiceImpl implements GoodsQueryService{
         List<Goods> goodsList = goodsRepository.findAll();
 
         Map<Long, Long> goodsCategoryMap = goodsCategoriesRepository.findAll().stream()
-                .filter(gc -> gc.getIs_deleted() == 'F')
                 .collect(Collectors.toMap(
                         GoodsCategories::getGoodsId,
                         GoodsCategories::getCategoryId
                 ));
 
         Map<Long, String> categoriesMap = categoriesRepository.findAll().stream()
-                .filter(c -> c.getIs_deleted() == 'F')
                 .collect(Collectors.toMap(Categories::getId, Categories::getName));
 
         return goodsList.stream()
-                .filter(goods -> goods.getIs_deleted() == 'F')
                 .map(goods -> GoodsResponse.GoodsResponseDTO.builder()
                         .id(goods.getId())
                         .name(goods.getName())
@@ -89,8 +83,7 @@ public class GoodsQueryServiceImpl implements GoodsQueryService{
 
     //시드 값 조회
     public String getSeeds(Long goodsId) {
-        Goods goods = goodsRepository.findById(goodsId)
-                .filter(g -> g.getIs_deleted() == 'F').orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
+        Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
         return goods.getSeeds();
     }
 }

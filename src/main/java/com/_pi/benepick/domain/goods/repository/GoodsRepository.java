@@ -17,8 +17,4 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
     @Modifying
     @Query("UPDATE Goods g SET g.name = :name, g.amounts = :amounts, g.image = :image, g.description = :description, g.price = :price, g.discountPrice = :discountPrice, g.raffleStartAt = :raffleStartAt, g.raffleEndAt = :raffleEndAt, g.goodsStatus = :goodsStatus WHERE g.id = :goodsId")
     void updateGoods(Long goodsId, String name, Long amounts, String image, String description, Long price, Long discountPrice, LocalDateTime raffleStartAt, LocalDateTime raffleEndAt, GoodsStatus goodsStatus);
-
-    @Modifying
-    @Query("UPDATE Goods g SET g.is_deleted = 'T' WHERE g.id IN :goodsIds")
-    void deleteGoods(@Param("goodsIds") List<Long> goodsIds);
 }

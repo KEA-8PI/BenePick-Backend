@@ -37,8 +37,7 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
 
         Goods goods = goodsAddDTO.toEntity(status);
         Goods savedGoods = goodsRepository.save(goods);
-        Categories category = categoriesRepository.findByName(goodsAddDTO.getCategory())
-                .filter(c -> c.getIs_deleted() == 'F').orElseThrow(() -> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
+        Categories category = categoriesRepository.findByName(goodsAddDTO.getCategory()).orElseThrow(() -> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
 
         GoodsCategories goodsCategories = GoodsCategories.builder()
                 .goodsId(savedGoods.getId())
@@ -64,8 +63,7 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
     // 상품 수정 ( 응모 상태 자동 수정 )
     @Override
     public GoodsResponse.GoodsResponseDTO updateGoods(Long goodsId, GoodsRequest.GoodsRequestDTO goodsUpdateDTO) {
-        Goods goods = goodsRepository.findById(goodsId)
-                .filter(g -> g.getIs_deleted() == 'F').orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
+        Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
 
         // 현재시간과 비교하여 GoodsStatus를 결정
         GoodsStatus status = determineGoodsStatus(goodsUpdateDTO.getRaffleStartAt(), goodsUpdateDTO.getRaffleEndAt());
@@ -82,10 +80,8 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
                 status
         );
 
-        Categories category = categoriesRepository.findByName(goodsUpdateDTO.getCategory())
-                .filter(c -> c.getIs_deleted() == 'F').orElseThrow(() -> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
-        GoodsCategories goodsCategory = goodsCategoriesRepository.findByGoodsId(goodsId)
-                .filter(c -> c.getIs_deleted() == 'F').orElseThrow(() -> new ApiException(ErrorStatus._GOODS_CATEGORY_NOT_FOUND));
+        Categories category = categoriesRepository.findByName(goodsUpdateDTO.getCategory()).orElseThrow(() -> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
+        GoodsCategories goodsCategory = goodsCategoriesRepository.findByGoodsId(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_CATEGORY_NOT_FOUND));
 
         goodsCategory = GoodsCategories.builder()
                 .id(goodsCategory.getId())
@@ -94,9 +90,7 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
                 .build();
         goodsCategoriesRepository.save(goodsCategory);
 
-        Goods updatedGoods = goodsRepository.findById(goodsId)
-                .filter(g -> g.getIs_deleted() == 'F')
-                .orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
+        Goods updatedGoods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
 
         return GoodsResponse.GoodsResponseDTO.builder()
                 .id(goodsId)
@@ -133,8 +127,12 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
         if (goodsList.size() != goodsIds.size()) {
             throw new ApiException(ErrorStatus._GOODS_NOT_FOUND);
         }
-        goodsCategoriesRepository.deleteGoodsCategories(goodsIds);
-        goodsRepository.deleteGoods(goodsIds);
+        for (Long goodsId : goodsIds) {
+            goodsCategoriesRepository.deleteById(goodsId);
+        }
+        for (Long goodsId : goodsIds) {
+            goodsRepository.deleteById(goodsId);
+        }
 
         return "성공하였습니다.";
     }
