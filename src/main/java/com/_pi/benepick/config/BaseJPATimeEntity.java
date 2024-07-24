@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -30,7 +31,6 @@ public abstract class BaseJPATimeEntity implements Serializable {
 
     // 삭제 여부 ( 'F', 'T' )
     @Column(nullable = false)
-    @Builder.Default
     private char is_deleted = 'F';
 
     protected void update(){

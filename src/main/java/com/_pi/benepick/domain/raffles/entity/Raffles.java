@@ -1,30 +1,38 @@
 package com._pi.benepick.domain.raffles.entity;
 
 import com._pi.benepick.config.BaseJPATimeEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com._pi.benepick.domain.goods.entity.Goods;
+import com._pi.benepick.domain.members.entity.Members;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@SQLRestriction("is_deleted = 'F'")
+@SQLDelete(sql = "UPDATE raffles SET is_deleted = 'T' WHERE id = ?")
 public class Raffles extends BaseJPATimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //응모_id
-    private String memberId; //멤버_id
-    private Long goodsId; //상품_id
+
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Members.class)
+    @JoinColumn(name = "member_id")
+    private Members memberId; //멤버_id
+
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Goods.class)
+    @JoinColumn(name = "goods_id")
+    private Goods goodsId; //상품_id
+
     private Long point; //사용포인트
-    private Result raffleResult; //추첨 결과
-    private Long waitlistNum; //대기번호
 
 }
