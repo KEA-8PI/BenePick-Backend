@@ -9,8 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @NoArgsConstructor
@@ -21,14 +19,13 @@ public class Raffles extends BaseJPATimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //응모_id
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Members.class)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private String memberId; //멤버_id
+    private Members member; //멤버
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Goods.class)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id")
-    private Long goodsId; //상품_id
+    private Goods goods; //상품
 
     private Long point; //사용포인트
-
 }

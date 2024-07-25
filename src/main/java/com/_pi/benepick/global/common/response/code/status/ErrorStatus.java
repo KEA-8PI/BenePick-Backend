@@ -24,7 +24,6 @@ public enum ErrorStatus implements BaseErrorCode {
     _GOODS_CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "GOODS_002", "카테고리를 가지고 있는 않는 상품입니다.."),
     _CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "GOODS_003", "존재하지 않는 카테고리입니다.");
 
-
     private final HttpStatus httpStatus;        // HTTP 상태 코드
     private final String code;                  // 내부적인 에러 코드. 도메인명 + 숫자로 구성. 숫자는 HTTP 상태코드 100의자리 참고
     private final String message;               // FE에 전달할 오류 메세지

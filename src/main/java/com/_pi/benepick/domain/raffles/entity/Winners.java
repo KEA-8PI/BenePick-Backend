@@ -17,12 +17,12 @@ public class Winners extends BaseJPATimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //추첨_id
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Raffles.class)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "raffle_id")
-    private Long raffleId; //응모_id
+    private Raffles raffle; //응모_id
 
     private int sequence; // 순서
 
-    private Status status; // WINNER, WAITLIST, CANCLE, NOSHOW
-
+    @Enumerated(EnumType.STRING)
+    private Status status; // WINNING, WAITLIST, CANCEL, NO_SHOW
 }
