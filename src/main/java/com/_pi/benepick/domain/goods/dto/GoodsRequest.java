@@ -2,12 +2,14 @@ package com._pi.benepick.domain.goods.dto;
 
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import lombok.RequiredArgsConstructor;
 
 public class GoodsRequest {
 
@@ -40,5 +42,12 @@ public class GoodsRequest {
                     .goodsStatus(status)
                     .build();
         }
+    }
+
+    @Builder
+    @RequiredArgsConstructor
+    @Getter
+    public static class GoodsDeleteRequestDTO {
+        private List<Long> goodsList;
     }
 }

@@ -1,24 +1,20 @@
 package com._pi.benepick.domain.goods.service;
 
+import com._pi.benepick.domain.categories.entity.Categories;
+import com._pi.benepick.domain.goodsCategories.entity.GoodsCategories;
 import com._pi.benepick.domain.goods.dto.GoodsResponse;
-import com._pi.benepick.domain.goods.entity.Categories;
 import com._pi.benepick.domain.goods.entity.Goods;
-import com._pi.benepick.domain.goods.entity.GoodsCategories;
-import com._pi.benepick.domain.goods.repository.CategoriesRepository;
-import com._pi.benepick.domain.goods.repository.GoodsCategoriesRepository;
+import com._pi.benepick.domain.categories.repository.CategoriesRepository;
+import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
 import com._pi.benepick.domain.goods.repository.GoodsRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
-import jdk.jfr.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,8 +30,8 @@ public class GoodsQueryServiceImpl implements GoodsQueryService{
     @Override
     public GoodsResponse.GoodsResponseDTO getGoodsInfo(Long goodsId) {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
-        GoodsCategories goodsCategories = goodsCategoriesRepository.findByGoodsId(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_CATEGORY_NOT_FOUND));
-        Categories category = categoriesRepository.findById(goodsCategories.getCategoryId()).orElseThrow(()-> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
+        GoodsCategories goodsCategories = goodsCategoriesRepository.findByGoodsId(goods).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_CATEGORY_NOT_FOUND));
+        Categories category = categoriesRepository.findById(goodsCategories.getCategoryId().getId()).orElseThrow(()-> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
         return GoodsResponse.GoodsResponseDTO.builder()
                 .id(goods.getId())
                 .name(goods.getName())
@@ -57,8 +53,8 @@ public class GoodsQueryServiceImpl implements GoodsQueryService{
 
         Map<Long, Long> goodsCategoryMap = goodsCategoriesRepository.findAll().stream()
                 .collect(Collectors.toMap(
-                        GoodsCategories::getGoodsId,
-                        GoodsCategories::getCategoryId
+                    goodsCategories -> goodsCategories.getGoodsId().getId(),
+                    goodsCategories -> goodsCategories.getCategoryId().getId()
                 ));
 
         Map<Long, String> categoriesMap = categoriesRepository.findAll().stream()

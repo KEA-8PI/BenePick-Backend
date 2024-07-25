@@ -1,13 +1,16 @@
 package com._pi.benepick.domain.goods.service;
 
+
+import com._pi.benepick.domain.categories.entity.Categories;
+import com._pi.benepick.domain.goods.dto.GoodsRequest.GoodsDeleteRequestDTO;
+import com._pi.benepick.domain.goodsCategories.entity.GoodsCategories;
+import com._pi.benepick.domain.categories.repository.CategoriesRepository;
+import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
 import com._pi.benepick.domain.goods.dto.GoodsRequest;
 import com._pi.benepick.domain.goods.dto.GoodsResponse;
-import com._pi.benepick.domain.goods.entity.Categories;
 import com._pi.benepick.domain.goods.entity.Goods;
-import com._pi.benepick.domain.goods.entity.GoodsCategories;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
-import com._pi.benepick.domain.goods.repository.CategoriesRepository;
-import com._pi.benepick.domain.goods.repository.GoodsCategoriesRepository;
+
 import com._pi.benepick.domain.goods.repository.GoodsRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
@@ -40,8 +43,8 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
         Categories category = categoriesRepository.findByName(goodsAddDTO.getCategory()).orElseThrow(() -> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
 
         GoodsCategories goodsCategories = GoodsCategories.builder()
-                .goodsId(savedGoods.getId())
-                .categoryId(category.getId())
+                .goodsId(savedGoods)
+                .categoryId(category)
                 .build();
         goodsCategoriesRepository.save(goodsCategories);
 
@@ -81,12 +84,12 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
         );
 
         Categories category = categoriesRepository.findByName(goodsUpdateDTO.getCategory()).orElseThrow(() -> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
-        GoodsCategories goodsCategory = goodsCategoriesRepository.findByGoodsId(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_CATEGORY_NOT_FOUND));
+        GoodsCategories goodsCategory = goodsCategoriesRepository.findByGoodsId(goods).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_CATEGORY_NOT_FOUND));
 
         goodsCategory = GoodsCategories.builder()
                 .id(goodsCategory.getId())
-                .categoryId(category.getId())
-                .goodsId(goodsId)
+                .categoryId(category)
+                .goodsId(goods)
                 .build();
         goodsCategoriesRepository.save(goodsCategory);
 
@@ -121,7 +124,8 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
 
     // 상품 삭제
     @Override
-    public String deleteGoods(List<Long> goodsIds) {
+    public String deleteGoods(GoodsDeleteRequestDTO goodsDeleteRequestDTO) {
+        List<Long> goodsIds = goodsDeleteRequestDTO.getGoodsList();
         List<Goods> goodsList = goodsRepository.findAllById(goodsIds);
 
         if (goodsList.size() != goodsIds.size()) {

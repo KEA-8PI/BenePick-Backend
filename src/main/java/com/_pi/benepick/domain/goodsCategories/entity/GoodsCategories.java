@@ -1,8 +1,8 @@
-package com._pi.benepick.domain.wishlists.entity;
+package com._pi.benepick.domain.goodsCategories.entity;
 
 import com._pi.benepick.config.BaseJPATimeEntity;
+import com._pi.benepick.domain.categories.entity.Categories;
 import com._pi.benepick.domain.goods.entity.Goods;
-import com._pi.benepick.domain.members.entity.Members;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -23,14 +23,14 @@ import org.hibernate.annotations.SQLRestriction;
 @AllArgsConstructor
 @Builder
 @SQLRestriction("is_deleted = 'F'")
-@SQLDelete(sql = "UPDATE wishlists SET is_deleted = 'T' WHERE id = ?")
-public class Wishlists extends BaseJPATimeEntity {
+@SQLDelete(sql = "UPDATE goods_categories SET is_deleted = 'T' WHERE goods_id = ?")
+public class GoodsCategories extends BaseJPATimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; //위시리스트_id
+    private Long id; //상품카테고리_id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Members memberId; //멤버_id
+    @JoinColumn(name = "category_id")
+    private Categories categoryId; //카테고리_id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id")
     private Goods goodsId; //상품_id

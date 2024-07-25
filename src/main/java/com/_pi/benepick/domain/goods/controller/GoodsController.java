@@ -1,6 +1,7 @@
 package com._pi.benepick.domain.goods.controller;
 
 import com._pi.benepick.domain.goods.dto.GoodsRequest;
+import com._pi.benepick.domain.goods.dto.GoodsRequest.GoodsDeleteRequestDTO;
 import com._pi.benepick.domain.goods.dto.GoodsResponse;
 import com._pi.benepick.domain.goods.service.GoodsCommandService;
 import com._pi.benepick.domain.goods.service.GoodsQueryService;
@@ -63,7 +64,7 @@ public class GoodsController {
     //상품 삭제
     @Operation(summary = "상품 삭제", description = "상품을 삭제합니다.")
     @DeleteMapping("/delete")
-    public ApiResponse<String> deleteGoods(@RequestBody List<Long> goodsIds) {
-        return ApiResponse.onSuccess(goodsCommandService.deleteGoods(goodsIds));
+    public ApiResponse<String> deleteGoods(@RequestBody GoodsDeleteRequestDTO goodsDeleteRequestDTO) {
+        return ApiResponse.onSuccess(goodsCommandService.deleteGoods(goodsDeleteRequestDTO));
     }
 }
