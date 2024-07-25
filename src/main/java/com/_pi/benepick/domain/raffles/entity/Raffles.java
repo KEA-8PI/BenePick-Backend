@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -23,7 +24,6 @@ public class Raffles extends BaseJPATimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //응모_id
-
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Members.class)
     @JoinColumn(name = "member_id")
     private Members memberId; //멤버_id
