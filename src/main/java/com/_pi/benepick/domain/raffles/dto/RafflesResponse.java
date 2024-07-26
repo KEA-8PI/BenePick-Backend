@@ -43,6 +43,7 @@ public class RafflesResponse {
         private String category_name; //카테고리 이름
     }
 
+    @Builder
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
@@ -50,6 +51,7 @@ public class RafflesResponse {
         private List<RafflesResponseByGoodsDTO> rafflesResponseByGoodsList;
     }
 
+    @Builder
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
