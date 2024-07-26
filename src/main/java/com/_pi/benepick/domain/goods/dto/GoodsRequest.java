@@ -45,7 +45,7 @@ public class GoodsRequest {
     }
 
     @Builder
-    @RequiredArgsConstructor
+    @AllArgsConstructor
     @Getter
     public static class GoodsDeleteRequestDTO {
         private List<Long> goodsList;
