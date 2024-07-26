@@ -1,6 +1,6 @@
 package com._pi.benepick.domain.members.entity;
 
-import com._pi.benepick.config.BaseJPATimeEntity;
+import com._pi.benepick.global.common.BaseJPATimeEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

@@ -1,6 +1,6 @@
 package com._pi.benepick.domain.raffles.entity;
 
-import com._pi.benepick.config.BaseJPATimeEntity;
+import com._pi.benepick.global.common.BaseJPATimeEntity;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.members.entity.Members;
 import jakarta.persistence.*;
@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 

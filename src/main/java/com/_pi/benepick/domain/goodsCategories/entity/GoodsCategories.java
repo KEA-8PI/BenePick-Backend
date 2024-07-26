@@ -1,6 +1,6 @@
 package com._pi.benepick.domain.goodsCategories.entity;
 
-import com._pi.benepick.config.BaseJPATimeEntity;
+import com._pi.benepick.global.common.BaseJPATimeEntity;
 import com._pi.benepick.domain.categories.entity.Categories;
 import com._pi.benepick.domain.goods.entity.Goods;
 import jakarta.persistence.Entity;

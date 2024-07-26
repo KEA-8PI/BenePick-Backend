@@ -1,6 +1,6 @@
 package com._pi.benepick.domain.pointHists.entity;
 
-import com._pi.benepick.config.BaseJPATimeEntity;
+import com._pi.benepick.global.common.BaseJPATimeEntity;
 import com._pi.benepick.domain.members.entity.Members;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
