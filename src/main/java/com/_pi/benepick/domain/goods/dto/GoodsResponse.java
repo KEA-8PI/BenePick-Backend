@@ -1,5 +1,7 @@
 package com._pi.benepick.domain.goods.dto;
 
+import com._pi.benepick.domain.goods.entity.Goods;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,6 +28,57 @@ public class GoodsResponse {
         private LocalDateTime raffleStartAt; //응모 시작일
         private LocalDateTime raffleEndAt; //응모 종료일
         private String category; //카테고리
+
+        public static GoodsResponseDTO from(Goods goods, String category){
+            return GoodsResponseDTO.builder()
+                    .id(goods.getId())
+                    .name(goods.getName())
+                    .amounts(goods.getAmounts())
+                    .image(goods.getImage())
+                    .description(goods.getDescription())
+                    .goodsStatus(goods.getGoodsStatus().name())
+                    .price(goods.getPrice())
+                    .discountPrice(goods.getDiscountPrice())
+                    .raffleStartAt(goods.getRaffleStartAt())
+                    .raffleEndAt(goods.getRaffleEndAt())
+                    .category(category)
+                    .build();
+        }
     }
 
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class GoodsListResponseDTO {
+        private List<GoodsResponseDTO> goodsDTOList;
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class GoodsSeedsResponseDTO {
+        private Long seeds; //시드값
+
+        public static GoodsSeedsResponseDTO from(Goods goods){
+            return GoodsSeedsResponseDTO.builder()
+                    .seeds(goods.getSeeds())
+                    .build();
+        }
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class GoodsDeleteResponseDTO {
+        private List<Long> deletedGoodsList;
+
+        public static GoodsDeleteResponseDTO from(List<Goods> goodsList){
+            return GoodsDeleteResponseDTO.builder()
+                    .deletedGoodsList(goodsList.stream().map(Goods::getId).toList())
+                    .build();
+        }
+    }
 }

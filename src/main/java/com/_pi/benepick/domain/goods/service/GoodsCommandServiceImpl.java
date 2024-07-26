@@ -2,7 +2,6 @@ package com._pi.benepick.domain.goods.service;
 
 
 import com._pi.benepick.domain.categories.entity.Categories;
-import com._pi.benepick.domain.goods.dto.GoodsRequest.GoodsDeleteRequestDTO;
 import com._pi.benepick.domain.goodsCategories.entity.GoodsCategories;
 import com._pi.benepick.domain.categories.repository.CategoriesRepository;
 import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
@@ -48,19 +47,7 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
                 .build();
         goodsCategoriesRepository.save(goodsCategories);
 
-        return GoodsResponse.GoodsResponseDTO.builder()
-                .id(savedGoods.getId())
-                .name(savedGoods.getName())
-                .amounts(savedGoods.getAmounts())
-                .image(savedGoods.getImage())
-                .description(savedGoods.getDescription())
-                .goodsStatus(savedGoods.getGoodsStatus().name())
-                .price(savedGoods.getPrice())
-                .discountPrice(savedGoods.getDiscountPrice())
-                .raffleStartAt(savedGoods.getRaffleStartAt())
-                .raffleEndAt(savedGoods.getRaffleEndAt())
-                .category(category.getName())
-                .build();
+        return GoodsResponse.GoodsResponseDTO.from(savedGoods, category.getName());
     }
 
     // 상품 수정 ( 응모 상태 자동 수정 )
@@ -86,28 +73,12 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
         Categories category = categoriesRepository.findByName(goodsUpdateDTO.getCategory()).orElseThrow(() -> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
         GoodsCategories goodsCategory = goodsCategoriesRepository.findByGoodsId(goods).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_CATEGORY_NOT_FOUND));
 
-        goodsCategory = GoodsCategories.builder()
-                .id(goodsCategory.getId())
-                .categoryId(category)
-                .goodsId(goods)
-                .build();
+        goodsCategory = goodsCategory.changeCategory(category);
         goodsCategoriesRepository.save(goodsCategory);
 
         Goods updatedGoods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
 
-        return GoodsResponse.GoodsResponseDTO.builder()
-                .id(goodsId)
-                .name(goodsUpdateDTO.getName())
-                .amounts(goodsUpdateDTO.getAmounts())
-                .image(goodsUpdateDTO.getImage())
-                .description(goodsUpdateDTO.getDescription())
-                .goodsStatus(updatedGoods.getGoodsStatus().name())
-                .price(goodsUpdateDTO.getPrice())
-                .discountPrice(goodsUpdateDTO.getDiscountPrice())
-                .raffleStartAt(goodsUpdateDTO.getRaffleStartAt())
-                .raffleEndAt(goodsUpdateDTO.getRaffleEndAt())
-                .category(category.getName())
-                .build();
+        return GoodsResponse.GoodsResponseDTO.from(updatedGoods, category.getName());
     }
 
     // 현재 시간에 따라 GoodsStatus를 결정하는 메소드
@@ -124,20 +95,19 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
 
     // 상품 삭제
     @Override
-    public String deleteGoods(GoodsDeleteRequestDTO goodsDeleteRequestDTO) {
-        List<Long> goodsIds = goodsDeleteRequestDTO.getGoodsList();
-        List<Goods> goodsList = goodsRepository.findAllById(goodsIds);
+    public GoodsResponse.GoodsDeleteResponseDTO deleteGoods(List<Long> deleteList) {
+        List<Goods> goodsList = goodsRepository.findAllById(deleteList);
 
-        if (goodsList.size() != goodsIds.size()) {
+        if (goodsList.size() != deleteList.size()) {
             throw new ApiException(ErrorStatus._GOODS_NOT_FOUND);
         }
-        for (Long goodsId : goodsIds) {
+        for (Long goodsId : deleteList) {
             goodsCategoriesRepository.deleteById(goodsId);
         }
-        for (Long goodsId : goodsIds) {
+        for (Long goodsId : deleteList) {
             goodsRepository.deleteById(goodsId);
         }
 
-        return "성공하였습니다.";
+        return GoodsResponse.GoodsDeleteResponseDTO.from(goodsList);
     }
 }

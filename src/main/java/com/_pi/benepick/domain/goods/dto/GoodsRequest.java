@@ -38,16 +38,9 @@ public class GoodsRequest {
                     .discountPrice(discountPrice)
                     .raffleStartAt(raffleStartAt)
                     .raffleEndAt(raffleEndAt)
-                    .seeds("-1")
+                    .seeds(-1L)
                     .goodsStatus(status)
                     .build();
         }
-    }
-
-    @Builder
-    @AllArgsConstructor
-    @Getter
-    public static class GoodsDeleteRequestDTO {
-        private List<Long> goodsList;
     }
 }

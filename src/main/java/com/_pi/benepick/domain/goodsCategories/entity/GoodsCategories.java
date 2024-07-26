@@ -34,4 +34,9 @@ public class GoodsCategories extends BaseJPATimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id")
     private Goods goodsId; //상품_id
+
+    public GoodsCategories changeCategory(Categories category) {
+        this.categoryId = category;
+        return this;
+    }
 }
