@@ -2,6 +2,7 @@ package com._pi.benepick.domain.pointHists.entity;
 
 import com._pi.benepick.global.common.BaseJPATimeEntity;
 import com._pi.benepick.domain.members.entity.Members;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -31,6 +32,7 @@ public class PointHists extends BaseJPATimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Members memberId; //멤버_id
+    @Column(nullable = false)
     private Long pointChange; //증감포인트
     private String content; //내용
 }

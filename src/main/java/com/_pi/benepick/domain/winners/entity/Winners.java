@@ -30,6 +30,7 @@ public class Winners extends BaseJPATimeEntity {
     private int sequence; // 순서
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Status status; // WINNER, WAITLIST, CANCLE, NOSHOW
 
 }

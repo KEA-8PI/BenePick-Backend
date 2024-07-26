@@ -2,6 +2,7 @@ package com._pi.benepick.domain.penaltyHists.entity;
 
 import com._pi.benepick.global.common.BaseJPATimeEntity;
 import com._pi.benepick.domain.members.entity.Members;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -31,6 +32,7 @@ public class PenaltyHists extends BaseJPATimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Members memberId; //멤버_id
+    @Column(nullable = false)
     private Long penaltyCount; //패널티 횟수
     private String content; //내용
 }
