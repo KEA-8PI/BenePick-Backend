@@ -3,6 +3,7 @@ package com._pi.benepick.domain.winners.entity;
 import com._pi.benepick.global.common.BaseJPATimeEntity;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,8 +13,8 @@ import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @SQLRestriction("is_deleted = 'F'")
 @SQLDelete(sql = "UPDATE winners SET is_deleted = 'T' WHERE id = ?")
@@ -28,6 +29,7 @@ public class Winners extends BaseJPATimeEntity {
 
     private int sequence; // 순서
 
+    @Enumerated(EnumType.STRING)
     private Status status; // WINNER, WAITLIST, CANCLE, NOSHOW
 
 }
