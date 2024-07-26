@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class RafflesResponse {
 
@@ -18,7 +19,7 @@ public class RafflesResponse {
     public static class RafflesResponseByGoodsDTO {
         private Long id; // 응모_id
         private String memberId; // 멤버_id
-        private String memberName; // 멤버_id
+        private String memberName; // 멤버_이름
         private Long goodsId; // 상품_id
         private Long point; // 사용포인트
         private int sequence;
@@ -42,4 +43,17 @@ public class RafflesResponse {
         private String category_name; //카테고리 이름
     }
 
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class RafflesResponseByGoodsListDTO {
+        private List<RafflesResponseByGoodsDTO> rafflesResponseByGoodsList;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class RafflesResponseByMembersListDTO {
+        private List<RafflesResponseByMembersDTO> rafflesResponseByMembersList;
+    }
 }

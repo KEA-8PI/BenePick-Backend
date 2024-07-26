@@ -1,5 +1,6 @@
 package com._pi.benepick.domain.raffles.controller;
 
+import com._pi.benepick.domain.raffles.dto.RafflesResponse;
 import com._pi.benepick.domain.raffles.service.RafflesQueryServiceImpl;
 import com._pi.benepick.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,20 +17,20 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/raffles")
-@Tag(name = "Raffle", description = "응모 API")
+@Tag(name = "Raffles", description = "응모 API")
 public class RafflesController {
 
     private final RafflesQueryServiceImpl rafflesQueryService;
 
     @Operation(summary = "상품별 응모 조회", description = "상품에 응모한 사원들과 그 내역을 확인할 수 있습니다.")
     @GetMapping("/goods/{goodsId}")
-    public ApiResponse<List> getAllRafflesByGoodsId(@PathVariable Long goodsId) {
+    public ApiResponse<RafflesResponse.RafflesResponseByGoodsListDTO> getAllRafflesByGoodsId(@PathVariable Long goodsId) {
         return ApiResponse.onSuccess(rafflesQueryService.getAllRafflesByGoodsId(goodsId));
     }
 
     @Operation(summary = "상품별 응모 조회", description = "사원이 응모한 상품들과 그 내역을 확인할 수 있습니다..")
     @GetMapping("/members/{memberId}")
-    public ApiResponse<List> getAllRafflesByMemberId(@PathVariable String memberId) {
+    public ApiResponse<RafflesResponse.RafflesResponseByMembersListDTO> getAllRafflesByMemberId(@PathVariable String memberId) {
         return ApiResponse.onSuccess(rafflesQueryService.getAllRafflesByMemberId(memberId));
     }
 }
