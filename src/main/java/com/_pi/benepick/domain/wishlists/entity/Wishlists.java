@@ -20,6 +20,7 @@ import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @SQLRestriction("is_deleted = 'F'")
