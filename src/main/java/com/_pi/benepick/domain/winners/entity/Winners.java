@@ -9,7 +9,6 @@ import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
