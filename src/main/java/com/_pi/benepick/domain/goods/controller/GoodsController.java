@@ -23,22 +23,6 @@ public class GoodsController {
     private final GoodsQueryService goodsQueryService;
     private final GoodsCommandService goodsCommandService;
 
-    //상품 엑셀 파일로 추가
-
-    //상품 추가
-    @Operation(summary = "상품 추가", description = "상품을 추가합니다.")
-    @PostMapping("/add")
-    public ApiResponse<GoodsResponse.GoodsResponseDTO> addGoods(@RequestBody GoodsRequest.GoodsRequestDTO goodsAddDTO) {
-        return ApiResponse.onSuccess(goodsCommandService.addGoods(goodsAddDTO));
-    }
-
-    //상품 상세 조회
-    @Operation(summary = "상품 상세 조회", description = "상품의 상세 정보를 조회합니다.(진행:PROGRESS,예정:SCHEDULED,종료:COMPLETED)")
-    @GetMapping("/{goodsId}")
-    public ApiResponse<GoodsResponse.GoodsResponseDTO> getGoodsInfo(@PathVariable Long goodsId) {
-        return ApiResponse.onSuccess(goodsQueryService.getGoodsInfo(goodsId));
-    }
-
     //상품 목록 조회
     @Operation(summary = "상품 목록 조회", description = "상품의 모든 목록을 조회합니다.(진행:PROGRESS,예정:SCHEDULED,종료:COMPLETED)")
     @GetMapping("/list")
@@ -46,11 +30,25 @@ public class GoodsController {
         return ApiResponse.onSuccess(goodsQueryService.getGoodsList());
     }
 
+    //상품 상세 조회
+    @Operation(summary = "상품 상세 조회", description = "상품의 상세 정보를 조회합니다.(진행:PROGRESS,예정:SCHEDULED,종료:COMPLETED)")
+    @GetMapping("/{goods_id}")
+    public ApiResponse<GoodsResponse.GoodsResponseDTO> getGoodsInfo(@PathVariable Long goods_id) {
+        return ApiResponse.onSuccess(goodsQueryService.getGoodsInfo(goods_id));
+    }
+
     //시드 값 조회
     @Operation(summary = "시드값 조회", description = "상품의 시드값을 조회합니다.")
     @GetMapping("/seeds/{goodsId}")
     public ApiResponse<GoodsResponse.GoodsSeedsResponseDTO> getSeeds(@PathVariable Long goodsId) {
         return ApiResponse.onSuccess(goodsQueryService.getSeeds(goodsId));
+    }
+
+    //상품 추가
+    @Operation(summary = "상품 추가", description = "상품을 추가합니다.")
+    @PostMapping("/add")
+    public ApiResponse<GoodsResponse.GoodsResponseDTO> addGoods(@RequestBody GoodsRequest.GoodsRequestDTO goodsAddDTO) {
+        return ApiResponse.onSuccess(goodsCommandService.addGoods(goodsAddDTO));
     }
 
     //상품 수정

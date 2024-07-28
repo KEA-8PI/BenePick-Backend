@@ -45,6 +45,7 @@ public class GoodsQueryServiceImpl implements GoodsQueryService{
                 .raffleStartAt(goods.getRaffleStartAt())
                 .raffleEndAt(goods.getRaffleEndAt())
                 .category(category.getName())
+                .count(2L)
                 .build();
     }
 

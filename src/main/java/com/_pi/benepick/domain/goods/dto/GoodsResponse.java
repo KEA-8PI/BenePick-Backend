@@ -29,6 +29,7 @@ public class GoodsResponse {
         private LocalDateTime raffleStartAt; //응모 시작일
         private LocalDateTime raffleEndAt; //응모 종료일
         private String category; //카테고리
+        private Long count; //응모자 수
 
         public static GoodsResponseDTO of(Goods goods, String category){
             return GoodsResponseDTO.builder()
@@ -43,6 +44,7 @@ public class GoodsResponse {
                     .raffleStartAt(goods.getRaffleStartAt())
                     .raffleEndAt(goods.getRaffleEndAt())
                     .category(category)
+                    .count(2L)
                     .build();
         }
     }
