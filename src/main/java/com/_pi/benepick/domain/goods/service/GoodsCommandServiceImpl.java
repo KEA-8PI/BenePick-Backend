@@ -47,7 +47,7 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
                 .build();
         goodsCategoriesRepository.save(goodsCategories);
 
-        return GoodsResponse.GoodsResponseDTO.from(savedGoods, category.getName());
+        return GoodsResponse.GoodsResponseDTO.of(savedGoods, category.getName());
     }
 
     // 상품 수정 ( 응모 상태 자동 수정 )
@@ -78,7 +78,7 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
 
         Goods updatedGoods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
 
-        return GoodsResponse.GoodsResponseDTO.from(updatedGoods, category.getName());
+        return GoodsResponse.GoodsResponseDTO.of(updatedGoods, category.getName());
     }
 
     // 현재 시간에 따라 GoodsStatus를 결정하는 메소드

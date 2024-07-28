@@ -29,7 +29,7 @@ public class GoodsResponse {
         private LocalDateTime raffleEndAt; //응모 종료일
         private String category; //카테고리
 
-        public static GoodsResponseDTO from(Goods goods, String category){
+        public static GoodsResponseDTO of(Goods goods, String category){
             return GoodsResponseDTO.builder()
                     .id(goods.getId())
                     .name(goods.getName())

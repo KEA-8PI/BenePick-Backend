@@ -56,7 +56,7 @@ public class GoodsQueryServiceImpl implements GoodsQueryService{
                 .collect(Collectors.toMap(goodsCategories -> goodsCategories.getGoodsId().getId(), goodsCategories -> goodsCategories));
 
         return GoodsResponse.GoodsListResponseDTO.builder()
-            .goodsDTOList(goodsList.stream().map(goods -> GoodsResponse.GoodsResponseDTO.from(goods,
+            .goodsDTOList(goodsList.stream().map(goods -> GoodsResponse.GoodsResponseDTO.of(goods,
                 goodsCategoryMap.get(goods.getId()).getCategoryId().getName())).toList())
             .build();
     }
