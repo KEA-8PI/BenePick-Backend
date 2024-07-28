@@ -1,7 +1,6 @@
 package com._pi.benepick.domain.goods.controller;
 
 import com._pi.benepick.domain.goods.dto.GoodsRequest;
-import com._pi.benepick.domain.goods.dto.GoodsRequest.GoodsDeleteRequestDTO;
 import com._pi.benepick.domain.goods.dto.GoodsResponse;
 import com._pi.benepick.domain.goods.service.GoodsCommandService;
 import com._pi.benepick.domain.goods.service.GoodsQueryService;
@@ -43,14 +42,14 @@ public class GoodsController {
     //상품 목록 조회
     @Operation(summary = "상품 목록 조회", description = "상품의 모든 목록을 조회합니다.(진행:PROGRESS,예정:SCHEDULED,종료:COMPLETED)")
     @GetMapping("/list")
-    public ApiResponse<List> getGoodsList() {
+    public ApiResponse<GoodsResponse.GoodsListResponseDTO> getGoodsList() {
         return ApiResponse.onSuccess(goodsQueryService.getGoodsList());
     }
 
     //시드 값 조회
     @Operation(summary = "시드값 조회", description = "상품의 시드값을 조회합니다.")
     @GetMapping("/seeds/{goodsId}")
-    public ApiResponse<String> getSeeds(@PathVariable Long goodsId) {
+    public ApiResponse<GoodsResponse.GoodsSeedsResponseDTO> getSeeds(@PathVariable Long goodsId) {
         return ApiResponse.onSuccess(goodsQueryService.getSeeds(goodsId));
     }
 
@@ -64,7 +63,7 @@ public class GoodsController {
     //상품 삭제
     @Operation(summary = "상품 삭제", description = "상품을 삭제합니다.")
     @DeleteMapping("/delete")
-    public ApiResponse<String> deleteGoods(@RequestBody GoodsDeleteRequestDTO goodsDeleteRequestDTO) {
-        return ApiResponse.onSuccess(goodsCommandService.deleteGoods(goodsDeleteRequestDTO));
+    public ApiResponse<GoodsResponse.GoodsDeleteResponseDTO> deleteGoods(@RequestParam List<Long> deleteList) {
+        return ApiResponse.onSuccess(goodsCommandService.deleteGoods(deleteList));
     }
 }

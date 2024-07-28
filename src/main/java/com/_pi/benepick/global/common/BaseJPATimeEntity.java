@@ -1,4 +1,4 @@
-package com._pi.benepick.config;
+package com._pi.benepick.global.common;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
@@ -21,12 +21,10 @@ public abstract class BaseJPATimeEntity implements Serializable {
     // Entity가 생성되어 저장될 때 시간이 자동 저장됩니다.
     @CreatedDate
     @Column(updatable = false)
-    @JsonFormat()
     private LocalDateTime created_at;
 
     // 조회한 Entity 값을 변경할 때 시간이 자동 저장됩니다.
     @LastModifiedDate
-    @Column(updatable = false)
     private LocalDateTime updated_at;
 
     // 삭제 여부 ( 'F', 'T' )
