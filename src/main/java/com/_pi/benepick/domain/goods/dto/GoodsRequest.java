@@ -3,6 +3,7 @@ package com._pi.benepick.domain.goods.dto;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +16,7 @@ public class GoodsRequest {
 
     @Builder
     @Getter
-    @AllArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor
     public static class GoodsRequestDTO {
         private String name; //이름

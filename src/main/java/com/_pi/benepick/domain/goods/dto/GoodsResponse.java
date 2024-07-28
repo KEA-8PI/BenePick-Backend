@@ -2,6 +2,7 @@ package com._pi.benepick.domain.goods.dto;
 
 import com._pi.benepick.domain.goods.entity.Goods;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +15,7 @@ public class GoodsResponse {
     // 상품 정보 조회
     @Builder
     @Getter
-    @AllArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor
     public static class GoodsResponseDTO{
         private Long id; //상품_id
@@ -48,7 +49,7 @@ public class GoodsResponse {
 
     @Builder
     @Getter
-    @AllArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor
     public static class GoodsListResponseDTO {
         private List<GoodsResponseDTO> goodsDTOList;
@@ -56,7 +57,7 @@ public class GoodsResponse {
 
     @Builder
     @Getter
-    @AllArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor
     public static class GoodsSeedsResponseDTO {
         private Long seeds; //시드값
@@ -70,7 +71,7 @@ public class GoodsResponse {
 
     @Builder
     @Getter
-    @AllArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor
     public static class GoodsDeleteResponseDTO {
         private List<Long> deletedGoodsList;
