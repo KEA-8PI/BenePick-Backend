@@ -69,9 +69,9 @@ public class GoodsController {
 
     //상품 수정
     @Operation(summary = "상품 수정", description = "상품 상세 정보를 수정합니다.")
-    @PostMapping("/update/{goodsId}")
-    public ApiResponse<GoodsResponse.GoodsDetailResponseDTO> updateGoods(@PathVariable Long goodsId, @RequestBody GoodsRequest.GoodsRequestDTO goodsUpdateDTO) {
-        return ApiResponse.onSuccess(goodsCommandService.updateGoods(goodsId, goodsUpdateDTO));
+    @PostMapping("/update/{goods_id}")
+    public ApiResponse<GoodsResponse.GoodsDetailResponseDTO> updateGoods(@PathVariable Long goods_id, @RequestBody GoodsRequest.GoodsRequestDTO goodsUpdateDTO) {
+        return ApiResponse.onSuccess(goodsCommandService.updateGoods(goods_id, goodsUpdateDTO));
     }
 
     //상품 삭제
