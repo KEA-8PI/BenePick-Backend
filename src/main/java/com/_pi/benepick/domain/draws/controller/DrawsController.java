@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/draw")
+@RequestMapping("/draws")
 @Tag(name = "Draws", description = "추첨 API")
 public class DrawsController {
 
