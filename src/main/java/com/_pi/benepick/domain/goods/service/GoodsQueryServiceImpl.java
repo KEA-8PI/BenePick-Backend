@@ -29,11 +29,11 @@ public class GoodsQueryServiceImpl implements GoodsQueryService{
 
     // 상품 상세 조회
     @Override
-    public GoodsResponse.GoodsResponseDTO getGoodsInfo(Long goodsId) {
+    public GoodsResponse.GoodsDetailResponseDTO getGoodsInfo(Long goodsId) {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
         GoodsCategories goodsCategories = goodsCategoriesRepository.findByGoodsId(goods).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_CATEGORY_NOT_FOUND));
         Categories category = categoriesRepository.findById(goodsCategories.getCategoryId().getId()).orElseThrow(()-> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
-        return GoodsResponse.GoodsResponseDTO.builder()
+        return GoodsResponse.GoodsDetailResponseDTO.builder()
                 .id(goods.getId())
                 .name(goods.getName())
                 .amounts(goods.getAmounts())
