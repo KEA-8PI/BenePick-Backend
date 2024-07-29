@@ -34,7 +34,7 @@ public class GoodsController {
     }
 
     //상품 상세 조회
-    @Operation(summary = "상품 상세 조회 - Mockup API", description = "상품의 상세 정보를 조회합니다.(진행:PROGRESS,예정:SCHEDULED,종료:COMPLETED)")
+    @Operation(summary = "상품 상세 조회", description = "상품의 상세 정보를 조회합니다.(진행:PROGRESS,예정:SCHEDULED,종료:COMPLETED)")
     @GetMapping("/{goods_id}")
     public ApiResponse<GoodsResponse.GoodsDetailResponseDTO> getGoodsInfo(@PathVariable Long goods_id) {
         return ApiResponse.onSuccess(goodsQueryService.getGoodsInfo(goods_id));
@@ -57,7 +57,7 @@ public class GoodsController {
     //상품 추가
     @Operation(summary = "상품 추가", description = "상품을 추가합니다.")
     @PostMapping("/add")
-    public ApiResponse<GoodsResponse.GoodsDetailResponseDTO> addGoods(@RequestBody GoodsRequest.GoodsRequestDTO goodsAddDTO) {
+    public ApiResponse<GoodsResponse.GoodsAddResponseDTO> addGoods(@RequestBody GoodsRequest.GoodsRequestDTO goodsAddDTO) {
         return ApiResponse.onSuccess(goodsCommandService.addGoods(goodsAddDTO));
     }
 
@@ -71,7 +71,7 @@ public class GoodsController {
     //상품 수정
     @Operation(summary = "상품 수정", description = "상품 상세 정보를 수정합니다.")
     @PostMapping("/update/{goods_id}")
-    public ApiResponse<GoodsResponse.GoodsDetailResponseDTO> updateGoods(@PathVariable Long goods_id, @RequestBody GoodsRequest.GoodsRequestDTO goodsUpdateDTO) {
+    public ApiResponse<GoodsResponse.GoodsAddResponseDTO> updateGoods(@PathVariable Long goods_id, @RequestBody GoodsRequest.GoodsRequestDTO goodsUpdateDTO) {
         return ApiResponse.onSuccess(goodsCommandService.updateGoods(goods_id, goodsUpdateDTO));
     }
 
