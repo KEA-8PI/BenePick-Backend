@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class GoodsController {
     }
 
     //상품 검색
-    @Operation(summary = "상품 검색 (메인페이지용) - Mockup API", description = "선택된 필터,카테고리,검색어를 기반으로 상품을 조회합니다.")
+    @Operation(summary = "상품 검색 (메인페이지용) - Mockup API", description = "선택된 필터,카테고리,검색어를 기반으로 상품을 조회합니다. (종료임박순:END,인기순:POPULAR,최신순:NEWEST)")
     @GetMapping("/search/{goods_status}")
     public ApiResponse<GoodsResponse.GoodsListSearchResponseDTO> searchGoods(@PathVariable GoodsStatus goods_status, @RequestParam Integer page, @RequestParam Integer size, @RequestParam String keyword, @RequestParam String sortBy, @RequestParam String category) {
         return ApiResponse.onSuccess(goodsQueryService.searchGoods());
@@ -57,6 +58,13 @@ public class GoodsController {
     @PostMapping("/add")
     public ApiResponse<GoodsResponse.GoodsDetailResponseDTO> addGoods(@RequestBody GoodsRequest.GoodsRequestDTO goodsAddDTO) {
         return ApiResponse.onSuccess(goodsCommandService.addGoods(goodsAddDTO));
+    }
+
+    //상품 파일 업로드
+    @Operation(summary = "상품 파일 업로드 - Mockup API", description = "엑셀 파일을 업로드하여 상품 정보를 저장합니다.")
+    @PostMapping("/upload")
+    public ApiResponse<String> uploadGoodsFile(@RequestParam("file") MultipartFile file) {
+        return ApiResponse.onSuccess("추가되었습니다.");
     }
 
     //상품 수정
