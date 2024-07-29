@@ -14,6 +14,7 @@ public class WishlistResponse {
     public static class WishlistDTO{
         private Long id;
         private String name;
+        private Long amounts;
         private String image;
         private String goodsStatus;
         private String raffleStartAt;

@@ -19,8 +19,8 @@ public class WishlistsController {
     @Operation(summary = "위시리스트 응모 상태별 조회 - Mockup API",description = "사용자가 본인의 위시리스트를 조회합니다.")
     @GetMapping("/{goods_status}")
     public ApiResponse<WishlistListDTO> getwishList(@PathVariable String goods_status){
-        WishlistDTO wishlistDTO1=new WishlistDTO((long)1,"맥북","123","응모중","2023-02-01 00:34:13.778134","2023-02-01 00:34:13.778134","전자기기",(long)100);
-        WishlistDTO wishlistDTO2=new WishlistDTO((long)1,"맥북","123","응모중","2023-02-01 00:34:13.778134","2023-02-01 00:34:13.778134","전자기기",(long)100);
+        WishlistDTO wishlistDTO1=new WishlistDTO((long)1,"맥북",(long)1,"123","응모중","2023-02-01 00:34:13.778134","2023-02-01 00:34:13.778134","전자기기",(long)100);
+        WishlistDTO wishlistDTO2=new WishlistDTO((long)1,"맥북",(long)1,"123","응모중","2023-02-01 00:34:13.778134","2023-02-01 00:34:13.778134","전자기기",(long)100);
         List<WishlistDTO> wishlistDTOS= Arrays.asList(wishlistDTO1,wishlistDTO2);
 
         return ApiResponse.onSuccess(
