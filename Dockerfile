@@ -8,14 +8,14 @@ WORKDIR /app
 COPY gradlew gradlew
 COPY build.gradle build.gradle
 COPY settings.gradle settings.gradle
-COPY gradle gradle
+COPY gradle gradle  
 
 # Copy the rest of the source code
 COPY src src
 COPY config config
 
 # Run the Gradle build to create the executable JAR file
-RUN ./gradlew clean build
+RUN ./gradlew clean build --no-daemon > build.log 2>&1
 
 # Use an official OpenJDK image as the base for the final image
 FROM openjdk:17-jdk-slim
