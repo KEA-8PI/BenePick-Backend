@@ -36,12 +36,14 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    sh """
-                    docker pull ${DOCKER_IMAGE}
-                    docker stop ${IMAGE_NAME} || true
-                    docker rm ${IMAGE_NAME} || true
-                    docker run -d --name ${IMAGE_NAME} -p 8080:8080 ${DOCKER_IMAGE}
-                    """
+                    docker.withRegistry("https://${DOCKER_REGISTRY}", "${REGISTRY_CREDENTIALS_ID}") {
+                        sh """
+                        docker pull ${DOCKER_IMAGE}
+                        docker stop ${IMAGE_NAME} || true
+                        docker rm ${IMAGE_NAME} || true
+                        docker run -d --name ${IMAGE_NAME} -p 8080:8080 ${DOCKER_IMAGE}
+                        """
+                    }
                 }
             }
         }
