@@ -27,10 +27,10 @@ public class GoodsController {
     private final GoodsCommandService goodsCommandService;
 
     //상품 목록 조회
-    @Operation(summary = "상품 목록 조회 (관리자용) - Mockup API", description = "상품의 모든 목록을 조회합니다.(진행:PROGRESS,예정:SCHEDULED,종료:COMPLETED)")
+    @Operation(summary = "상품 목록 조회 (관리자용)", description = "검색어에 따른 상품의 모든 목록을 조회합니다. (진행:PROGRESS,예정:SCHEDULED,종료:COMPLETED)")
     @GetMapping("/list")
-    public ApiResponse<GoodsResponse.GoodsListResponseDTO> getGoodsList(@RequestParam Integer page, @RequestParam Integer size, @RequestParam String keyword) {
-        return ApiResponse.onSuccess(goodsQueryService.getGoodsList());
+    public ApiResponse<GoodsResponse.GoodsListResponseDTO> getGoodsList(@RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String keyword) {
+        return ApiResponse.onSuccess(goodsQueryService.getGoodsList(page, size, keyword));
     }
 
     //상품 상세 조회
