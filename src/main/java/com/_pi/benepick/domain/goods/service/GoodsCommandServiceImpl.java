@@ -39,7 +39,7 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
 
     // 상품 추가 ( 응모 상태 자동 수정 )
     @Override
-    public GoodsResponse.GoodsDetailResponseDTO addGoods(GoodsRequest.GoodsRequestDTO goodsAddDTO) {
+    public GoodsResponse.GoodsAddResponseDTO addGoods(GoodsRequest.GoodsRequestDTO goodsAddDTO) {
         // 현재시간과 비교하여 GoodsStatus를 결정
         GoodsStatus status = determineGoodsStatus(goodsAddDTO.getRaffleStartAt(), goodsAddDTO.getRaffleEndAt());
 
@@ -53,7 +53,7 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
                 .build();
         goodsCategoriesRepository.save(goodsCategories);
 
-        return GoodsResponse.GoodsDetailResponseDTO.of(savedGoods, category.getName());
+        return GoodsResponse.GoodsAddResponseDTO.of(savedGoods, category.getName());
     }
 
     //상품 파일 업로드
@@ -104,7 +104,7 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
 
     // 상품 수정 ( 응모 상태 자동 수정 )
     @Override
-    public GoodsResponse.GoodsDetailResponseDTO updateGoods(Long goodsId, GoodsRequest.GoodsRequestDTO goodsUpdateDTO) {
+    public GoodsResponse.GoodsAddResponseDTO updateGoods(Long goodsId, GoodsRequest.GoodsRequestDTO goodsUpdateDTO) {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
 
         // 현재시간과 비교하여 GoodsStatus를 결정
@@ -130,7 +130,7 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
 
         Goods updatedGoods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
 
-        return GoodsResponse.GoodsDetailResponseDTO.of(updatedGoods, category.getName());
+        return GoodsResponse.GoodsAddResponseDTO.of(updatedGoods, category.getName());
     }
 
     // 현재 시간에 따라 GoodsStatus를 결정하는 메소드

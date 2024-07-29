@@ -134,7 +134,6 @@ public class GoodsResponse {
     }
 
     //상품 파일 업로드
-    // 상품 추가 및 수정
     @Builder
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -153,6 +152,7 @@ public class GoodsResponse {
         }
     }
 
+    // 상품 추가 및 수정
     @Builder
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
