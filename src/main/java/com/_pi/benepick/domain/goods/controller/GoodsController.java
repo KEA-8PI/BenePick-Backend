@@ -39,9 +39,9 @@ public class GoodsController {
 
     //시드 값 조회
     @Operation(summary = "시드값 조회", description = "상품의 시드값을 조회합니다.")
-    @GetMapping("/seeds/{goodsId}")
-    public ApiResponse<GoodsResponse.GoodsSeedsResponseDTO> getSeeds(@PathVariable Long goodsId) {
-        return ApiResponse.onSuccess(goodsQueryService.getSeeds(goodsId));
+    @GetMapping("/seeds/{goods_id}")
+    public ApiResponse<GoodsResponse.GoodsSeedsResponseDTO> getSeeds(@PathVariable Long goods_id) {
+        return ApiResponse.onSuccess(goodsQueryService.getSeeds(goods_id));
     }
 
     //상품 추가
