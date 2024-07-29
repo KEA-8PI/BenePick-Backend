@@ -2,6 +2,7 @@ package com._pi.benepick.domain.goods.controller;
 
 import com._pi.benepick.domain.goods.dto.GoodsRequest;
 import com._pi.benepick.domain.goods.dto.GoodsResponse;
+import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goods.service.GoodsCommandService;
 import com._pi.benepick.domain.goods.service.GoodsQueryService;
 import com._pi.benepick.global.common.response.ApiResponse;
@@ -42,6 +43,13 @@ public class GoodsController {
     @GetMapping("/seeds/{goods_id}")
     public ApiResponse<GoodsResponse.GoodsSeedsResponseDTO> getSeeds(@PathVariable Long goods_id) {
         return ApiResponse.onSuccess(goodsQueryService.getSeeds(goods_id));
+    }
+
+    //상품 검색
+    @Operation(summary = "상품 검색 (메인페이지용) - Mockup API", description = "선택된 필터,카테고리,검색어를 기반으로 상품을 조회합니다.")
+    @GetMapping("/search/{goods_status}")
+    public ApiResponse<GoodsResponse.GoodsListSearchResponseDTO> searchGoods(@PathVariable GoodsStatus goods_status, @RequestParam Integer page, @RequestParam Integer size, @RequestParam String keyword, @RequestParam String sortBy, @RequestParam String category) {
+        return ApiResponse.onSuccess(goodsQueryService.searchGoods());
     }
 
     //상품 추가

@@ -71,8 +71,6 @@ public class GoodsResponse {
                     .build();
         }
     }
-
-    // 상품 목록 조회
     @Builder
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -82,6 +80,7 @@ public class GoodsResponse {
     }
 
 
+    // 시드 값 조회
     @Builder
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -96,6 +95,45 @@ public class GoodsResponse {
         }
     }
 
+    // 상품 검색
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    public static class GoodsSearchResponseDTO{
+        private Long id; //상품_id
+        private String name; //이름
+        private Long amounts; //수량
+        private String image; //상품 사진
+        private String goodsStatus; //상품응모상태
+        private LocalDateTime raffleStartAt; //응모 시작일
+        private LocalDateTime raffleEndAt; //응모 종료일
+        private String category; //카테고리
+        private Long count; //응모자 수
+
+        public static GoodsSearchResponseDTO of(Goods goods, String category) {
+            return GoodsSearchResponseDTO.builder()
+                    .id(goods.getId())
+                    .name(goods.getName())
+                    .amounts(goods.getAmounts())
+                    .image(goods.getImage())
+                    .goodsStatus(goods.getGoodsStatus().name())
+                    .raffleStartAt(goods.getRaffleStartAt())
+                    .raffleEndAt(goods.getRaffleEndAt())
+                    .category(category)
+                    .count(2L)
+                    .build();
+        }
+    }
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    public static class GoodsListSearchResponseDTO {
+        private List<GoodsSearchResponseDTO> goodsSearchDTOList;
+    }
+
+    // 상품 삭제
     @Builder
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -110,3 +148,4 @@ public class GoodsResponse {
         }
     }
 }
+

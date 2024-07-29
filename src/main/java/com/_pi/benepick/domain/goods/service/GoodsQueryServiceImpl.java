@@ -56,4 +56,23 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
         return GoodsResponse.GoodsSeedsResponseDTO.from(goods);
     }
+
+    // 상품 검색
+    @Override
+    public GoodsResponse.GoodsListSearchResponseDTO searchGoods() {
+        List<Goods> goodsList = goodsRepository.findAll();
+
+        List<GoodsResponse.GoodsSearchResponseDTO> goodsSearchDTOList = goodsList.stream()
+                .map(goods -> {
+                    GoodsCategories goodsCategories = goodsCategoriesRepository.findByGoodsId(goods).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_CATEGORY_NOT_FOUND));
+                    Categories category = categoriesRepository.findById(goodsCategories.getCategoryId().getId()).orElseThrow(() -> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
+                    return GoodsResponse.GoodsSearchResponseDTO.of(goods, category.getName());
+                })
+                .collect(Collectors.toList());
+
+        return GoodsResponse.GoodsListSearchResponseDTO.builder()
+                .goodsSearchDTOList(goodsSearchDTOList)
+                .build();
+    }
+
 }
