@@ -37,16 +37,10 @@ public class RafflesQueryServiceImpl implements RafflesQueryService {
             List<RafflesResponse.RafflesResponseByMembersDTO> rafflesResponseByMembersDTOS = rafflesList.stream()
                     .filter(raffles -> raffles.getGoodsId().getGoodsStatus() == GoodsStatus.PROGRESS)
                     .map(raffles -> {
-                        String categoryName = (goodsCategoriesRepository.findByGoodsId(raffles.getGoodsId())).map(goodsCategories -> goodsCategories.getCategoryId().getName()).orElse("NONE");
+                        String categoryName = (goodsCategoriesRepository.findByGoodsId(raffles.getGoodsId()))
+                                .map(goodsCategories -> goodsCategories.getCategoryId().getName()).orElse("NONE");
 
-                        return RafflesResponse.RafflesResponseByMembersDTO.builder()
-                                .id(raffles.getId())
-                                .memberId(raffles.getMemberId().getId())
-                                .goodsId(raffles.getGoodsId().getId())
-                                .point(raffles.getPoint())
-                                .rafflesAt(raffles.getUpdated_at())
-                                .category_name(categoryName)
-                                .build();
+                        return RafflesResponse.RafflesResponseByMembersDTO.of(raffles, categoryName);
                     })
                     .toList();
 
@@ -66,14 +60,7 @@ public class RafflesQueryServiceImpl implements RafflesQueryService {
             List<Raffles> rafflesList = rafflesRepository.findAllByGoodsId(goods);
 
             List<RafflesResponse.RafflesResponseByGoodsDTO> rafflesResponseByGoodsDTOS = rafflesList.stream()
-                    .map(raffles -> RafflesResponse.RafflesResponseByGoodsDTO.builder()
-                            .id(raffles.getId())
-                            .memberId(raffles.getMemberId().getId())
-                            .memberName(raffles.getMemberId().getName())
-                            .goodsId(raffles.getGoodsId().getId())
-                            .point(raffles.getPoint())
-                            .rafflesAt(raffles.getUpdated_at())
-                            .build())
+                    .map(RafflesResponse.RafflesResponseByGoodsDTO::from)
                     .collect(Collectors.toList());
 
             return RafflesResponse.RafflesResponseByGoodsListDTO.builder()

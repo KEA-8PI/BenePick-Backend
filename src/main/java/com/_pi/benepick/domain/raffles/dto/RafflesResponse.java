@@ -1,6 +1,6 @@
 package com._pi.benepick.domain.raffles.dto;
 
-import com._pi.benepick.domain.winners.entity.Status;
+import com._pi.benepick.domain.raffles.entity.Raffles;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,6 +23,18 @@ public class RafflesResponse {
         private Long goodsId; // 상품_id
         private Long point; // 사용포인트
         private LocalDateTime rafflesAt;
+
+        public static RafflesResponseByGoodsDTO from(Raffles raffles) {
+            return RafflesResponseByGoodsDTO.builder()
+                    .id(raffles.getId())
+                    .memberId(raffles.getMemberId().getId())
+                    .memberName(raffles.getMemberId().getName())
+                    .goodsId(raffles.getGoodsId().getId())
+                    .point(raffles.getPoint())
+                    .rafflesAt(raffles.getUpdated_at())
+                    .build();
+        }
+
     }
 
     // 유저별 응모 조회 반환 값에 사용되는 format
@@ -37,6 +49,17 @@ public class RafflesResponse {
         private Long point; // 사용포인트
         private LocalDateTime rafflesAt;
         private String category_name; //카테고리 이름
+
+        public static RafflesResponseByMembersDTO of(Raffles raffles, String categoryName) {
+            return RafflesResponseByMembersDTO.builder()
+                    .id(raffles.getId())
+                    .memberId(raffles.getMemberId().getId())
+                    .goodsId(raffles.getGoodsId().getId())
+                    .point(raffles.getPoint())
+                    .rafflesAt(raffles.getUpdated_at())
+                    .category_name(categoryName)
+                    .build();
+        }
     }
 
     @Builder
