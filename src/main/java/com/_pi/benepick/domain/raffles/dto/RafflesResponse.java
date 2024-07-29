@@ -18,18 +18,14 @@ public class RafflesResponse {
     @NoArgsConstructor
     public static class RafflesResponseByGoodsDTO {
         private Long id; // 응모_id
-        private String memberId; // 멤버_id
         private String memberName; // 멤버_이름
-        private Long goodsId; // 상품_id
         private Long point; // 사용포인트
         private LocalDateTime rafflesAt;
 
         public static RafflesResponseByGoodsDTO from(Raffles raffles) {
             return RafflesResponseByGoodsDTO.builder()
                     .id(raffles.getId())
-                    .memberId(raffles.getMemberId().getId())
                     .memberName(raffles.getMemberId().getName())
-                    .goodsId(raffles.getGoodsId().getId())
                     .point(raffles.getPoint())
                     .rafflesAt(raffles.getUpdated_at())
                     .build();
@@ -44,8 +40,6 @@ public class RafflesResponse {
     @NoArgsConstructor
     public static class RafflesResponseByMembersDTO {
         private Long id; // 응모_id
-        private String memberId; // 멤버_id
-        private Long goodsId; // 상품_id
         private Long point; // 사용포인트
         private LocalDateTime rafflesAt;
         private String category_name; //카테고리 이름
@@ -53,8 +47,6 @@ public class RafflesResponse {
         public static RafflesResponseByMembersDTO of(Raffles raffles, String categoryName) {
             return RafflesResponseByMembersDTO.builder()
                     .id(raffles.getId())
-                    .memberId(raffles.getMemberId().getId())
-                    .goodsId(raffles.getGoodsId().getId())
                     .point(raffles.getPoint())
                     .rafflesAt(raffles.getUpdated_at())
                     .category_name(categoryName)
