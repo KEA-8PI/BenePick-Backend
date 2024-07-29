@@ -16,6 +16,7 @@ public class PenaltyResponse {
         private String createdAt;
         private String content;
         private Long penaltyCount;
+        private int totalPenalty;
     }
 
     @Builder

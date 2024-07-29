@@ -35,5 +35,6 @@ public class PenaltyHists extends BaseJPATimeEntity {
     @Column(nullable = false)
     private Long penaltyCount; //패널티 횟수
     private String content; //내용
+    private int totalPenalty; //잔여패널티
 }
 

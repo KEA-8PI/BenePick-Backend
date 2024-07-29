@@ -42,5 +42,31 @@ public class MembersResponse {
         private Long point;
     }
 
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    @Setter
+    public static class MembersuccessDTO{
+        private String msg;
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    @Setter
+    public static class DeleteResponseDTO{
+        private String msg;
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    @Setter
+    public static class MemberIDResponseDTO{
+        private String id;
+    }
 
 }
