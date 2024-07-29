@@ -7,12 +7,14 @@ pipeline {
         IMAGE_TAG = "latest" // 필요한 경우 다른 태그로 변경
         DOCKER_IMAGE = "${DOCKER_REGISTRY}/benepick-container/${IMAGE_NAME}:${IMAGE_TAG}"
         REGISTRY_CREDENTIALS_ID = "docker-registry-credentials"
+        GITHUB_CREDENTIALS_ID = "github-token"
+        
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/KEA-8PI/BenePick-Backend.git'
+                    git credentialsId: GITHUB_CREDENTIALS_ID, url: 'https://github.com/KEA-8PI/BenePick-Backend.git'
             }
         }
         stage('Build Docker Image') {
