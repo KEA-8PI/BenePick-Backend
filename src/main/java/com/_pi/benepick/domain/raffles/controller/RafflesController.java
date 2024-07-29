@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,5 +47,4 @@ public class RafflesController {
     public ApiResponse<RafflesResponse.RafflesResponseByGoodsListDTO> getAllRafflesByGoodsId(@PathVariable Long goodsId) {
         return ApiResponse.onSuccess(rafflesQueryService.getAllRafflesByGoodsId(goodsId));
     }
-
 }

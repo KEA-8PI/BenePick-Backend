@@ -1,30 +1,53 @@
 package com._pi.benepick.domain.goods.entity;
 
-import com._pi.benepick.config.BaseJPATimeEntity;
+import com._pi.benepick.domain.raffles.entity.Raffles;
+import com._pi.benepick.global.common.BaseJPATimeEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
+@SQLRestriction("is_deleted = 'F'")
+@SQLDelete(sql = "UPDATE goods SET is_deleted = 'T' WHERE id = ?")
 public class Goods extends BaseJPATimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //상품_id
+
+    @Column(nullable = false)
     private String name; //이름
+    @Column(nullable = false)
     private Long amounts; //수량
+    @Column(nullable = false)
+    private Long price; //정가
+    @Column(nullable = false)
+    private Long discountPrice; //할인가
+    @Column(nullable = false)
+    private LocalDateTime raffleStartAt; //응모 시작일
+    @Column(nullable = false)
+    private LocalDateTime raffleEndAt; //응모 종료일
+
     private String image; //상품 사진
     private String description; //설명
-    private String goodsStatus; //상품응모상태
-    private String seeds; //시드값
-    private Long price; //정가
-    private Long discountPrice; //할인가
-    private LocalDateTime raffleStartAt; //응모 시작일
-    private LocalDateTime raffleEndAt; //응모 종료일
+    @Builder.Default
+    private Long seeds = -1L; //시드값
+
+    @Enumerated(EnumType.STRING)
+    private GoodsStatus goodsStatus; //상품응모상태 (PROGRESS,SCHEDULED,COMPLETED)
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "goodsId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Raffles> raffles = new ArrayList<>(); // 응모자 리스트
 }
