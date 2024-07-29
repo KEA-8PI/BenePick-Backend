@@ -10,9 +10,6 @@ import java.util.List;
 
 @Repository
 public interface DrawsRepository extends JpaRepository<Draws, Long> {
-//    Optional<Draws> findByRaffleId(Raffles raffleId);
-
-    // Custom query to find winners by goodsId
     @Query("SELECT d FROM Draws d LEFT JOIN Raffles r ON d.raffleId.id = r.id WHERE r.goodsId.id = :goodsId")
     List<Draws> findByGoodsId(@Param("goodsId") Long goodsId);
 

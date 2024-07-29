@@ -30,7 +30,7 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
 
     public DrawsResponse.DrawsResponseByGoodsListDTO getWinnersByGoodsId(Long goodsId) {
         List<DrawsResponse.DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
-                .filter(draws -> draws.getStatus() != Status.WAITLIST && draws.getStatus() != Status.NONWINNER)
+                .filter(draws -> draws.getStatus() != Status.WAITLIST && draws.getStatus() != Status.NON_WINNER)
                 .map(DrawsResponse.DrawsResponseByGoodsDTO::from)
                 .collect(Collectors.toList());
 
