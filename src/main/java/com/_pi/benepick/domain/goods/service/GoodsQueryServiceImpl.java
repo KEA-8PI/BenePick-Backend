@@ -1,7 +1,6 @@
 package com._pi.benepick.domain.goods.service;
 
 import com._pi.benepick.domain.categories.entity.Categories;
-import com._pi.benepick.domain.goods.dto.GoodsResponse.GoodsSeedsResponseDTO;
 import com._pi.benepick.domain.goodsCategories.entity.GoodsCategories;
 import com._pi.benepick.domain.goods.dto.GoodsResponse;
 import com._pi.benepick.domain.goods.entity.Goods;
@@ -11,11 +10,14 @@ import com._pi.benepick.domain.goods.repository.GoodsRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,12 +38,19 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
         return GoodsResponse.GoodsDetailResponseDTO.of(goods, category.getName());
     }
 
-    // 상품 목록 조회
+    // 상품 목록 조회 (+ 검색)
     @Override
-    public GoodsResponse.GoodsListResponseDTO getGoodsList() {
-        List<Goods> goodsList = goodsRepository.findAll();
+    public GoodsResponse.GoodsListResponseDTO getGoodsList(Integer page, Integer size, String keyword) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Goods> goodsPage;
 
-        List<GoodsResponse.GoodsResponseDTO> goodsDTOList = goodsList.stream()
+        if (keyword != null && !keyword.isEmpty()) {
+            goodsPage = goodsRepository.findByNameContainingIgnoreCase(keyword, pageRequest);
+        } else {
+            goodsPage = goodsRepository.findAll(pageRequest);
+        }
+
+        List<GoodsResponse.GoodsResponseDTO> goodsDTOList = goodsPage.getContent().stream()
                 .map(GoodsResponse.GoodsResponseDTO::from)
                 .collect(Collectors.toList());
 
@@ -49,6 +58,7 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
                 .goodsDTOList(goodsDTOList)
                 .build();
     }
+
 
     // 시드 값 조회
     @Override
