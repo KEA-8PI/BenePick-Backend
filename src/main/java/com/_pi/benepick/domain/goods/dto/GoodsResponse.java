@@ -44,7 +44,7 @@ public class GoodsResponse {
                     .raffleStartAt(goods.getRaffleStartAt())
                     .raffleEndAt(goods.getRaffleEndAt())
                     .category(category)
-                    .count(2L)
+                    .count((long) goods.getRaffles().size())
                     .build();
         }
     }
@@ -131,6 +131,60 @@ public class GoodsResponse {
     @NoArgsConstructor
     public static class GoodsListSearchResponseDTO {
         private List<GoodsSearchResponseDTO> goodsSearchDTOList;
+    }
+
+    //상품 파일 업로드
+    // 상품 추가 및 수정
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    public static class GoodsUploadResponseDTO {
+        private String result;
+        public static GoodsUploadResponseDTO createSuccessResponse() {
+            return GoodsUploadResponseDTO.builder()
+                    .result("추가되었습니다.")
+                    .build();
+        }
+        public static GoodsUploadResponseDTO createFailureResponse() {
+            return GoodsUploadResponseDTO.builder()
+                    .result("실패하였습니다.")
+                    .build();
+        }
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    public static class GoodsAddResponseDTO{
+        private Long id; //상품_id
+        private String name; //이름
+        private Long amounts; //수량
+        private String image; //상품 사진
+        private String description; //설명
+        private String goodsStatus; //상품응모상태
+        private Long price; //정가
+        private Long discountPrice; //할인가
+        private LocalDateTime raffleStartAt; //응모 시작일
+        private LocalDateTime raffleEndAt; //응모 종료일
+        private String category; //카테고리
+
+        public static GoodsAddResponseDTO of(Goods goods, String category){
+            return GoodsAddResponseDTO.builder()
+                    .id(goods.getId())
+                    .name(goods.getName())
+                    .amounts(goods.getAmounts())
+                    .image(goods.getImage())
+                    .description(goods.getDescription())
+                    .goodsStatus(goods.getGoodsStatus().name())
+                    .price(goods.getPrice())
+                    .discountPrice(goods.getDiscountPrice())
+                    .raffleStartAt(goods.getRaffleStartAt())
+                    .raffleEndAt(goods.getRaffleEndAt())
+                    .category(category)
+                    .build();
+        }
     }
 
     // 상품 삭제

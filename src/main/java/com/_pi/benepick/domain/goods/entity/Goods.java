@@ -1,5 +1,6 @@
 package com._pi.benepick.domain.goods.entity;
 
+import com._pi.benepick.domain.raffles.entity.Raffles;
 import com._pi.benepick.global.common.BaseJPATimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -11,6 +12,8 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -44,4 +47,7 @@ public class Goods extends BaseJPATimeEntity {
 
     @Enumerated(EnumType.STRING)
     private GoodsStatus goodsStatus; //상품응모상태 (PROGRESS,SCHEDULED,COMPLETED)
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "goodsId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Raffles> raffles; // 응모자 리스트
 }
