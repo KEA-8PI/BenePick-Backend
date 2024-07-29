@@ -64,15 +64,14 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
         try (InputStream inputStream = file.getInputStream();
              Workbook workbook = new XSSFWorkbook(inputStream)) {
 
-            Sheet sheet = workbook.getSheetAt(0); //첫번째 시트
+            Sheet sheet = workbook.getSheetAt(0);
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) { continue; } //헤더 무시
-
-                // 응모상태판단
+                // 응모 상태 판단
                 LocalDateTime raffleStartAt = LocalDateTime.parse(row.getCell(6).getStringCellValue());
                 LocalDateTime raffleEndAt = LocalDateTime.parse(row.getCell(7).getStringCellValue());
                 GoodsStatus status = determineGoodsStatus(raffleStartAt, raffleEndAt);
-
+                // 상품 정보
                 Goods goods = Goods.builder()
                         .name(row.getCell(0).getStringCellValue())
                         .amounts((long) row.getCell(1).getNumericCellValue())
@@ -84,20 +83,16 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
                         .raffleEndAt(raffleEndAt)
                         .goodsStatus(status)
                         .build();
-
                 goodsList.add(goods);
-
-                // 상품 별 카테고리
+                //상품 별 카테고리
                 String categoryName = row.getCell(8).getStringCellValue();
-                Categories category = categoriesRepository.findByName(categoryName)
-                        .orElseThrow(() -> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
+                Categories category = categoriesRepository.findByName(categoryName).orElseThrow(() -> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
                 GoodsCategories goodsCategories = GoodsCategories.builder()
                         .goodsId(goods)
                         .categoryId(category)
                         .build();
                 goodsCategoriesList.add(goodsCategories);
             }
-
             goodsRepository.saveAll(goodsList);
             goodsCategoriesRepository.saveAll(goodsCategoriesList);
 
