@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,6 +28,25 @@ import org.springframework.web.bind.annotation.RestController;
 public class RafflesController {
 
     private final RafflesQueryService rafflesQueryService;
+
+    @Operation(summary = "응모하기 - Mockup API", description = "물품 아이디, 포인트를 사용하여 응모합니다.")
+    @PostMapping("/apply/{goodsId}")
+    public ApiResponse<Result> getApplyRaffleByGoodsId(@PathVariable Long goodsId, @RequestBody Long point) {
+
+        return ApiResponse.onSuccess(new Result(point, goodsId, LocalDateTime.now()));
+    }
+
+    @AllArgsConstructor
+    private static class Result {
+        @JsonProperty("point")
+        private Long point;
+
+        @JsonProperty("goods_id")
+        private Long goods_id;
+
+        @JsonProperty("updated_at")
+        private LocalDateTime updated_at;
+    }
 
     // 인증인가 구현되고 token 받게 되면 수정 예정
     @Operation(summary = "응모하기", description = "물품 아이디, 포인트를 사용하여 응모합니다.")
