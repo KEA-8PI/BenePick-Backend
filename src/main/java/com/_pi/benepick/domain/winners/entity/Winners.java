@@ -19,7 +19,7 @@ public class Winners extends BaseJPATimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //추첨_id
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Raffles.class)
+    @OneToOne(fetch = FetchType.LAZY, targetEntity = Raffles.class)
     @JoinColumn(name = "raffle_id")
     private Raffles raffleId; //응모_id
 

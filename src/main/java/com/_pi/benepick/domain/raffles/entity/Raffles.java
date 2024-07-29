@@ -24,6 +24,7 @@ public class Raffles extends BaseJPATimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //응모_id
+
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Members.class)
     @JoinColumn(name = "member_id")
     private Members memberId; //멤버_id
@@ -31,6 +32,8 @@ public class Raffles extends BaseJPATimeEntity {
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Goods.class)
     @JoinColumn(name = "goods_id")
     private Goods goodsId; //상품_id
+
+
 
     private Long point; //사용포인트
 }
