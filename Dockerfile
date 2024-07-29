@@ -27,7 +27,7 @@ WORKDIR /app
 COPY --from=builder /app/build/libs/*.jar benepick-backend.jar
 
 # Expose the application port (change this if your application uses a different port)
-EXPOSE 8080
+EXPOSE 8000
 
 # Set the entry point to run the application
 ENTRYPOINT ["java", "-jar", "benepick-backend.jar"]

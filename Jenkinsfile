@@ -41,11 +41,11 @@ pipeline {
                         docker pull ${DOCKER_IMAGE}
                         docker stop ${IMAGE_NAME} || true
                         docker rm ${IMAGE_NAME} || true
-                        docker run -d --name ${IMAGE_NAME} -p 8080:8080 ${DOCKER_IMAGE}
+                        docker run -d --name ${IMAGE_NAME} -p 8000:8000 ${DOCKER_IMAGE}
                         """
                     }
                 }
             }
-        }
+        }   
     }
 }
