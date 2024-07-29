@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -62,7 +63,7 @@ public class GoodsController {
 
     //상품 파일 업로드
     @Operation(summary = "상품 파일 업로드 - Mockup API", description = "엑셀 파일을 업로드하여 상품 정보를 저장합니다.")
-    @PostMapping("/upload")
+    @PostMapping(value ="/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<String> uploadGoodsFile(@RequestPart("file") MultipartFile file) {
         return ApiResponse.onSuccess("추가되었습니다.");
     }
