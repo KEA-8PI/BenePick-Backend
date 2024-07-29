@@ -63,7 +63,7 @@ public class GoodsController {
     //상품 파일 업로드
     @Operation(summary = "상품 파일 업로드 - Mockup API", description = "엑셀 파일을 업로드하여 상품 정보를 저장합니다.")
     @PostMapping("/upload")
-    public ApiResponse<String> uploadGoodsFile(@RequestParam("file") MultipartFile file) {
+    public ApiResponse<String> uploadGoodsFile(@RequestPart("file") MultipartFile file) {
         return ApiResponse.onSuccess("추가되었습니다.");
     }
 
