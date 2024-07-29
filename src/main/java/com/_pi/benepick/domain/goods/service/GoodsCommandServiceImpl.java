@@ -57,7 +57,7 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
     }
 
     //상품 파일 업로드
-    public String uploadGoodsFile(MultipartFile file) {
+    public GoodsResponse.GoodsUploadResponseDTO uploadGoodsFile(MultipartFile file) {
         List<Goods> goodsList = new ArrayList<>();
         List<GoodsCategories> goodsCategoriesList = new ArrayList<>();
 
@@ -97,9 +97,9 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
             goodsCategoriesRepository.saveAll(goodsCategoriesList);
 
         } catch (IOException e) {
-            return "Failed to read the Excel file: " + e.getMessage();
+            return GoodsResponse.GoodsUploadResponseDTO.createFailureResponse();
         }
-        return "추가되었습니다.";
+        return GoodsResponse.GoodsUploadResponseDTO.createSuccessResponse();
     }
 
     // 상품 수정 ( 응모 상태 자동 수정 )

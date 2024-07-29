@@ -64,7 +64,7 @@ public class GoodsController {
     //상품 파일 업로드
     @Operation(summary = "상품 파일 업로드", description = "엑셀 파일을 업로드하여 상품 정보를 저장합니다.")
     @PostMapping(value ="/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<String> uploadGoodsFile(@RequestPart("file") MultipartFile file) {
+    public ApiResponse<GoodsResponse.GoodsUploadResponseDTO> uploadGoodsFile(@RequestPart("file") MultipartFile file) {
         return ApiResponse.onSuccess(goodsCommandService.uploadGoodsFile(file));
     }
 
