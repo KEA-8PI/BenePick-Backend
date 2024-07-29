@@ -62,11 +62,20 @@ public class MembersResponse {
 
     @Builder
     @Getter
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor
+    @AllArgsConstructor
     @Setter
     public static class MemberIDResponseDTO{
         private String id;
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Setter
+    public static class MemberIDListResponseDTO{
+        private List<MemberIDResponseDTO> memberIDResponseDTOS;
     }
 
 }

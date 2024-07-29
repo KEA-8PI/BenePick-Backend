@@ -15,7 +15,7 @@ public class PenaltyResponse {
     public static class PenaltyResponseDTO{
         private String createdAt;
         private String content;
-        private Long penaltyCount;
+        private int penaltyCount;
         private int totalPenalty;
     }
 

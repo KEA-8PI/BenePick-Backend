@@ -33,7 +33,7 @@ public class PenaltyHists extends BaseJPATimeEntity {
     @JoinColumn(name = "member_id")
     private Members memberId; //멤버_id
     @Column(nullable = false)
-    private Long penaltyCount; //패널티 횟수
+    private int penaltyCount; //패널티 횟수
     private String content; //내용
     private int totalPenalty; //잔여패널티
 }

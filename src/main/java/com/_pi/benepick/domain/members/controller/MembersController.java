@@ -71,7 +71,7 @@ public class MembersController {
     @Operation(summary = "패널티내역 조회 - Mockup API", description = "사용자가 본인의 패널티 내역을 조회합니다.")
     @GetMapping("/penalty-hist")
     public ApiResponse<PenaltyListResponseDTO> getMemberpenaltyInfo(){
-        PenaltyResponseDTO penaltyResponseDTO1=new PenaltyResponseDTO("2023-02-01 00:34:13.778134","노쇼",(long)1,3);
+        PenaltyResponseDTO penaltyResponseDTO1=new PenaltyResponseDTO("2023-02-01 00:34:13.778134","노쇼",1,3);
         List<PenaltyResponseDTO> penaltyResponseDTOList=Arrays.asList(penaltyResponseDTO1);
 
         return ApiResponse.onSuccess(
@@ -139,9 +139,13 @@ return ApiResponse.onSuccess(MembersuccessDTO.builder()
 
     @Operation(summary = "사원 추가 파일 등록 - Mockup API", description = "복지 포인트 파일을 업로드합니다. (관리자용)")
     @PostMapping(value="/add/upload",consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<MemberIDResponseDTO> uploadMemberFile(@RequestPart("file") MultipartFile file){
-        return ApiResponse.onSuccess(MemberIDResponseDTO.builder()
-                .id("123")
+    public ApiResponse<MemberIDListResponseDTO> uploadMemberFile(@RequestPart("file") MultipartFile file){
+
+        MemberIDResponseDTO member1 = new MemberIDResponseDTO("123");
+        MemberIDResponseDTO member2 = new MemberIDResponseDTO("456");
+        List<MemberIDResponseDTO> membersList = Arrays.asList(member1, member2);
+        return ApiResponse.onSuccess(MemberIDListResponseDTO.builder()
+                        .memberIDResponseDTOS(membersList)
                 .build());
     }
 
