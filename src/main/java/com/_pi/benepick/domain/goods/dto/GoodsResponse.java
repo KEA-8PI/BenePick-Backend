@@ -12,12 +12,12 @@ import java.time.LocalDateTime;
 
 public class GoodsResponse {
 
-    // 상품 정보 조회
+    // 상품 상세 조회
     @Builder
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor
-    public static class GoodsResponseDTO{
+    public static class GoodsDetailResponseDTO{
         private Long id; //상품_id
         private String name; //이름
         private Long amounts; //수량
@@ -29,9 +29,10 @@ public class GoodsResponse {
         private LocalDateTime raffleStartAt; //응모 시작일
         private LocalDateTime raffleEndAt; //응모 종료일
         private String category; //카테고리
+        private Long count; //응모자 수
 
-        public static GoodsResponseDTO of(Goods goods, String category){
-            return GoodsResponseDTO.builder()
+        public static GoodsDetailResponseDTO of(Goods goods, String category){
+            return GoodsDetailResponseDTO.builder()
                     .id(goods.getId())
                     .name(goods.getName())
                     .amounts(goods.getAmounts())
@@ -43,10 +44,33 @@ public class GoodsResponse {
                     .raffleStartAt(goods.getRaffleStartAt())
                     .raffleEndAt(goods.getRaffleEndAt())
                     .category(category)
+                    .count(2L)
                     .build();
         }
     }
 
+    // 상품 목록 조회
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    public static class GoodsResponseDTO{
+        private Long id; //상품_id
+        private String name; //이름
+        private String goodsStatus; //상품응모상태
+        private LocalDateTime raffleStartAt; //응모 시작일
+        private LocalDateTime raffleEndAt; //응모 종료일
+
+        public static GoodsResponseDTO from(Goods goods){
+            return GoodsResponseDTO.builder()
+                    .id(goods.getId())
+                    .name(goods.getName())
+                    .goodsStatus(goods.getGoodsStatus().name())
+                    .raffleStartAt(goods.getRaffleStartAt())
+                    .raffleEndAt(goods.getRaffleEndAt())
+                    .build();
+        }
+    }
     @Builder
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -55,6 +79,8 @@ public class GoodsResponse {
         private List<GoodsResponseDTO> goodsDTOList;
     }
 
+
+    // 시드 값 조회
     @Builder
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -69,6 +95,45 @@ public class GoodsResponse {
         }
     }
 
+    // 상품 검색
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    public static class GoodsSearchResponseDTO{
+        private Long id; //상품_id
+        private String name; //이름
+        private Long amounts; //수량
+        private String image; //상품 사진
+        private String goodsStatus; //상품응모상태
+        private LocalDateTime raffleStartAt; //응모 시작일
+        private LocalDateTime raffleEndAt; //응모 종료일
+        private String category; //카테고리
+        private Long count; //응모자 수
+
+        public static GoodsSearchResponseDTO of(Goods goods, String category) {
+            return GoodsSearchResponseDTO.builder()
+                    .id(goods.getId())
+                    .name(goods.getName())
+                    .amounts(goods.getAmounts())
+                    .image(goods.getImage())
+                    .goodsStatus(goods.getGoodsStatus().name())
+                    .raffleStartAt(goods.getRaffleStartAt())
+                    .raffleEndAt(goods.getRaffleEndAt())
+                    .category(category)
+                    .count(2L)
+                    .build();
+        }
+    }
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    public static class GoodsListSearchResponseDTO {
+        private List<GoodsSearchResponseDTO> goodsSearchDTOList;
+    }
+
+    // 상품 삭제
     @Builder
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -83,3 +148,4 @@ public class GoodsResponse {
         }
     }
 }
+

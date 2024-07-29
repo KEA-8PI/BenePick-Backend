@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class GoodsQueryServiceImpl implements GoodsQueryService{
+public class GoodsQueryServiceImpl implements GoodsQueryService {
 
     private final GoodsRepository goodsRepository;
     private final GoodsCategoriesRepository goodsCategoriesRepository;
@@ -29,41 +29,50 @@ public class GoodsQueryServiceImpl implements GoodsQueryService{
 
     // 상품 상세 조회
     @Override
-    public GoodsResponse.GoodsResponseDTO getGoodsInfo(Long goodsId) {
+    public GoodsResponse.GoodsDetailResponseDTO getGoodsInfo(Long goodsId) {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
         GoodsCategories goodsCategories = goodsCategoriesRepository.findByGoodsId(goods).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_CATEGORY_NOT_FOUND));
-        Categories category = categoriesRepository.findById(goodsCategories.getCategoryId().getId()).orElseThrow(()-> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
-        return GoodsResponse.GoodsResponseDTO.builder()
-                .id(goods.getId())
-                .name(goods.getName())
-                .amounts(goods.getAmounts())
-                .image(goods.getImage())
-                .description(goods.getDescription())
-                .goodsStatus(String.valueOf(goods.getGoodsStatus()))
-                .price(goods.getPrice())
-                .discountPrice(goods.getDiscountPrice())
-                .raffleStartAt(goods.getRaffleStartAt())
-                .raffleEndAt(goods.getRaffleEndAt())
-                .category(category.getName())
-                .build();
+        Categories category = categoriesRepository.findById(goodsCategories.getCategoryId().getId()).orElseThrow(() -> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
+        return GoodsResponse.GoodsDetailResponseDTO.of(goods, category.getName());
     }
 
     // 상품 목록 조회
+    @Override
     public GoodsResponse.GoodsListResponseDTO getGoodsList() {
         List<Goods> goodsList = goodsRepository.findAll();
 
-        Map<Long, GoodsCategories> goodsCategoryMap = goodsCategoriesRepository.findAll().stream()
-                .collect(Collectors.toMap(goodsCategories -> goodsCategories.getGoodsId().getId(), goodsCategories -> goodsCategories));
+        List<GoodsResponse.GoodsResponseDTO> goodsDTOList = goodsList.stream()
+                .map(GoodsResponse.GoodsResponseDTO::from)
+                .collect(Collectors.toList());
 
         return GoodsResponse.GoodsListResponseDTO.builder()
-            .goodsDTOList(goodsList.stream().map(goods -> GoodsResponse.GoodsResponseDTO.of(goods,
-                goodsCategoryMap.get(goods.getId()).getCategoryId().getName())).toList())
-            .build();
+                .goodsDTOList(goodsDTOList)
+                .build();
     }
 
-    //시드 값 조회
+    // 시드 값 조회
+    @Override
     public GoodsResponse.GoodsSeedsResponseDTO getSeeds(Long goodsId) {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
-        return GoodsSeedsResponseDTO.from(goods);
+        return GoodsResponse.GoodsSeedsResponseDTO.from(goods);
     }
+
+    // 상품 검색
+    @Override
+    public GoodsResponse.GoodsListSearchResponseDTO searchGoods() {
+        List<Goods> goodsList = goodsRepository.findAll();
+
+        List<GoodsResponse.GoodsSearchResponseDTO> goodsSearchDTOList = goodsList.stream()
+                .map(goods -> {
+                    GoodsCategories goodsCategories = goodsCategoriesRepository.findByGoodsId(goods).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_CATEGORY_NOT_FOUND));
+                    Categories category = categoriesRepository.findById(goodsCategories.getCategoryId().getId()).orElseThrow(() -> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
+                    return GoodsResponse.GoodsSearchResponseDTO.of(goods, category.getName());
+                })
+                .collect(Collectors.toList());
+
+        return GoodsResponse.GoodsListSearchResponseDTO.builder()
+                .goodsSearchDTOList(goodsSearchDTOList)
+                .build();
+    }
+
 }
