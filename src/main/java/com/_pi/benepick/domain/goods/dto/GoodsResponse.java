@@ -44,7 +44,7 @@ public class GoodsResponse {
                     .raffleStartAt(goods.getRaffleStartAt())
                     .raffleEndAt(goods.getRaffleEndAt())
                     .category(category)
-                    .count(2L)
+                    .count((long) goods.getRaffles().size())
                     .build();
         }
     }

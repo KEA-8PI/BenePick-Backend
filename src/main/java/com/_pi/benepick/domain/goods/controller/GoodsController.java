@@ -34,7 +34,7 @@ public class GoodsController {
     }
 
     //상품 상세 조회
-    @Operation(summary = "상품 상세 조회 - Mockup API", description = "상품의 상세 정보를 조회합니다.(진행:PROGRESS,예정:SCHEDULED,종료:COMPLETED)")
+    @Operation(summary = "상품 상세 조회", description = "상품의 상세 정보를 조회합니다.(진행:PROGRESS,예정:SCHEDULED,종료:COMPLETED)")
     @GetMapping("/{goods_id}")
     public ApiResponse<GoodsResponse.GoodsDetailResponseDTO> getGoodsInfo(@PathVariable Long goods_id) {
         return ApiResponse.onSuccess(goodsQueryService.getGoodsInfo(goods_id));
