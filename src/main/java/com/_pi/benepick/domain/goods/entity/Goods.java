@@ -49,5 +49,5 @@ public class Goods extends BaseJPATimeEntity {
     private GoodsStatus goodsStatus; //상품응모상태 (PROGRESS,SCHEDULED,COMPLETED)
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "goodsId", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Raffles> raffles = new ArrayList<>(); // 응모자 리스트
+    private List<Raffles> raffles; // 응모자 리스트
 }
