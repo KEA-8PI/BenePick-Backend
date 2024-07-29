@@ -141,11 +141,11 @@ return ApiResponse.onSuccess(MembersuccessDTO.builder()
     @PostMapping(value="/add/upload",consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<MemberIDListResponseDTO> uploadMemberFile(@RequestPart("file") MultipartFile file){
 
-        MemberIDResponseDTO member1 = new MemberIDResponseDTO("123");
-        MemberIDResponseDTO member2 = new MemberIDResponseDTO("456");
-        List<MemberIDResponseDTO> membersList = Arrays.asList(member1, member2);
+        String id="123";
+        String id1="456";
+        List<String> membersList = Arrays.asList(id, id);
         return ApiResponse.onSuccess(MemberIDListResponseDTO.builder()
-                        .memberIDResponseDTOS(membersList)
+                        .id(membersList)
                 .build());
     }
 

@@ -75,7 +75,7 @@ public class MembersResponse {
     @NoArgsConstructor
     @Setter
     public static class MemberIDListResponseDTO{
-        private List<MemberIDResponseDTO> memberIDResponseDTOS;
+        private List<String> id;
     }
 
 }
