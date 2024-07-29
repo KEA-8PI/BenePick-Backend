@@ -3,6 +3,7 @@ package com._pi.benepick.domain.goods.dto;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +16,7 @@ public class GoodsRequest {
 
     @Builder
     @Getter
-    @AllArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor
     public static class GoodsRequestDTO {
         private String name; //이름
@@ -38,16 +39,17 @@ public class GoodsRequest {
                     .discountPrice(discountPrice)
                     .raffleStartAt(raffleStartAt)
                     .raffleEndAt(raffleEndAt)
-                    .seeds("-1")
+                    .seeds(-1L)
                     .goodsStatus(status)
                     .build();
         }
     }
 
     @Builder
-    @RequiredArgsConstructor
+    @AllArgsConstructor
     @Getter
     public static class GoodsDeleteRequestDTO {
         private List<Long> goodsList;
     }
+
 }
