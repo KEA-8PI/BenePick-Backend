@@ -1,6 +1,6 @@
 package com._pi.benepick.domain.goodsCategories.entity;
 
-import com._pi.benepick.config.BaseJPATimeEntity;
+import com._pi.benepick.global.common.BaseJPATimeEntity;
 import com._pi.benepick.domain.categories.entity.Categories;
 import com._pi.benepick.domain.goods.entity.Goods;
 import jakarta.persistence.Entity;
@@ -10,14 +10,18 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @SQLRestriction("is_deleted = 'F'")
 @SQLDelete(sql = "UPDATE goods_categories SET is_deleted = 'T' WHERE goods_id = ?")
@@ -31,4 +35,9 @@ public class GoodsCategories extends BaseJPATimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id")
     private Goods goodsId; //상품_id
+
+    public GoodsCategories changeCategory(Categories category) {
+        this.categoryId = category;
+        return this;
+    }
 }

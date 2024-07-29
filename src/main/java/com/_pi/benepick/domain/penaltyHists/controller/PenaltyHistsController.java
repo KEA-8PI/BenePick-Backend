@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "PenaltyHists", description = "패널티 히스토리 API")
-@RequestMapping("/penaltyHists")
+@RequestMapping("/penalty-hists")
 public class PenaltyHistsController {
     
 }
