@@ -28,6 +28,7 @@ public class Raffles extends BaseJPATimeEntity {
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Members.class)
     @JoinColumn(name = "member_id")
     private Members memberId; //멤버_id
+
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Goods.class)
     @JoinColumn(name = "goods_id")
     private Goods goodsId; //상품_id
