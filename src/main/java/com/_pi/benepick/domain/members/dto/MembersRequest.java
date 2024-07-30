@@ -15,7 +15,7 @@ public class MembersRequest {
         private String deptName;
         private String name;
         private Long point;
-        private Long penaltyCnt;
+        private int penaltyCnt;
     }
 
     @Builder
