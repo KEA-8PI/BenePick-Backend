@@ -60,12 +60,7 @@ public class MembersController {
     }
 
 
-    @Operation(summary = "복지포인트내역 조회", description = "사용자가 본인의 포인트 사용 내역을 조회합니다.")
-    @GetMapping("/point-hist")
-    public ApiResponse<PointHistListDTO> getMemberpointInfo(){
-        Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
-       return ApiResponse.onSuccess(membersQueryService.getPointHist(member.getId()));
-    }
+
 
 
     @Operation(summary = "패널티내역 조회 - Mockup API", description = "사용자가 본인의 패널티 내역을 조회합니다.")

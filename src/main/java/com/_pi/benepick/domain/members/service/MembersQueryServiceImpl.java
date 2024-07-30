@@ -13,11 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class MembersQueryServiceImpl implements MembersQueryService {
     private final MembersRepository membersRepository;
     private final PointHistsRepository pointHistsRepository;
@@ -25,10 +24,10 @@ public class MembersQueryServiceImpl implements MembersQueryService {
 
     //복지 포인트 내역 조회
     @Override
-    public PointHistListDTO getPointHist(String id){
-        Members members=membersRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._MEMBER_NOT_FOUND));
+    public PointHistListDTO getPointHist(Members member){
+        Members members=membersRepository.findById(member.getId()).orElseThrow(()->new ApiException(ErrorStatus._MEMBER_NOT_FOUND));
 
-        List<PointHists> pointHists=pointHistsRepository.findAllByMemberId(id);
+        List<PointHists> pointHists=pointHistsRepository.findAllByMemberId(member.getId());
         List<PointHistDTO> result=new ArrayList<>();
         for(PointHists p:pointHists){
             PointHistDTO point=PointHistDTO.builder()
