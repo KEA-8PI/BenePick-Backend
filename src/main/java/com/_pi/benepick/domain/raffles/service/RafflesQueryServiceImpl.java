@@ -5,6 +5,7 @@ import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goods.repository.GoodsRepository;
 import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
 import com._pi.benepick.domain.members.entity.Members;
+import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.domain.raffles.dto.RafflesRequest;
 import com._pi.benepick.domain.raffles.dto.RafflesResponse;
@@ -53,7 +54,8 @@ public class RafflesQueryServiceImpl implements RafflesQueryService {
         }
     }
 
-    public RafflesResponse.RafflesResponseByGoodsListDTO getAllRafflesByGoodsId(Long goodsId) {
+    public RafflesResponse.RafflesResponseByGoodsListDTO getAllRafflesByGoodsId(Members members, Long goodsId) {
+        if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         Optional<Goods> goodsOptional = goodsRepository.findById(goodsId);
 
         if (goodsOptional.isPresent()) {
