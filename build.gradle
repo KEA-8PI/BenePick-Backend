@@ -35,6 +35,9 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'com.mysql:mysql-connector-j'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2' // Swagger
+	//For Object Storage(AWS S3 API)
+	implementation platform('software.amazon.awssdk:bom:2.23.7')
+	implementation "software.amazon.awssdk:s3"
 }
 
 processResources.dependsOn('copyGitSubmodule')
