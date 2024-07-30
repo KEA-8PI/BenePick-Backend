@@ -57,21 +57,21 @@ public class GoodsController {
     //상품 추가
     @Operation(summary = "상품 추가", description = "상품을 추가합니다.")
     @PostMapping("/add")
-    public ApiResponse<GoodsResponse.GoodsAddResponseDTO> addGoods(@RequestBody GoodsRequest.GoodsRequestDTO goodsAddDTO) {
+    public ApiResponse<GoodsResponse.GoodsDetailResponseDTO> addGoods(@RequestBody GoodsRequest.GoodsRequestDTO goodsAddDTO) {
         return ApiResponse.onSuccess(goodsCommandService.addGoods(goodsAddDTO));
     }
 
     //상품 파일 업로드
-    @Operation(summary = "상품 파일 업로드 - Mockup API", description = "엑셀 파일을 업로드하여 상품 정보를 저장합니다.")
+    @Operation(summary = "상품 파일 업로드", description = "엑셀 파일을 업로드하여 상품 정보를 저장합니다.")
     @PostMapping(value ="/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<String> uploadGoodsFile(@RequestPart("file") MultipartFile file) {
-        return ApiResponse.onSuccess("추가되었습니다.");
+    public ApiResponse<GoodsResponse.GoodsUploadResponseDTO> uploadGoodsFile(@RequestPart("file") MultipartFile file) {
+        return ApiResponse.onSuccess(goodsCommandService.uploadGoodsFile(file));
     }
 
     //상품 수정
     @Operation(summary = "상품 수정", description = "상품 상세 정보를 수정합니다.")
     @PostMapping("/update/{goods_id}")
-    public ApiResponse<GoodsResponse.GoodsAddResponseDTO> updateGoods(@PathVariable Long goods_id, @RequestBody GoodsRequest.GoodsRequestDTO goodsUpdateDTO) {
+    public ApiResponse<GoodsResponse.GoodsDetailResponseDTO> updateGoods(@PathVariable Long goods_id, @RequestBody GoodsRequest.GoodsRequestDTO goodsUpdateDTO) {
         return ApiResponse.onSuccess(goodsCommandService.updateGoods(goods_id, goodsUpdateDTO));
     }
 
