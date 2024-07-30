@@ -74,7 +74,7 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         Draws draws = drawsRepository.findById(winnerId).orElseThrow(() -> new ApiException(ErrorStatus._RAFFLES_NOT_COMPLETED));
 
-        Draws newDraws = dto.toEntity(draws);
+        Draws newDraws = DrawsRequest.DrawsRequestDTO.updateStatus(draws, dto);
         Draws savedDraws = drawsRepository.save(newDraws);
 
         return DrawsResponse.DrawsResponseByMembersDTO.from(savedDraws);
