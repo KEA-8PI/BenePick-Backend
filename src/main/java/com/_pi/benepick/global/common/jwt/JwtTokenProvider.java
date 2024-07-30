@@ -61,7 +61,7 @@ public class JwtTokenProvider {
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .compact();
 
-        // redis에 저장
+        // TODO: redis에 저장
 
         return refreshToken;
     }
@@ -78,7 +78,7 @@ public class JwtTokenProvider {
         return null;
     }
     public void deleteRefreshToken(String userPk) {
-        // redis에 저장된 refresh token 삭제
+        // TODO: redis에 저장된 refresh token 삭제
     }
 
     // 토큰에서 회원 정보 추출
@@ -98,7 +98,7 @@ public class JwtTokenProvider {
 
     // 리프레시 토큰 유효성 확인
     public boolean validateRefreshToken(String accessToken) {
-        // redis에 저장된 refresh token 가져오기
+        // TODO: redis에 저장된 refresh token 가져오기
         String refreshToken = accessToken;
         return validateToken(refreshToken);
     }
