@@ -30,7 +30,7 @@ public class AuthController {
     private final AuthQueryService authQueryService;
 
     @PostMapping("/login")
-    @Operation(summary = "로그인 - Mockup API", description = "사용자 아이디와 비밀번호를 입력받아 로그인 요청을 수행합니다.")
+    @Operation(summary = "로그인", description = "사용자 아이디와 비밀번호를 입력받아 로그인 요청을 수행합니다.")
     public ApiResponse<AuthLoginResponseDTO> login(@RequestBody AuthLoginRequestDTO requestDTO, HttpServletResponse response){
         // 로그인 서비스로직 구현 후 아래의 코드는 삭제할 예정입니다.
         // 사용자 정보 검증 후 토큰 발급
@@ -45,7 +45,7 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    @Operation(summary = "로그인 - Mockup API", description = "사용자 아이디와 비밀번호를 입력받아 로그인 요청을 수행합니다.")
+    @Operation(summary = "엑세스 토큰 갱신 - Mockup API", description = "리프레시 토큰을 입력받아 엑세스 토큰을 갱신합니다.")
     public ApiResponse<AuthLoginResponseDTO> refresh(){
         // 로그인 서비스로직 구현 후 아래의 코드는 삭제할 예정입니다.
         // 사용자 정보 검증 후 토큰 발급
