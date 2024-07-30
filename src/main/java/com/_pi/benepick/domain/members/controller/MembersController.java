@@ -4,6 +4,7 @@ package com._pi.benepick.domain.members.controller;
 import com._pi.benepick.domain.members.dto.MembersRequest.*;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
 import com._pi.benepick.domain.members.entity.Members;
+import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.domain.members.service.MembersCommandService;
 import com._pi.benepick.domain.members.service.MembersQueryService;
@@ -24,8 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-import static com._pi.benepick.domain.members.entity.Role.MEMBER;
 
 @RestController
 @RequiredArgsConstructor
@@ -91,9 +90,10 @@ return ApiResponse.onSuccess(MembersuccessDTO.builder()
     @Operation(summary = "사원 목록 조회 및 검색 - Mockup API", description = "사원 목록을 조회하고 검색합니다 (관리자용)")
     @GetMapping("/list")
     public ApiResponse<MembersDetailListResponseDTO> getMemberList(@RequestParam Integer page, @RequestParam Integer size, @RequestParam String keywordName){
-        MembersDetailResponseDTO member1 = new MembersDetailResponseDTO("john.doe@example.co", "John Doe", "기획팀",(long)100,(long)5,MEMBER);
-        MembersDetailResponseDTO member2 = new MembersDetailResponseDTO("jane.smith@example.com", "Jane Smith", "기획팀",(long)100,(long)5,MEMBER);
-        MembersDetailResponseDTO member3 = new MembersDetailResponseDTO("mike.johnson@example.com", "Mike Johnson","기획팀",(long)100,(long)5,MEMBER);
+        MembersDetailResponseDTO member1 = new MembersDetailResponseDTO("john.doe@example.co", "John Doe", "기획팀",(long)100,(long)5,
+            Role.MEMBER);
+        MembersDetailResponseDTO member2 = new MembersDetailResponseDTO("jane.smith@example.com", "Jane Smith", "기획팀",(long)100,(long)5,Role.MEMBER);
+        MembersDetailResponseDTO member3 = new MembersDetailResponseDTO("mike.johnson@example.com", "Mike Johnson","기획팀",(long)100,(long)5,Role.MEMBER);
 
         List<MembersDetailResponseDTO> membersList = Arrays.asList(member1, member2, member3);
 
