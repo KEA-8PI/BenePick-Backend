@@ -35,4 +35,5 @@ public class PointHists extends BaseJPATimeEntity {
     @Column(nullable = false)
     private Long pointChange; //증감포인트
     private String content; //내용
+    private Long totalPoint;
 }

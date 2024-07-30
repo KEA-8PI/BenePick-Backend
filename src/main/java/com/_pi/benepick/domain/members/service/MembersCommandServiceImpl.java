@@ -3,8 +3,11 @@ package com._pi.benepick.domain.members.service;
 import com._pi.benepick.domain.members.dto.MembersRequest;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
 import com._pi.benepick.domain.members.entity.Members;
+import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.domain.members.repository.MembersRepository;
+import com._pi.benepick.domain.penaltyHists.entity.PenaltyHists;
 import com._pi.benepick.domain.penaltyHists.repository.PenaltyHistsRepository;
+import com._pi.benepick.domain.pointHists.entity.PointHists;
 import com._pi.benepick.domain.pointHists.repository.PointHistsRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
@@ -22,8 +25,11 @@ public class MembersCommandServiceImpl implements MembersCommandService{
     private final PointHistsRepository pointHistsRepository;
     private final PenaltyHistsRepository penaltyHistsRepository;
     @Override
-    public MembersuccessDTO updateMemberInfo(String memberid, MembersRequest.MembersRequestDTO membersRequestDTO){
+    public MembersuccessDTO updateMemberInfo(String memberid, MembersRequest.MembersRequestDTO membersRequestDTO,Members member){
         Members members=membersRepository.findById(memberid).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
+        if(membersRepository.findById(member.getId()).get().getRole()== Role.MEMBER){
+            new ApiException(ErrorStatus._UNAUTHORIZED);
+        }
         membersRepository.updateMembers(
                 memberid,
                 membersRequestDTO.getName(),
@@ -31,19 +37,34 @@ public class MembersCommandServiceImpl implements MembersCommandService{
                 membersRequestDTO.getPoint(),
                 membersRequestDTO.getPenaltyCnt()
         );
-        changePointHist(membersRequestDTO.getPoint(),memberid,"");
-        changePenaltyHist(membersRequestDTO.getPenaltyCnt(),memberid," ");
+        changePointHist(membersRequestDTO.getPoint(),member,"");
+        changePenaltyHist(membersRequestDTO.getPenaltyCnt(),member," ");
         return MembersuccessDTO.builder()
                 .msg("수정되었습니다.")
                 .build();
     }
 
-    public void changePointHist(Long point,String id,String content){
-        pointHistsRepository.updatePointHist(id,point,content);
-
+    public void changePointHist(Long point,Members members,String content){
+        Long totalPoint=pointHistsRepository.findAllByMemberId(members.getId()).getTotalPoint();
+        Long result=totalPoint+point;
+        PointHists pointHists=PointHists.builder()
+                .pointChange(point)
+                .content(content)
+                .totalPoint(result)
+                .memberId(members)
+                .build();
+        pointHistsRepository.save(pointHists);
     }
 
-    public void changePenaltyHist(int penaltycnt,String id,String content){
-        penaltyHistsRepository.updatePenaltyHist(id,penaltycnt,content);
+    public void changePenaltyHist(int penaltycnt,Members members,String content){
+        int totalPenalty=penaltyHistsRepository.findAllByMemberId(members.getId()).getTotalPenalty();
+        int result=totalPenalty+penaltycnt;
+        PenaltyHists penaltyHists=PenaltyHists.builder()
+                .content(content)
+                .memberId(members)
+                .penaltyCount(penaltycnt)
+                .totalPenalty(result)
+                .build();
+       penaltyHistsRepository.save(penaltyHists);
     }
 }
