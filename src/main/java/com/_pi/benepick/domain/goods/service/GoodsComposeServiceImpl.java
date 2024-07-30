@@ -49,7 +49,6 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
 
             // 이미지 파일 추출
             imageFiles = extractImagesFromWorkbook((XSSFWorkbook) workbook);
-            log.info("Number of images extracted from workbook: " + imageFiles.size());
 
             // 이미지 파일을 오브젝트 스토리지에 업로드하고 URL을 가져옴
             List<String> uploadedUrls = objectStorageService.uploadExcelFile(imageFiles);
