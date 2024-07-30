@@ -27,12 +27,13 @@ public class MembersQueryServiceImpl implements MembersQueryService {
     @Override
     public PointHistListDTO getPointHist(String id){
         Members members=membersRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._MEMBER_NOT_FOUND));
+
         List<PointHists> pointHists=pointHistsRepository.findAllByMemberId(id);
         List<PointHistDTO> result=new ArrayList<>();
         for(PointHists p:pointHists){
             PointHistDTO point=PointHistDTO.builder()
                     .pointChange(p.getPointChange())
-                    .content(p.getContent())
+                    .createdAt(p.getCreated_at())
                     .totalPoint(p.getTotalPoint())
                     .content(p.getContent())
                     .build();

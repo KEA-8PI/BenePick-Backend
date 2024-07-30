@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface PointHistsRepository extends JpaRepository<PointHists, Long> {
 
-    @Query("select PointHists from PointHists p WHERE p.memberId=:id")
+    @Query("select p from PointHists p WHERE p.memberId.id=:id")
     List<PointHists> findAllByMemberId(String id);
 }
