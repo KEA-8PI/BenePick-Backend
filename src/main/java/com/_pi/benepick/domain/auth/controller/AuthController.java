@@ -5,6 +5,7 @@ import com._pi.benepick.domain.auth.dto.AuthResponse.AuthLoginResponseDTO;
 import com._pi.benepick.domain.auth.service.AuthQueryService;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
+import com._pi.benepick.global.common.annotation.MemberObject;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.jwt.JwtTokenProvider;
 import com._pi.benepick.global.common.response.ApiResponse;
@@ -56,8 +57,8 @@ public class AuthController {
     }
 
     @GetMapping("/test")
-    public ApiResponse<String> testPostRequest() {
-        return ApiResponse.onSuccess("Get request successful");
+    public ApiResponse<String> testPostRequest(@MemberObject Members members) {
+        return ApiResponse.onSuccess("Get request successful from " + members.getName());
     }
 
 }
