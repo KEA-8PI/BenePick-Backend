@@ -72,12 +72,7 @@ public class MembersController {
                .build());
     }
 
-    @Operation(summary = "패널티내역 조회", description = "사용자가 본인의 패널티 내역을 조회합니다.")
-    @GetMapping("/penalty-hist")
-    public ApiResponse<PenaltyListResponseDTO> getMemberpenaltyInfo(){
-        Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
-        return ApiResponse.onSuccess(penaltyHistsQueryService.getPenaltyHists(member.getId()));
-    }
+
 
     @Operation(summary = "비밀번호 변경 - Mockup API", description = "사용자가 비밀번호를 변경합니다.")
     @PatchMapping("/password")
