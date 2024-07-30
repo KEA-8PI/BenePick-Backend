@@ -40,8 +40,7 @@ public class DrawsController {
     @Operation(summary = "상품별 결과 조회", description = "상품의 추첨 결과가 당첨자인 사원들과 그 내역을 확인할 수 있습니다.(사용자 페이지)")
     @GetMapping("/result/{goodsId}")
     public ApiResponse<DrawsResponse.DrawsResponseByGoodsListDTO> getResultByGoodsId(@PathVariable Long goodsId) {
-        Members member = membersRepository.findById("00c59862-76d3-4f5d-ae02-f5b55b30722a").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
-        return ApiResponse.onSuccess(drawsQueryService.getResultByGoodsId(member, goodsId));
+        return ApiResponse.onSuccess(drawsQueryService.getResultByGoodsId(goodsId));
     }
 
     @Operation(summary = "상품별 당첨자 조회", description = "상품에 응모한 사원들 중 추첨 결과가 대기 & 낙첨이 아닌 사원들과 그 내역을 확인할 수 있습니다.(관리자 페이지)")

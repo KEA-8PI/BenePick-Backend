@@ -35,8 +35,7 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
     private final DrawsRepository drawsRepository;
     private final GoodsCategoriesRepository goodsCategoriesRepository;
 
-    public DrawsResponse.DrawsResponseByGoodsListDTO getResultByGoodsId(Members members, Long goodsId) {
-        if (!(members.getRole().equals(Role.MEMBER))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
+    public DrawsResponse.DrawsResponseByGoodsListDTO getResultByGoodsId(Long goodsId) {
         List<DrawsResponse.DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
                 .filter(draws -> draws.getStatus() == Status.WINNER || draws.getStatus() == Status.CONFIRM)
                 .map(DrawsResponse.DrawsResponseByGoodsDTO::from)
