@@ -28,7 +28,9 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //auth 관련
     _MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER_001", "존재하지 않는 회원입니다."),
-    _MEMBER_PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "MEMBER_002", "비밀번호가 일치하지 않습니다.");
+    _MEMBER_PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "MEMBER_002", "비밀번호가 일치하지 않습니다."),
+    
+    _FILE_OUTPUT_DISABLED(HttpStatus.INTERNAL_SERVER_ERROR, "DRAWS_001", "파일 출력이 불가능합니다.");
 
 
     private final HttpStatus httpStatus;        // HTTP 상태 코드
