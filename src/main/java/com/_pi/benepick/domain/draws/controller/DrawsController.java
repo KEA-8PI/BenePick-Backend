@@ -65,7 +65,7 @@ public class DrawsController {
 
     @Operation(summary = "추첨 결과 다운로드 - Mockup API", description = "추첨 결과가 정리된 엑셀 파일을 다운로드 할 수 있습니다.")
     @GetMapping("/download/{goodsId}")
-    public void downloadExcel(@PathVariable Long goodsId, HttpServletResponse response) throws IOException {
+    public void downloadExcel(@PathVariable Long goodsId, HttpServletResponse response) {
         Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
         drawsQueryService.downloadExcel(member, goodsId, response);
     }

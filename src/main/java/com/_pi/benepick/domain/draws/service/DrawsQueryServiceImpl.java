@@ -80,7 +80,7 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         return DrawsResponse.DrawsResponseByMembersDTO.from(savedDraws);
     }
 
-    public void downloadExcel(Members members, Long goodsId, HttpServletResponse response) throws IOException {
+    public void downloadExcel(Members members, Long goodsId, HttpServletResponse response) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
 
         // Sample data
@@ -125,10 +125,9 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
 
         try {
             workbook.write(response.getOutputStream());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
             workbook.close();
+        } catch (IOException e) {
+            throw new ApiException(ErrorStatus._FILE_OUTPUT_DISABLED);
         }
     }
 
