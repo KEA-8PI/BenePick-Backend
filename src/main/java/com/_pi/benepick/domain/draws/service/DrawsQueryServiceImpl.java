@@ -1,10 +1,15 @@
 package com._pi.benepick.domain.draws.service;
 
+import com._pi.benepick.domain.draws.dto.DrawsRequest;
 import com._pi.benepick.domain.draws.dto.DrawsResponse;
+import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.draws.repository.DrawsRepository;
+import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
 import com._pi.benepick.domain.draws.entity.Status;
+import com._pi.benepick.global.common.exception.ApiException;
+import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -54,5 +59,13 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
                 .build();
     }
 
+    public DrawsResponse.DrawsResponseByMembersDTO editWinnerStatus(Long winnerId, DrawsRequest.DrawsRequestDTO dto) {
+        Draws draws = drawsRepository.findById(winnerId).orElseThrow(() -> new ApiException(ErrorStatus._RAFFLES_NOT_COMPLETED));
+
+        Draws newDraws = dto.toEntity(draws);
+        Draws savedDraws = drawsRepository.save(newDraws);
+
+        return DrawsResponse.DrawsResponseByMembersDTO.from(savedDraws);
+    }
 
 }

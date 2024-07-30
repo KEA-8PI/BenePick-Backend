@@ -1,5 +1,6 @@
 package com._pi.benepick.domain.draws.controller;
 
+import com._pi.benepick.domain.draws.dto.DrawsRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -52,9 +53,9 @@ public class DrawsController {
 
     @Operation(summary = "당첨자 상태 관리 - Mockup API", description = "당첨자들의 상태를 관리할 수 있습니다.")
     @PatchMapping("/winners/edit/{winnersId}")
-    public ApiResponse<Result> getApplyRaffleByGoodsId(@PathVariable Long winnersId, @RequestBody String status) {
+    public ApiResponse<DrawsResponse.DrawsResponseByMembersDTO> editWinnerStatus(@PathVariable Long winnersId, @RequestBody DrawsRequest.DrawsRequestDTO dto) {
 
-        return ApiResponse.onSuccess(new Result(Status.valueOf(status), winnersId, LocalDateTime.now()));
+        return ApiResponse.onSuccess(drawsQueryService.editWinnerStatus(winnersId, dto));
     }
 
     @GetMapping("/download/{goodsId}")
