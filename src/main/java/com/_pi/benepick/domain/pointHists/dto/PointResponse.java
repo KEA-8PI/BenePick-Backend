@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class PointResponse {
@@ -19,6 +20,8 @@ public class PointResponse {
 
         private Long pointChange;
         private String content;
+        private LocalDateTime createdAt;
+        private Long totalPoint;
 
     }
 

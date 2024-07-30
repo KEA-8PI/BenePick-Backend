@@ -5,6 +5,7 @@ import com._pi.benepick.domain.members.dto.MembersRequest.*;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
+import com._pi.benepick.domain.members.service.MembersQueryService;
 import com._pi.benepick.domain.penaltyHists.dto.PenaltyResponse.*;
 import com._pi.benepick.domain.pointHists.dto.PointResponse.*;
 import com._pi.benepick.global.common.response.ApiResponse;
@@ -31,6 +32,7 @@ import java.util.Optional;
 public class MembersController {
 
     private final MembersRepository membersRepository;
+    private final MembersQueryService membersQueryService;
     @Operation(summary = "복지포인트 조회 - Mockup API", description = "사용자가 복지포인트를 조회합니다.")
     @GetMapping("/point")
     public ApiResponse<MemberPointDTO> getMemberpoint(){
@@ -59,13 +61,8 @@ public class MembersController {
     @Operation(summary = "복지포인트내역 조회 - Mockup API", description = "사용자가 본인의 포인트 사용 내역을 조회합니다.")
     @GetMapping("/point-hist")
     public ApiResponse<PointHistListDTO> getMemberpointInfo(){
-       PointHistDTO pointHistDTO1=new PointHistDTO((long)100,"macbook pro 응모");
-        PointHistDTO pointHistDTO2=new PointHistDTO((long)200,"호텔 숙박권 응모");
-       List<PointHistDTO> pointHistDTOS=Arrays.asList(pointHistDTO1,pointHistDTO2);
-
-       return ApiResponse.onSuccess(PointHistListDTO.builder()
-               .pointHistDTOS(pointHistDTOS)
-               .build());
+        String id="6d4e661e-0af4-4882-9825-c6a96996b77c";
+       return ApiResponse.onSuccess(membersQueryService.getPointHist(id));
     }
 
     @Operation(summary = "패널티내역 조회 - Mockup API", description = "사용자가 본인의 패널티 내역을 조회합니다.")
