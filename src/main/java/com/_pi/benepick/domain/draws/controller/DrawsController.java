@@ -1,6 +1,10 @@
 package com._pi.benepick.domain.draws.controller;
 
 import com._pi.benepick.domain.draws.dto.DrawsRequest;
+import com._pi.benepick.domain.members.entity.Members;
+import com._pi.benepick.domain.members.repository.MembersRepository;
+import com._pi.benepick.global.common.exception.ApiException;
+import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -31,6 +35,7 @@ import java.util.List;
 public class DrawsController {
 
     private final DrawsQueryService drawsQueryService;
+    private final MembersRepository membersRepository;
 
     @Operation(summary = "상품별 당첨자 조회", description = "상품에 응모한 사원들 중 추첨 결과가 대기가 아닌 사원들과 그 내역을 확인할 수 있습니다.")
     @GetMapping("/winners/{goodsId}")
@@ -55,7 +60,8 @@ public class DrawsController {
     @PatchMapping("/winners/edit/{winnersId}")
     public ApiResponse<DrawsResponse.DrawsResponseByMembersDTO> editWinnerStatus(@PathVariable Long winnersId, @RequestBody DrawsRequest.DrawsRequestDTO dto) {
 
-        return ApiResponse.onSuccess(drawsQueryService.editWinnerStatus(winnersId, dto));
+        Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
+        return ApiResponse.onSuccess(drawsQueryService.editWinnerStatus(member, winnersId, dto));
     }
 
     @Operation(summary = "추첨 결과 다운로드 - Mockup API", description = "추첨 결과가 정리된 엑셀 파일을 다운로드 할 수 있습니다.")

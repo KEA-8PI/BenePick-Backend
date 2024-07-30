@@ -8,6 +8,8 @@ import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
 import com._pi.benepick.domain.draws.entity.Status;
+import com._pi.benepick.domain.members.entity.Members;
+import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +61,8 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
                 .build();
     }
 
-    public DrawsResponse.DrawsResponseByMembersDTO editWinnerStatus(Long winnerId, DrawsRequest.DrawsRequestDTO dto) {
+    public DrawsResponse.DrawsResponseByMembersDTO editWinnerStatus(Members members, Long winnerId, DrawsRequest.DrawsRequestDTO dto) {
+        if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         Draws draws = drawsRepository.findById(winnerId).orElseThrow(() -> new ApiException(ErrorStatus._RAFFLES_NOT_COMPLETED));
 
         Draws newDraws = dto.toEntity(draws);

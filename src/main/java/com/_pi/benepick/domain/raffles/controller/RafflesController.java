@@ -43,7 +43,7 @@ public class RafflesController {
     @Operation(summary = "상품별 응모자 조회", description = "상품에 응모한 사원들과 그 내역을 확인할 수 있습니다.")
     @GetMapping("/applicant/{goodsId}")
     public ApiResponse<RafflesResponse.RafflesResponseByGoodsListDTO> getAllRafflesByGoodsId(@PathVariable Long goodsId) {
-        Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));;
+        Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
         return ApiResponse.onSuccess(rafflesQueryService.getAllRafflesByGoodsId(member, goodsId));
     }
 }
