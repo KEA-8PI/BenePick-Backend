@@ -37,16 +37,25 @@ public class DrawsController {
     private final DrawsQueryService drawsQueryService;
     private final MembersRepository membersRepository;
 
-    @Operation(summary = "상품별 당첨자 조회", description = "상품에 응모한 사원들 중 추첨 결과가 대기가 아닌 사원들과 그 내역을 확인할 수 있습니다.")
+    @Operation(summary = "상품별 결과 조회", description = "상품의 추첨 결과가 당첨자인 사원들과 그 내역을 확인할 수 있습니다.(사용자 페이지)")
+    @GetMapping("/result/{goodsId}")
+    public ApiResponse<DrawsResponse.DrawsResponseByGoodsListDTO> getResultByGoodsId(@PathVariable Long goodsId) {
+        Members member = membersRepository.findById("00c59862-76d3-4f5d-ae02-f5b55b30722a").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
+        return ApiResponse.onSuccess(drawsQueryService.getResultByGoodsId(member, goodsId));
+    }
+
+    @Operation(summary = "상품별 당첨자 조회", description = "상품에 응모한 사원들 중 추첨 결과가 대기 & 낙첨이 아닌 사원들과 그 내역을 확인할 수 있습니다.(관리자 페이지)")
     @GetMapping("/winners/{goodsId}")
     public ApiResponse<DrawsResponse.DrawsResponseByGoodsListDTO> getWinnersByGoodsId(@PathVariable Long goodsId) {
-        return ApiResponse.onSuccess(drawsQueryService.getWinnersByGoodsId(goodsId));
+        Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
+        return ApiResponse.onSuccess(drawsQueryService.getWinnersByGoodsId(member, goodsId));
     }
 
     @Operation(summary = "상품별 대기자 조회", description = "상품에 응모한 사원들 중 추첨 결과가 대기중인 사원들과 그 내역을 확인할 수 있습니다.")
     @GetMapping("/waitlist/{goodsId}")
     public ApiResponse<DrawsResponse.DrawsResponseByGoodsListDTO> getWaitlistByGoodsId(@PathVariable Long goodsId) {
-        return ApiResponse.onSuccess(drawsQueryService.getWaitlistByGoodsId(goodsId));
+        Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
+        return ApiResponse.onSuccess(drawsQueryService.getWaitlistByGoodsId(member, goodsId));
     }
 
     // 인증인가 구현되고 token 받게 되면 수정 예정
@@ -56,7 +65,7 @@ public class DrawsController {
         return ApiResponse.onSuccess(drawsQueryService.getCompleteRafflesByMemberId(memberId));
     }
 
-    @Operation(summary = "당첨자 상태 관리 - Mockup API", description = "당첨자들의 상태를 관리할 수 있습니다.")
+    @Operation(summary = "당첨자 상태 관리", description = "당첨자들의 상태를 관리할 수 있습니다.")
     @PatchMapping("/winners/edit/{winnersId}")
     public ApiResponse<DrawsResponse.DrawsResponseByMembersDTO> editWinnerStatus(@PathVariable Long winnersId, @RequestBody DrawsRequest.DrawsRequestDTO dto) {
         Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));

@@ -10,6 +10,7 @@ import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesReposit
 import com._pi.benepick.domain.draws.entity.Status;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
+import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,10 +31,24 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DrawsQueryServiceImpl implements DrawsQueryService {
 
+    private final MembersRepository membersRepository;
     private final DrawsRepository drawsRepository;
     private final GoodsCategoriesRepository goodsCategoriesRepository;
 
-    public DrawsResponse.DrawsResponseByGoodsListDTO getWaitlistByGoodsId(Long goodsId) {
+    public DrawsResponse.DrawsResponseByGoodsListDTO getResultByGoodsId(Members members, Long goodsId) {
+        if (!(members.getRole().equals(Role.MEMBER))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
+        List<DrawsResponse.DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
+                .filter(draws -> draws.getStatus() == Status.WINNER || draws.getStatus() == Status.CONFIRM)
+                .map(DrawsResponse.DrawsResponseByGoodsDTO::from)
+                .collect(Collectors.toList());
+
+        return DrawsResponse.DrawsResponseByGoodsListDTO.builder()
+                .drawsResponseByGoodsDTOList(drawsResponseByGoodsDTOS)
+                .build();
+    }
+
+    public DrawsResponse.DrawsResponseByGoodsListDTO getWaitlistByGoodsId(Members members, Long goodsId) {
+        if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         List<DrawsResponse.DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
                 .filter(draws -> draws.getStatus() == Status.WAITLIST)
                 .map(DrawsResponse.DrawsResponseByGoodsDTO::from)
@@ -44,7 +59,8 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
                 .build();
     }
 
-    public DrawsResponse.DrawsResponseByGoodsListDTO getWinnersByGoodsId(Long goodsId) {
+    public DrawsResponse.DrawsResponseByGoodsListDTO getWinnersByGoodsId(Members members, Long goodsId) {
+        if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         List<DrawsResponse.DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
                 .filter(draws -> draws.getStatus() != Status.WAITLIST && draws.getStatus() != Status.NON_WINNER)
                 .map(DrawsResponse.DrawsResponseByGoodsDTO::from)
@@ -56,6 +72,8 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
     }
 
     public DrawsResponse.DrawsResponseByMembersListDTO getCompleteRafflesByMemberId(String memberId) {
+        Members members = membersRepository.findById(memberId).orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
+        if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         List<DrawsResponse.DrawsResponseByMembersDTO> drawsResponseByMembersDTOS = (drawsRepository.findByMemberId(memberId)).stream()
                 .filter(draws -> draws.getRaffleId().getGoodsId().getGoodsStatus() == GoodsStatus.COMPLETED)
                 .map(draws -> {
