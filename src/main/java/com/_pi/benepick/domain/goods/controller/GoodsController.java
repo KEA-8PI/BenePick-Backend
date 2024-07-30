@@ -4,6 +4,7 @@ import com._pi.benepick.domain.goods.dto.GoodsRequest;
 import com._pi.benepick.domain.goods.dto.GoodsResponse;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goods.service.GoodsCommandService;
+import com._pi.benepick.domain.goods.service.GoodsComposeService;
 import com._pi.benepick.domain.goods.service.GoodsQueryService;
 import com._pi.benepick.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +26,7 @@ public class GoodsController {
 
     private final GoodsQueryService goodsQueryService;
     private final GoodsCommandService goodsCommandService;
+    private final GoodsComposeService goodsComposeService;
 
     //상품 목록 조회
     @Operation(summary = "상품 목록 조회 (관리자용)", description = "검색어에 따른 상품의 모든 목록을 조회합니다. (진행:PROGRESS,예정:SCHEDULED,종료:COMPLETED)")
@@ -65,7 +67,7 @@ public class GoodsController {
     @Operation(summary = "상품 파일 업로드", description = "엑셀 파일을 업로드하여 상품 정보를 저장합니다.")
     @PostMapping(value ="/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<GoodsResponse.GoodsUploadResponseDTO> uploadGoodsFile(@RequestPart("file") MultipartFile file) {
-        return ApiResponse.onSuccess(goodsCommandService.uploadGoodsFile(file));
+        return ApiResponse.onSuccess(goodsComposeService.uploadGoodsFile(file));
     }
 
     //상품 수정
