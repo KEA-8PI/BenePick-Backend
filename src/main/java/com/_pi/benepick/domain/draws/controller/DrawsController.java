@@ -59,7 +59,6 @@ public class DrawsController {
     @Operation(summary = "당첨자 상태 관리 - Mockup API", description = "당첨자들의 상태를 관리할 수 있습니다.")
     @PatchMapping("/winners/edit/{winnersId}")
     public ApiResponse<DrawsResponse.DrawsResponseByMembersDTO> editWinnerStatus(@PathVariable Long winnersId, @RequestBody DrawsRequest.DrawsRequestDTO dto) {
-
         Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
         return ApiResponse.onSuccess(drawsQueryService.editWinnerStatus(member, winnersId, dto));
     }
@@ -67,63 +66,8 @@ public class DrawsController {
     @Operation(summary = "추첨 결과 다운로드 - Mockup API", description = "추첨 결과가 정리된 엑셀 파일을 다운로드 할 수 있습니다.")
     @GetMapping("/download/{goodsId}")
     public void downloadExcel(@PathVariable Long goodsId, HttpServletResponse response) throws IOException {
-        // Sample data
-        List<List<String>> data = Arrays.asList(
-                Arrays.asList("Name", "Age", "Location"),
-                Arrays.asList("John Doe", "30", "New York"),
-                Arrays.asList("Jane Smith", "25", "Los Angeles"),
-                Arrays.asList("Mike Johnson", "35", "Chicago")
-        );
-
-        // Create a new workbook and sheet
-        Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("Sheet1");
-
-        Cell cell = null;
-        Row row = null;
-
-        row = sheet.createRow(0);
-
-        for (int j = 0; j < data.size(); j++) {
-            List<String> rowdata = data.get(j);
-            for (int i = 0; i < rowdata.size(); i++) {
-                cell = row.createCell(i);
-                cell.setCellValue(rowdata.get(i));
-            }
-
-        }
-
-        int rowCount = 0;
-        for (List<String> dto : data) {
-            row = sheet.createRow(rowCount++);
-            cell = row.createCell(0);
-            cell.setCellValue(dto.get(0));
-            cell = row.createCell(1);
-            cell.setCellValue(dto.get(1));
-            cell = row.createCell(2);
-            cell.setCellValue(dto.get(2));
-        }
-
-        response.setContentType("ms-vnd/excel");
-        response.setHeader("Content-Disposition", "attachment;filename=student.xlsx");
-
-        try {
-            workbook.write(response.getOutputStream());
-        } catch (IOException e) {
-            log.error("error 발생");
-            throw new RuntimeException(e);
-        } finally {
-            workbook.close();
-        }
-
-//        // Write the output to a byte array
-//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//        workbook.write(outputStream);
-//        workbook.close();
-//
-//        byte[] excelContent = outputStream.toByteArray();
-//
-//        return excelContent;
+        Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
+        drawsQueryService.downloadExcel(member, goodsId, response);
     }
 
 }
