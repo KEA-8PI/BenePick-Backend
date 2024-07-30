@@ -1,5 +1,6 @@
 package com._pi.benepick.domain.members.dto;
 
+import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
 import lombok.*;
 import org.springframework.stereotype.Service;
@@ -12,14 +13,22 @@ public class MembersResponse {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    @Setter
     public static class MembersDetailResponseDTO{
         private String id;
         private String name;
         private String deptName;
         private Long point;
         private Long penaltyCnt;
-        private Role role;
+
+        public static MembersDetailResponseDTO from(Members members){
+            return MembersDetailResponseDTO.builder()
+                    .id(members.getId())
+                    .name(members.getName())
+                    .deptName(members.getDeptName())
+                    .point(members.getPoint())
+                    .penaltyCnt(members.getPenaltyCnt())
+                    .build();
+        }
     }
 
 

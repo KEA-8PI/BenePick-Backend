@@ -20,7 +20,6 @@ public class MembersQueryServiceImpl implements MembersQueryService {
     public MembersDetailResponseDTO getMemberinfo(String id){
         Members members=membersRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
         return MembersDetailResponseDTO.builder()
-                .role(members.getRole())
                 .point(members.getPoint())
                 .name(members.getName())
                 .penaltyCnt(members.getPenaltyCnt())

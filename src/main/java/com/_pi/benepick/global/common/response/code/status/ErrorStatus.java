@@ -27,7 +27,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _RAFFLES_NOT_COMPLETED(HttpStatus.BAD_GATEWAY, "RAFFLES_002", "종료되지 않은 응모입니다."),
 
     //member 관련
-    _MEMBERS_NOT_FOUND(HttpStatus.BAD_REQUEST,"MEMBERS_001","존재하지 않는 사원입니다."),
+    _MEMBERS_NOT_FOUND(HttpStatus.NOT_FOUND,"MEMBERS_001","존재하지 않는 사원입니다."),
     _ALREADY_EXIST_MEMBER(HttpStatus.BAD_REQUEST,"MEMBERS_002","이미 존재하는 사원입니다.");
 
 

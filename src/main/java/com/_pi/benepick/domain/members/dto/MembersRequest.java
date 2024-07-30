@@ -23,6 +23,20 @@ public class MembersRequest {
 
     @Builder
     @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class AdminMemberRequestDTO{
+        private String id;
+        private String deptName;
+        private String name;
+        private Long point;
+        private Long penaltyCnt;
+        private String password;
+        private Role role;
+    }
+
+    @Builder
+    @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor
     public static class MemberPointFileDTO{

@@ -40,4 +40,8 @@ public class Members extends BaseJPATimeEntity {
     private Role role; //역할
 
     private String profileImg; //프로필사진
+
+    public static Members createMember(String id,String deptName,String name,Long point,Long penaltyCnt,Role role,String password){
+        return new Members(id,name,deptName,password,penaltyCnt,point,role,password);
+    }
 }
