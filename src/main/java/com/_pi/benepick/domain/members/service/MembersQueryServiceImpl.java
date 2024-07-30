@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class MembersQueryServiceImpl implements MembersQueryService {
     private final MembersRepository membersRepository;
 
