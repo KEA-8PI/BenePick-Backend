@@ -46,7 +46,7 @@ public class DrawsController {
 
     // 인증인가 구현되고 token 받게 되면 수정 예정
     @Operation(summary = "사원별 종료된 응모 내역 조회", description = "사원이 응모한 추첨 종료된 상품들과 그 내역을 확인할 수 있습니다.")
-    @GetMapping("/complete/raffles/{memberId}")
+    @GetMapping("/complete/list/{memberId}")
     public ApiResponse<DrawsResponse.DrawsResponseByMembersListDTO> getCompleteRafflesByMemberId(@PathVariable String memberId) {
         return ApiResponse.onSuccess(drawsQueryService.getCompleteRafflesByMemberId(memberId));
     }
@@ -58,6 +58,7 @@ public class DrawsController {
         return ApiResponse.onSuccess(drawsQueryService.editWinnerStatus(winnersId, dto));
     }
 
+    @Operation(summary = "추첨 결과 다운로드 - Mockup API", description = "추첨 결과가 정리된 엑셀 파일을 다운로드 할 수 있습니다.")
     @GetMapping("/download/{goodsId}")
     public void downloadExcel(@PathVariable Long goodsId, HttpServletResponse response) throws IOException {
         // Sample data
@@ -117,18 +118,6 @@ public class DrawsController {
 //        byte[] excelContent = outputStream.toByteArray();
 //
 //        return excelContent;
-    }
-
-    @AllArgsConstructor
-    private static class Result {
-        @JsonProperty("status")
-        private Status status;
-
-        @JsonProperty("winner_id")
-        private Long winner_id;
-
-        @JsonProperty("updated_at")
-        private LocalDateTime updated_at;
     }
 
 }
