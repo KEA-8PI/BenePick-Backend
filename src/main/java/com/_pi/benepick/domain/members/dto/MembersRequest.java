@@ -24,7 +24,7 @@ public class MembersRequest {
 
     @Builder
     @Getter
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor
     @NoArgsConstructor
     public static class AdminMemberRequestDTO{
         private String id;
