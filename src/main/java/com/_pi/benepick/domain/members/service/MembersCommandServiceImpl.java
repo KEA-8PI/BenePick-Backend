@@ -37,31 +37,31 @@ public class MembersCommandServiceImpl implements MembersCommandService{
                 membersRequestDTO.getPoint(),
                 membersRequestDTO.getPenaltyCnt()
         );
-        changePointHist(membersRequestDTO.getPoint(),member,"");
-        changePenaltyHist(membersRequestDTO.getPenaltyCnt(),member," ");
+        changePointHist(membersRequestDTO.getPoint(),memberid,"",members);
+        changePenaltyHist(membersRequestDTO.getPenaltyCnt(),memberid," ",members);
         return MembersuccessDTO.builder()
                 .msg("수정되었습니다.")
                 .build();
     }
 
-    public void changePointHist(Long point,Members members,String content){
-        Long totalPoint=pointHistsRepository.findAllByMemberId(members.getId()).getTotalPoint();
+    public void changePointHist(Long point,String members,String content,Members member){
+        Long totalPoint=pointHistsRepository.findAllByMemberId(members).getTotalPoint();
         Long result=totalPoint+point;
         PointHists pointHists=PointHists.builder()
                 .pointChange(point)
                 .content(content)
                 .totalPoint(result)
-                .memberId(members)
+                .memberId(member)
                 .build();
         pointHistsRepository.save(pointHists);
     }
 
-    public void changePenaltyHist(int penaltycnt,Members members,String content){
-        int totalPenalty=penaltyHistsRepository.findAllByMemberId(members.getId()).getTotalPenalty();
+    public void changePenaltyHist(int penaltycnt,String members,String content,Members member){
+        int totalPenalty=penaltyHistsRepository.findAllByMemberId(members).getTotalPenalty();
         int result=totalPenalty+penaltycnt;
         PenaltyHists penaltyHists=PenaltyHists.builder()
                 .content(content)
-                .memberId(members)
+                .memberId(member)
                 .penaltyCount(penaltycnt)
                 .totalPenalty(result)
                 .build();
