@@ -5,9 +5,13 @@ import com._pi.benepick.domain.members.dto.MembersRequest.*;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
+import com._pi.benepick.domain.members.service.MembersQueryService;
 import com._pi.benepick.domain.penaltyHists.dto.PenaltyResponse.*;
+import com._pi.benepick.domain.penaltyHists.service.PenaltyHistsQueryService;
 import com._pi.benepick.domain.pointHists.dto.PointResponse.*;
+import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.ApiResponse;
+import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -31,6 +35,11 @@ import java.util.Optional;
 public class MembersController {
 
     private final MembersRepository membersRepository;
+
+    private final MembersQueryService membersQueryService;
+
+    private final PenaltyHistsQueryService penaltyHistsQueryService;
+
     @Operation(summary = "복지포인트 조회 - Mockup API", description = "사용자가 복지포인트를 조회합니다.")
     @GetMapping("/point")
     public ApiResponse<MemberPointDTO> getMemberpoint(){
@@ -56,30 +65,6 @@ public class MembersController {
     }
 
 
-    @Operation(summary = "복지포인트내역 조회 - Mockup API", description = "사용자가 본인의 포인트 사용 내역을 조회합니다.")
-    @GetMapping("/point-hist")
-    public ApiResponse<PointHistListDTO> getMemberpointInfo(){
-       PointHistDTO pointHistDTO1=new PointHistDTO((long)100,"macbook pro 응모");
-        PointHistDTO pointHistDTO2=new PointHistDTO((long)200,"호텔 숙박권 응모");
-       List<PointHistDTO> pointHistDTOS=Arrays.asList(pointHistDTO1,pointHistDTO2);
-
-       return ApiResponse.onSuccess(PointHistListDTO.builder()
-               .pointHistDTOS(pointHistDTOS)
-               .build());
-    }
-
-    @Operation(summary = "패널티내역 조회 - Mockup API", description = "사용자가 본인의 패널티 내역을 조회합니다.")
-    @GetMapping("/penalty-hist")
-    public ApiResponse<PenaltyListResponseDTO> getMemberpenaltyInfo(){
-        PenaltyResponseDTO penaltyResponseDTO1=new PenaltyResponseDTO("2023-02-01 00:34:13.778134","노쇼",1,3);
-        List<PenaltyResponseDTO> penaltyResponseDTOList=Arrays.asList(penaltyResponseDTO1);
-
-        return ApiResponse.onSuccess(
-                PenaltyListResponseDTO.builder()
-                        .penaltyResponseDTOList(penaltyResponseDTOList)
-                        .build()
-        );
-    }
 
     @Operation(summary = "비밀번호 변경 - Mockup API", description = "사용자가 비밀번호를 변경합니다.")
     @PatchMapping("/password")
@@ -89,20 +74,10 @@ return ApiResponse.onSuccess(MembersuccessDTO.builder()
         .build());
     }
 
-    @Operation(summary = "사원 목록 조회 및 검색 - Mockup API", description = "사원 목록을 조회하고 검색합니다 (관리자용)")
+    @Operation(summary = "사원 목록 조회 및 검색", description = "사원 목록을 조회하고 검색합니다 (관리자용)")
     @GetMapping("/list")
     public ApiResponse<MembersDetailListResponseDTO> getMemberList(@RequestParam Integer page, @RequestParam Integer size, @RequestParam String keywordName){
-        MembersDetailResponseDTO member1 = new MembersDetailResponseDTO("john.doe@example.co", "John Doe", "기획팀",(long)100,(long)5);
-        MembersDetailResponseDTO member2 = new MembersDetailResponseDTO("jane.smith@example.com", "Jane Smith", "기획팀",(long)100,(long)5);
-        MembersDetailResponseDTO member3 = new MembersDetailResponseDTO("mike.johnson@example.com", "Mike Johnson","기획팀",(long)100,(long)5);
-
-        List<MembersDetailResponseDTO> membersList = Arrays.asList(member1, member2, member3);
-
-
-        MembersDetailListResponseDTO membersDetailListResponseDTO = MembersDetailListResponseDTO.builder()
-                .membersDetailResponseDTOList(membersList)
-                .build();
-        return ApiResponse.onSuccess(membersDetailListResponseDTO);
+        return ApiResponse.onSuccess(membersQueryService.getMembersList(page,size,keywordName));
     }
 
     @Operation(summary = "사원 등록 - Mockup API", description = "사원을 등록합니다 (관리자용)")

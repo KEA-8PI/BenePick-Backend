@@ -33,6 +33,12 @@ public enum ErrorStatus implements BaseErrorCode {
     _FILE_OUTPUT_DISABLED(HttpStatus.INTERNAL_SERVER_ERROR, "DRAWS_001", "파일 출력이 불가능합니다.");
 
 
+
+
+
+
+
+
     private final HttpStatus httpStatus;        // HTTP 상태 코드
     private final String code;                  // 내부적인 에러 코드. 도메인명 + 숫자로 구성. 숫자는 HTTP 상태코드 100의자리 참고
     private final String message;               // FE에 전달할 오류 메세지
