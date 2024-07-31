@@ -14,16 +14,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 @RequiredArgsConstructor
-public class JwtAuthFilter extends GenericFilterBean {
+public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+        FilterChain filterChain) throws ServletException, IOException {
         // 클라이언트의 API 요청 헤더에서 토큰 추출
-        String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
+        String token = jwtTokenProvider.resolveToken(request);
 
         // 유효성 검사 후 SecurityContext에 저장
         if (token != null) {
@@ -44,14 +45,14 @@ public class JwtAuthFilter extends GenericFilterBean {
                     Cookie accessTokenCookie = jwtTokenProvider.createAccessTokenCookie(newToken.getAccessToken());
                     Cookie refreshTokenCookie = jwtTokenProvider.createRefreshTokenCookie(newToken.getRefreshToken());
 
-                    HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-                    httpServletResponse.addCookie(accessTokenCookie);
-                    httpServletResponse.addCookie(refreshTokenCookie);
+                    response.addCookie(accessTokenCookie);
+                    response.addCookie(refreshTokenCookie);
                 }
             }
         }
 
         // 다음 필터링
-        chain.doFilter(request, response);
+        filterChain.doFilter(request, response);
+
     }
 }
