@@ -74,7 +74,7 @@ return ApiResponse.onSuccess(MembersuccessDTO.builder()
         .build());
     }
 
-    @Operation(summary = "사원 목록 조회 및 검색 - Mockup API", description = "사원 목록을 조회하고 검색합니다 (관리자용)")
+    @Operation(summary = "사원 목록 조회 및 검색", description = "사원 목록을 조회하고 검색합니다 (관리자용)")
     @GetMapping("/list")
     public ApiResponse<MembersDetailListResponseDTO> getMemberList(@RequestParam Integer page, @RequestParam Integer size, @RequestParam String keywordName){
         return ApiResponse.onSuccess(membersQueryService.getMembersList(page,size,keywordName));

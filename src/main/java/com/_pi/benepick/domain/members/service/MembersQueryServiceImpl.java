@@ -44,18 +44,11 @@ public class MembersQueryServiceImpl implements MembersQueryService {
         Members members = membersRepository.findById(member.getId()).orElseThrow(() -> new ApiException(ErrorStatus._MEMBER_NOT_FOUND));
 
         List<PointHists> pointHists = pointHistsRepository.findAllByMemberId(member.getId());
-        List<PointHistDTO> result = new ArrayList<>();
-        for (PointHists p : pointHists) {
-            PointHistDTO point = PointHistDTO.builder()
-                    .pointChange(p.getPointChange())
-                    .createdAt(p.getCreated_at())
-                    .totalPoint(p.getTotalPoint())
-                    .content(p.getContent())
-                    .build();
-            result.add(point);
-        }
+        List<PointHistDTO> pointHistDTOS=pointHists.stream()
+                .map(PointHistDTO::from)
+                .collect(Collectors.toList());
         return PointHistListDTO.builder()
-                .pointHistDTOS(result)
+                .pointHistDTOS(pointHistDTOS)
                 .build();
     }
 
