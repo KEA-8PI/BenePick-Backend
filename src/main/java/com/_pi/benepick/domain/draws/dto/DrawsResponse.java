@@ -39,6 +39,18 @@ public class DrawsResponse {
                     .category_name(categoryName)
                     .build();
         }
+
+        public static DrawsResponse.DrawsResponseByMembersDTO from(Draws draws) {
+            return DrawsResponseByMembersDTO.builder()
+                    .id(draws.getRaffleId().getId())
+                    .memberId(draws.getRaffleId().getMemberId().getId())
+                    .goodsId(draws.getRaffleId().getGoodsId().getId())
+                    .point(draws.getRaffleId().getPoint())
+                    .sequence(draws.getSequence())
+                    .drawStatus(draws.getStatus())
+                    .rafflesAt(draws.getRaffleId().getUpdated_at())
+                    .build();
+        }
     }
 
     // 상품별 응모 조회 반환 값에 사용되는 format
