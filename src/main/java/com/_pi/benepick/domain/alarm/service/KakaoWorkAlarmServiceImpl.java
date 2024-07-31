@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class KakaoWorkAlarmServiceImpl implements AlarmService {
 
-    @Value("${kakao.work.token}")
+    @Value("${kakao-work.token}")
     private String kakaoWorkToken;
 
     /**
@@ -55,7 +55,7 @@ public class KakaoWorkAlarmServiceImpl implements AlarmService {
         Message message = new Message(email, "당첨 축하 메시지입니다.");
 
         HeaderBlock headerBlock = new HeaderBlock("header", "당첨 축하드립니다!", "white");
-        TextBlock textBlock = new TextBlock("text", name + "님의 당첨을 축하드립니다!\n지금 당장 확인하러 가보세요~");
+        TextBlock textBlock = new TextBlock("text", name + "님의 당첨을 축하드립니다!\n지금 당장 확인하러 가보세요");
         ImageBlock imageBlock = new ImageBlock("image_link", "https://t1.kakaocdn.net/kakaowork/resources/block-kit/imagelink/image5@3x.jpg");
 
         ButtonBlock buttonBlock = new ButtonBlock("button", "확인하러 가기", "default");
