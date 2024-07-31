@@ -30,6 +30,8 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //member관련
     _MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST,"MEMBERS_001","존재하지 않는 사원입니다."),
+    _PASSWORD_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,"MEMBERS_002","기존 비밀번호와 동일합니다."),
+    _PASSWORD_DISABLED(HttpStatus.BAD_REQUEST,"MEMBERS_003","비밀번호 유효성 검사 실패"),
 
     _FILE_OUTPUT_DISABLED(HttpStatus.INTERNAL_SERVER_ERROR, "DRAWS_001", "파일 출력이 불가능합니다.");
 
