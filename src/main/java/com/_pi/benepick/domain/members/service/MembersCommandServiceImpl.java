@@ -31,7 +31,6 @@ public class MembersCommandServiceImpl implements MembersCommandService{
         }
 
         Members members=Members.createMember(membersRequestDTO.getId(),membersRequestDTO.getDeptName(),membersRequestDTO.getName(),membersRequestDTO.getPoint(),membersRequestDTO.getPenaltyCnt(),membersRequestDTO.getRole(),membersRequestDTO.getPassword());
-        System.err.println("members = " + members);
         membersRepository.save(members);
 
         return MembersDetailResponseDTO.from(members);

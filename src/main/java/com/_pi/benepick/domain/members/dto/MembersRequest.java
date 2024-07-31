@@ -1,5 +1,6 @@
 package com._pi.benepick.domain.members.dto;
 
+import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,7 +24,7 @@ public class MembersRequest {
 
     @Builder
     @Getter
-    @AllArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor
     public static class AdminMemberRequestDTO{
         private String id;
@@ -33,6 +34,18 @@ public class MembersRequest {
         private Long penaltyCnt;
         private String password;
         private Role role;
+
+        public Members toEntity(){
+            return Members.builder()
+                    .id(id)
+                    .password(password)
+                    .role(role)
+                    .penaltyCnt(penaltyCnt)
+                    .point(point)
+                    .name(name)
+                    .deptName(deptName)
+                    .build();
+        }
     }
 
     @Builder
