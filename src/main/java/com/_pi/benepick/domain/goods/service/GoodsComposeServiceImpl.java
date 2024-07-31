@@ -13,6 +13,7 @@ import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import com._pi.benepick.global.kakao.ObjectStorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFPictureData;
@@ -64,6 +65,7 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
                 LocalDateTime raffleStartAt = LocalDateTime.parse(row.getCell(6).getStringCellValue());
                 LocalDateTime raffleEndAt = LocalDateTime.parse(row.getCell(7).getStringCellValue());
                 GoodsStatus status = goodsCommandService.determineGoodsStatus(raffleStartAt, raffleEndAt);
+
                 // 상품 정보
                 Goods goods = Goods.builder()
                         .name(row.getCell(0).getStringCellValue())
@@ -101,6 +103,7 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
         List<File> imageFiles = new ArrayList<>();
         // 워크북의 모든 그림 데이터를 반복
         for (XSSFPictureData pictureData : workbook.getAllPictures()) {
+            log.info(pictureData.toString());
             String fileExtension = pictureData.suggestFileExtension(); // 파일 확장자 결정
             File tempFile = File.createTempFile("image", "." + fileExtension); // 임시 파일 생성
             try (FileOutputStream out = new FileOutputStream(tempFile)) {
