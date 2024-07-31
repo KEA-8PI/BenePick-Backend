@@ -5,6 +5,7 @@ import com._pi.benepick.domain.members.dto.MembersRequest.*;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
+import com._pi.benepick.domain.members.service.MembersQueryService;
 import com._pi.benepick.domain.penaltyHists.dto.PenaltyResponse.*;
 import com._pi.benepick.domain.pointHists.dto.PointResponse.*;
 import com._pi.benepick.global.common.response.ApiResponse;
@@ -29,7 +30,7 @@ import java.util.Optional;
 @RequestMapping("/member")
 @Tag(name = "Members", description = "사원 API")
 public class MembersController {
-
+private final MembersQueryService membersQueryService;
     private final MembersRepository membersRepository;
     @Operation(summary = "복지포인트 조회 - Mockup API", description = "사용자가 복지포인트를 조회합니다.")
     @GetMapping("/point")
@@ -92,17 +93,7 @@ return ApiResponse.onSuccess(MembersuccessDTO.builder()
     @Operation(summary = "사원 목록 조회 및 검색 - Mockup API", description = "사원 목록을 조회하고 검색합니다 (관리자용)")
     @GetMapping("/list")
     public ApiResponse<MembersDetailListResponseDTO> getMemberList(@RequestParam Integer page, @RequestParam Integer size, @RequestParam String keywordName){
-        MembersDetailResponseDTO member1 = new MembersDetailResponseDTO("john.doe@example.co", "John Doe", "기획팀",(long)100,(long)5);
-        MembersDetailResponseDTO member2 = new MembersDetailResponseDTO("jane.smith@example.com", "Jane Smith", "기획팀",(long)100,(long)5);
-        MembersDetailResponseDTO member3 = new MembersDetailResponseDTO("mike.johnson@example.com", "Mike Johnson","기획팀",(long)100,(long)5);
-
-        List<MembersDetailResponseDTO> membersList = Arrays.asList(member1, member2, member3);
-
-
-        MembersDetailListResponseDTO membersDetailListResponseDTO = MembersDetailListResponseDTO.builder()
-                .membersDetailResponseDTOList(membersList)
-                .build();
-        return ApiResponse.onSuccess(membersDetailListResponseDTO);
+        return ApiResponse.onSuccess(membersQueryService.getMembersList(page,size,keywordName));
     }
 
     @Operation(summary = "사원 등록 - Mockup API", description = "사원을 등록합니다 (관리자용)")
