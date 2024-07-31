@@ -87,17 +87,7 @@ return ApiResponse.onSuccess(MembersuccessDTO.builder()
     @Operation(summary = "사원 목록 조회 및 검색 - Mockup API", description = "사원 목록을 조회하고 검색합니다 (관리자용)")
     @GetMapping("/list")
     public ApiResponse<MembersDetailListResponseDTO> getMemberList(@RequestParam Integer page, @RequestParam Integer size, @RequestParam String keywordName){
-        MembersDetailResponseDTO member1 = new MembersDetailResponseDTO("john.doe@example.co", "John Doe", "기획팀",(long)100,(long)5);
-        MembersDetailResponseDTO member2 = new MembersDetailResponseDTO("jane.smith@example.com", "Jane Smith", "기획팀",(long)100,(long)5);
-        MembersDetailResponseDTO member3 = new MembersDetailResponseDTO("mike.johnson@example.com", "Mike Johnson","기획팀",(long)100,(long)5);
-
-        List<MembersDetailResponseDTO> membersList = Arrays.asList(member1, member2, member3);
-
-
-        MembersDetailListResponseDTO membersDetailListResponseDTO = MembersDetailListResponseDTO.builder()
-                .membersDetailResponseDTOList(membersList)
-                .build();
-        return ApiResponse.onSuccess(membersDetailListResponseDTO);
+        return ApiResponse.onSuccess(membersQueryService.getMembersList(page,size,keywordName));
     }
 
     @Operation(summary = "사원 등록 - Mockup API", description = "사원을 등록합니다 (관리자용)")
