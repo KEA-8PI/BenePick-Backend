@@ -1,5 +1,4 @@
-package com._pi.benepick.controller;
-import com._pi.benepick.global.kakao.ObjectStorageService;
+package com._pi.benepick.global.objectStorage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

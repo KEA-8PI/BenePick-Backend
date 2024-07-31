@@ -1,4 +1,4 @@
-package com._pi.benepick.global.kakao;
+package com._pi.benepick.global.objectStorage;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
