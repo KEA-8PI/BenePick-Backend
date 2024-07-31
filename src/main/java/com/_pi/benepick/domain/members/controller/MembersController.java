@@ -33,9 +33,13 @@ import java.util.Optional;
 @RequestMapping("/member")
 @Tag(name = "Members", description = "사원 API")
 public class MembersController {
-private final MembersQueryService membersQueryService;
+
     private final MembersRepository membersRepository;
+
+    private final MembersQueryService membersQueryService;
+
     private final PenaltyHistsQueryService penaltyHistsQueryService;
+
     @Operation(summary = "복지포인트 조회 - Mockup API", description = "사용자가 복지포인트를 조회합니다.")
     @GetMapping("/point")
     public ApiResponse<MemberPointDTO> getMemberpoint(){
@@ -61,19 +65,6 @@ private final MembersQueryService membersQueryService;
     }
 
 
-    @Operation(summary = "복지포인트내역 조회 - Mockup API", description = "사용자가 본인의 포인트 사용 내역을 조회합니다.")
-    @GetMapping("/point-hist")
-    public ApiResponse<PointHistListDTO> getMemberpointInfo(){
-       PointHistDTO pointHistDTO1=new PointHistDTO((long)100,"macbook pro 응모");
-        PointHistDTO pointHistDTO2=new PointHistDTO((long)200,"호텔 숙박권 응모");
-       List<PointHistDTO> pointHistDTOS=Arrays.asList(pointHistDTO1,pointHistDTO2);
-
-       return ApiResponse.onSuccess(PointHistListDTO.builder()
-               .pointHistDTOS(pointHistDTOS)
-               .build());
-    }
-
-
 
     @Operation(summary = "비밀번호 변경 - Mockup API", description = "사용자가 비밀번호를 변경합니다.")
     @PatchMapping("/password")
@@ -83,7 +74,7 @@ return ApiResponse.onSuccess(MembersuccessDTO.builder()
         .build());
     }
 
-    @Operation(summary = "사원 목록 조회 및 검색 - Mockup API", description = "사원 목록을 조회하고 검색합니다 (관리자용)")
+    @Operation(summary = "사원 목록 조회 및 검색", description = "사원 목록을 조회하고 검색합니다 (관리자용)")
     @GetMapping("/list")
     public ApiResponse<MembersDetailListResponseDTO> getMemberList(@RequestParam Integer page, @RequestParam Integer size, @RequestParam String keywordName){
         return ApiResponse.onSuccess(membersQueryService.getMembersList(page,size,keywordName));
