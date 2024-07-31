@@ -1,7 +1,9 @@
 package com._pi.benepick.domain.members.dto;
 
 import com._pi.benepick.domain.members.entity.Members;
+
 import com._pi.benepick.domain.members.entity.Role;
+
 import lombok.*;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +27,10 @@ public class MembersResponse {
                     .id(members.getId())
                     .name(members.getName())
                     .deptName(members.getDeptName())
-                    .point(members.getPoint())
                     .penaltyCnt(members.getPenaltyCnt())
+
+                    .point(members.getPoint())
+
                     .build();
         }
     }
