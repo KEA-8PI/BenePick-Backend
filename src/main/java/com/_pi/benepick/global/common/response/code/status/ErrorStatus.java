@@ -26,10 +26,19 @@ public enum ErrorStatus implements BaseErrorCode {
     _RAFFLES_NOT_FOUND(HttpStatus.NOT_FOUND, "RAFFLES_001", "존재하지 않는 응모입니다."),
     _RAFFLES_NOT_COMPLETED(HttpStatus.BAD_GATEWAY, "RAFFLES_002", "종료되지 않은 응모입니다."),
 
-    _FILE_OUTPUT_DISABLED(HttpStatus.INTERNAL_SERVER_ERROR, "DRAWS_001", "파일 출력이 불가능합니다."),
 
-    //member 관련
-    _MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST,"MEMBERS_001","존재하지 않는 사원입니다.");
+
+    //member관련
+    _MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST,"MEMBERS_001","존재하지 않는 사원입니다."),
+
+    _FILE_OUTPUT_DISABLED(HttpStatus.INTERNAL_SERVER_ERROR, "DRAWS_001", "파일 출력이 불가능합니다.");
+
+
+
+
+
+
+
 
     private final HttpStatus httpStatus;        // HTTP 상태 코드
     private final String code;                  // 내부적인 에러 코드. 도메인명 + 숫자로 구성. 숫자는 HTTP 상태코드 100의자리 참고
