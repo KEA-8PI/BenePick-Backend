@@ -15,16 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import com._pi.benepick.domain.goods.entity.Goods;
 
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
-import com._pi.benepick.domain.members.entity.Members;
-import com._pi.benepick.domain.members.repository.MembersRepository;
-import com._pi.benepick.global.common.exception.ApiException;
-import com._pi.benepick.global.common.response.code.status.ErrorStatus;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

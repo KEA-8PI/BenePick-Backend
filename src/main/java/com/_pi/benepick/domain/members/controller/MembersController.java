@@ -38,7 +38,10 @@ public class MembersController {
     private final MembersCommandService membersCommandService;
     private final MembersQueryService membersQueryService;
     private final MembersRepository membersRepository;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 607fd8c121bf91c538bab515abc8dce1f852f1b5
     private final PenaltyHistsQueryService penaltyHistsQueryService;
 
     @Operation(summary = "복지포인트 조회 - Mockup API", description = "사용자가 복지포인트를 조회합니다.")
