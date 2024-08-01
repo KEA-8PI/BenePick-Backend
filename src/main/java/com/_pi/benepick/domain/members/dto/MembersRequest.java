@@ -32,13 +32,11 @@ public class MembersRequest {
         private String name;
         private Long point;
         private Long penaltyCnt;
-        private String password;
         private Role role;
 
-        public Members toEntity(){
+        public Members toEntity(String id,Role role,Long penaltyCnt,Long point,String name,String deptName){
             return Members.builder()
                     .id(id)
-                    .password(password)
                     .role(role)
                     .penaltyCnt(penaltyCnt)
                     .point(point)

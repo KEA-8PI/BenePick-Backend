@@ -24,13 +24,14 @@ public class MembersQueryServiceImpl implements MembersQueryService {
 
     public MembersDetailResponseDTO getMemberinfo(String id) {
         Members members = membersRepository.findById(id).orElseThrow(() -> new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
-        return MembersDetailResponseDTO.builder()
-                .point(members.getPoint())
-                .name(members.getName())
-                .penaltyCnt(members.getPenaltyCnt())
-                .deptName(members.getDeptName())
-                .id(members.getId())
-                .build();
+//        return MembersDetailResponseDTO.builder()
+//                .point(members.getPoint())
+//                .name(members.getName())
+//                .penaltyCnt(members.getPenaltyCnt())
+//                .deptName(members.getDeptName())
+//                .id(members.getId())
+//                .build();
+        return MembersDetailResponseDTO.from(members);
     }
 
 public MembersDetailListResponseDTO getMembersList(Integer page, Integer size, String keyword){

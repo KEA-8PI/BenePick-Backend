@@ -25,12 +25,12 @@ public class MembersCommandServiceImpl implements MembersCommandService{
         if(membersRepository.findById(membersRequestDTO.getId()).isPresent()){
             throw new ApiException(ErrorStatus._ALREADY_EXIST_MEMBER);
         }
-       // Optional<Members> data=membersRepository.findById(member.getId());
+
         if(membersRepository.findById(member.getId()).get().getRole()== Role.MEMBER){
             throw new ApiException(ErrorStatus._UNAUTHORIZED);
         }
 
-        Members members=Members.createMember(membersRequestDTO.getId(),membersRequestDTO.getDeptName(),membersRequestDTO.getName(),membersRequestDTO.getPoint(),membersRequestDTO.getPenaltyCnt(),membersRequestDTO.getRole(),membersRequestDTO.getPassword());
+        Members members=membersRequestDTO.toEntity(membersRequestDTO.getId(),membersRequestDTO.getRole(),membersRequestDTO.getPenaltyCnt(),membersRequestDTO.getPoint(),membersRequestDTO.getName(),membersRequestDTO.getDeptName());
         membersRepository.save(members);
 
         return MembersDetailResponseDTO.from(members);

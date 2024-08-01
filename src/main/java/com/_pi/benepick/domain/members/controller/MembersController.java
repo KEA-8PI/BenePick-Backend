@@ -54,7 +54,6 @@ public class MembersController {
     @GetMapping("/info")
     public ApiResponse<MembersDetailResponseDTO> getMemberInfo(){
         Members members=membersRepository.findById("string").orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
-        System.out.println("members = " + members);
         return ApiResponse.onSuccess(membersQueryService.getMemberinfo(members.getId()));
 
     }
