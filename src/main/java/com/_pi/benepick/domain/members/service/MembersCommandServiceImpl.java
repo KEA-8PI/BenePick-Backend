@@ -44,8 +44,8 @@ public class MembersCommandServiceImpl implements MembersCommandService{
                 .build();
     }
 
-    public void changePointHist(Long point,String members,String content,Members member){
-        Long totalPoint=pointHistsRepository.findAllByMemberId(members).getTotalPoint();
+    private void changePointHist(Long point,String members,String content,Members member){
+        Long totalPoint=membersRepository.findById(members).get().getPoint();
         Long result=totalPoint+point;
         PointHists pointHists=PointHists.builder()
                 .pointChange(point)
@@ -56,14 +56,14 @@ public class MembersCommandServiceImpl implements MembersCommandService{
         pointHistsRepository.save(pointHists);
     }
 
-    public void changePenaltyHist(int penaltycnt,String members,String content,Members member){
-        int totalPenalty=penaltyHistsRepository.findAllByMemberId(members).getTotalPenalty();
-        int result=totalPenalty+penaltycnt;
+    private void changePenaltyHist(int penaltycnt,String members,String content,Members member){
+        Long totalPenalty=membersRepository.findById(members).get().getPenaltyCnt();
+        Long result=totalPenalty+penaltycnt;
         PenaltyHists penaltyHists=PenaltyHists.builder()
                 .content(content)
                 .memberId(member)
                 .penaltyCount(penaltycnt)
-                .totalPenalty(result)
+                .totalPenalty(result.intValue())
                 .build();
        penaltyHistsRepository.save(penaltyHists);
     }

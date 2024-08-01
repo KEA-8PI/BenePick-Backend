@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-@Repository
+
 public interface PointHistsRepository extends JpaRepository<PointHists, Long> {
 
     @Query("select p from PointHists p WHERE p.memberId.id=:id")
