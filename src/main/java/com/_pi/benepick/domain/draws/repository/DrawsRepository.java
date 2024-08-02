@@ -17,12 +17,16 @@ public interface DrawsRepository extends JpaRepository<Draws, Long> {
     @Query("SELECT d FROM Draws d LEFT JOIN Raffles r ON d.raffleId.id = r.id WHERE r.memberId.id = :memberId")
     List<Draws> findByMemberId(@Param("memberId") String memberId);
 
-    @Query("SELECT d FROM Draws d WHERE d.raffleId.goodsId.id = :goodsId AND d.status = :status")
-    List<Draws> findDrawsByGoodsIdAndStatus(Long goodsId, Status status);
+    @Query("SELECT d FROM Draws d WHERE d.raffleId.goodsId.id = :goodsId AND d.status IN :statuses")
+    List<Draws> findDrawsByGoodsIdAndStatuses(Long goodsId, List<Status> statuses);
+
+    @Query("SELECT d FROM Draws d WHERE d.raffleId.id = :raffleId AND d.status IN :statuses")
+    List<Draws> findDrawsByRaffleIdAndStatuses(Long raffleId, List<Status> statuses);
 
     @Query("SELECT d FROM Draws d WHERE d.raffleId.id IN :raffleIds")
     List<Draws> findByRaffleIds(List<Long> raffleIds);
 
-    @Query("SELECT COUNT(d) FROM Draws d WHERE d.raffleId.id IN :raffleIds AND d.status = :status")
-    long countByRaffleIdsAndStatus(List<Long> raffleIds, Status status);
+    @Query("SELECT COUNT(d) FROM Draws d WHERE d.raffleId.id IN :raffleIds AND d.status IN :statuses")
+    long countByRaffleIdsAndStatuses(List<Long> raffleIds, List<Status> statuses);
+
 }
