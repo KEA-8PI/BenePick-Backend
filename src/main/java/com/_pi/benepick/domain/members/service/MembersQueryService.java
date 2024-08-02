@@ -8,8 +8,9 @@ import com._pi.benepick.domain.pointHists.dto.PointResponse;
 public interface MembersQueryService {
 
 
-    //복지 포인트 내역 조회
-    PointResponse.PointHistListDTO getPointHist(Members member);
-    MembersResponse.MembersDetailListResponseDTO getMembersList(Integer page, Integer size, String keyword);}
+    MembersResponse.MembersDetailResponseDTO getMemberinfo(String id);
+    MembersResponse.MembersDetailListResponseDTO getMembersList(Integer page, Integer size, String keyword);
 
+    PointResponse.PointHistListDTO getPointHist(Members member);
+}
 
