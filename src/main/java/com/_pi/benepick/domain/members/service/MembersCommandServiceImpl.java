@@ -37,12 +37,12 @@ public class MembersCommandServiceImpl implements MembersCommandService{
             new ApiException(ErrorStatus._UNAUTHORIZED);
         }
 
-        members.setName(membersRequestDTO.getName());
-        members.setDeptName(membersRequestDTO.getDeptName());
+        members.updateName(membersRequestDTO.getName());
+        members.updateDeptName(membersRequestDTO.getDeptName());
         changePointHist(membersRequestDTO.getPoint(),memberid,"",members);
         changePenaltyHist(membersRequestDTO.getPenaltyCnt(),memberid," ",members);
-        members.setPoint(membersRequestDTO.getPoint());
-        members.setPenaltyCnt(membersRequestDTO.getPenaltyCnt());
+        members.updatePoint(membersRequestDTO.getPoint());
+        members.updatePenaltyCnt(membersRequestDTO.getPenaltyCnt());
         return MembersuccessDTO.builder()
                 .msg("수정되었습니다.")
                 .build();

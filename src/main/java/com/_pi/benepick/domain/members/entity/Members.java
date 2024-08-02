@@ -52,26 +52,24 @@ public class Members extends BaseJPATimeEntity {
 
     private String profileImg; //프로필사진
 
-<<<<<<< HEAD
-    public void setId(String id) {
+    public void updateId(String id) {
         this.id = id;
     }
 
-    public void setName(String name) {
+    public void updateName(String name) {
         this.name = name;
     }
 
-    public void setDeptName(String deptName) {
+    public void updateDeptName(String deptName) {
         this.deptName = deptName;
     }
 
-    public void setPenaltyCnt(Long penaltyCnt) {
+    public void updatePenaltyCnt(Long penaltyCnt) {
         this.penaltyCnt = penaltyCnt;
     }
 
-    public void setPoint(Long point) {
+    public void updatePoint(Long point) {
         this.point = point;
     }
-=======
->>>>>>> a433cb589ffda2a02997174fd8c1bf93c4f9dec6
+
 }
