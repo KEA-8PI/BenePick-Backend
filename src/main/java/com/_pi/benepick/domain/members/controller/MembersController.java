@@ -5,8 +5,6 @@ import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.domain.members.service.MembersCommandService;
 import com._pi.benepick.domain.members.service.MembersQueryService;
-import com._pi.benepick.domain.penaltyHists.service.PenaltyHistsQueryService;
-
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.ApiResponse;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
@@ -34,7 +32,7 @@ public class MembersController {
     private final MembersQueryService membersQueryService;
     private final MembersRepository membersRepository;
 
-    private final PenaltyHistsQueryService penaltyHistsQueryService;
+
 
     @Operation(summary = "복지포인트 조회 - Mockup API", description = "사용자가 복지포인트를 조회합니다.")
     @GetMapping("/point")
@@ -55,14 +53,11 @@ public class MembersController {
 
     }
 
-
-
-    @Operation(summary = "비밀번호 변경 - Mockup API", description = "사용자가 비밀번호를 변경합니다.")
+    @Operation(summary = "비밀번호 변경", description = "사용자가 비밀번호를 변경합니다.")
     @PatchMapping("/password")
     public ApiResponse<MembersuccessDTO> updatePassword(@RequestBody MemberPasswordDTO memberPasswordDTO){
-return ApiResponse.onSuccess(MembersuccessDTO.builder()
-                .msg("수정되었습니다.")
-        .build());
+        Members member = membersRepository.findById("test1").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
+return ApiResponse.onSuccess(membersCommandService.changePassword(memberPasswordDTO,member));
     }
 
     @Operation(summary = "사원 목록 조회 및 검색", description = "사원 목록을 조회하고 검색합니다 (관리자용)")
