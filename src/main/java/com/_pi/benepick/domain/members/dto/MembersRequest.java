@@ -33,14 +33,14 @@ public class MembersRequest {
         private Long penaltyCnt;
         private Role role;
 
-        public Members toEntity(String id,Role role,Long penaltyCnt,Long point,String name,String deptName){
+        public Members toEntity(AdminMemberRequestDTO adminMemberRequestDTO){
             return Members.builder()
-                    .id(id)
-                    .role(role)
-                    .penaltyCnt(penaltyCnt)
-                    .point(point)
-                    .name(name)
-                    .deptName(deptName)
+                    .id(adminMemberRequestDTO.getId())
+                    .role(adminMemberRequestDTO.getRole())
+                    .penaltyCnt(adminMemberRequestDTO.getPenaltyCnt())
+                    .point(adminMemberRequestDTO.getPoint())
+                    .name(adminMemberRequestDTO.getName())
+                    .deptName(adminMemberRequestDTO.getDeptName())
                     .build();
         }
     }

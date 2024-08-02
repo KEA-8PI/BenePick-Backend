@@ -30,7 +30,7 @@ public class MembersCommandServiceImpl implements MembersCommandService{
             throw new ApiException(ErrorStatus._UNAUTHORIZED);
         }
 
-        Members members=membersRequestDTO.toEntity(membersRequestDTO.getId(),membersRequestDTO.getRole(),membersRequestDTO.getPenaltyCnt(),membersRequestDTO.getPoint(),membersRequestDTO.getName(),membersRequestDTO.getDeptName());
+        Members members=membersRequestDTO.toEntity(membersRequestDTO);
         membersRepository.save(members);
 
         return MembersDetailResponseDTO.from(members);
