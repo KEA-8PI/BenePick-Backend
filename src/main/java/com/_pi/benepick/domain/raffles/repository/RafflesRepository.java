@@ -17,4 +17,5 @@ public interface RafflesRepository extends JpaRepository<Raffles, Long> {
     List<Raffles> findAllByGoodsId(Goods goods);
 
     List<Raffles> findAllByMemberId(Members members);
+
 }
