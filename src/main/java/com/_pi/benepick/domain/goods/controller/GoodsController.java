@@ -2,6 +2,7 @@ package com._pi.benepick.domain.goods.controller;
 
 import com._pi.benepick.domain.goods.dto.GoodsRequest;
 import com._pi.benepick.domain.goods.dto.GoodsResponse;
+import com._pi.benepick.domain.goods.entity.GoodsFilter;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goods.service.GoodsCommandService;
 import com._pi.benepick.domain.goods.service.GoodsQueryService;
@@ -48,9 +49,9 @@ public class GoodsController {
     }
 
     //상품 검색
-    @Operation(summary = "상품 검색 (메인페이지용)", description = "선택된 필터,카테고리,검색어를 기반으로 상품을 조회합니다. (종료임박순:END,인기순:POPULAR,최신순:NEWEST)")
+    @Operation(summary = "상품 검색 (메인페이지용)", description = "선택된 필터,카테고리,검색어를 기반으로 상품을 조회합니다.")
     @GetMapping("/search/{goods_status}")
-    public ApiResponse<GoodsResponse.GoodsListSearchResponseDTO> searchGoods(@PathVariable GoodsStatus goods_status, @RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String keyword, @RequestParam String sortBy, @RequestParam(required = false) String category) {
+    public ApiResponse<GoodsResponse.GoodsListSearchResponseDTO> searchGoods(@PathVariable GoodsStatus goods_status, @RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String keyword, @RequestParam GoodsFilter sortBy, @RequestParam(required = false) String category) {
         return ApiResponse.onSuccess(goodsQueryService.searchGoods(goods_status, page, size, keyword, sortBy, category));
     }
 

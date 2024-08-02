@@ -1,6 +1,7 @@
 package com._pi.benepick.domain.goods.service;
 
 import com._pi.benepick.domain.categories.entity.Categories;
+import com._pi.benepick.domain.goods.entity.GoodsFilter;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goodsCategories.entity.GoodsCategories;
 import com._pi.benepick.domain.goods.dto.GoodsResponse;
@@ -70,7 +71,7 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
 
     // 상품 검색
     @Override
-    public GoodsResponse.GoodsListSearchResponseDTO searchGoods(GoodsStatus goodsStatus, Integer page, Integer size, String keyword, String sortBy, String category) {
+    public GoodsResponse.GoodsListSearchResponseDTO searchGoods(GoodsStatus goodsStatus, Integer page, Integer size, String keyword, GoodsFilter sortBy, String category) {
         PageRequest pageRequest = createPageRequest(page, size, sortBy); // 종료임박순, 최신순 처리
         // 카테고리 ID를 조회
         Long categoryId = null;
@@ -82,7 +83,7 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
         }
         // 상품 검색 쿼리 호출
         Page<Goods> goodsPage;
-        if ("POPULAR".equals(sortBy)) { // 인기순 처리
+        if (GoodsFilter.POPULAR.equals(sortBy)) { // 인기순 처리
             goodsPage = goodsRepository.searchGoodsByRaffleCount(goodsStatus, categoryId, keyword, pageRequest);
         } else {
             goodsPage = goodsRepository.searchGoods(goodsStatus, categoryId, keyword, pageRequest);
@@ -97,13 +98,13 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
     }
 
     // 선택된 기준으로 정렬
-    private PageRequest createPageRequest(Integer page, Integer size, String sortBy) {
+    private PageRequest createPageRequest(Integer page, Integer size, GoodsFilter sortBy) {
         Sort sort;
         switch (sortBy) {
-            case "NEWEST": // 최신순
+            case NEWEST: // 최신순
                 sort = Sort.by(Sort.Order.desc("createdAt"), Sort.Order.asc("id"));
                 break;
-            case "END": // 종료임박순
+            case END: // 종료임박순
                 sort = Sort.by(Sort.Order.asc("raffleEndAt"), Sort.Order.asc("id"));
                 break;
             default:
