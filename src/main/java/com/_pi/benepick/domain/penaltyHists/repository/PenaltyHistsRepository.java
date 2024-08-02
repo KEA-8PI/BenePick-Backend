@@ -16,10 +16,6 @@ import java.util.List;
 @Repository
 public interface PenaltyHistsRepository extends JpaRepository<PenaltyHists, Long> {
 
-    @Modifying
-    @Query("update PenaltyHists p set p.content =:content, p.penaltyCount =:cnt where p.memberId.id =:id")
-    void updatePenaltyHist(String id,int cnt, String content);
-
     @Query("select p from PenaltyHists p where p.memberId.id =:id")
     PenaltyHists findAllByMemberId(String id);
 

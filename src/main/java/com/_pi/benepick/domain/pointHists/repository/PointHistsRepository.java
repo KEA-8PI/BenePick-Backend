@@ -13,8 +13,4 @@ public interface PointHistsRepository extends JpaRepository<PointHists, Long> {
     @Query("select p from PointHists p WHERE p.memberId.id=:id")
     List<PointHists> findAllByMemberId(String id);
 
-
-    @Modifying
-    @Query("update PointHists p set p.content =:content, p.pointChange =:pointChange where p.memberId.id =:id")
-    void updatePointHist(String id, Long pointChange,String content);
 }

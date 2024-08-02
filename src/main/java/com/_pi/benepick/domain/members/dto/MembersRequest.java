@@ -11,11 +11,11 @@ public class MembersRequest {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor
     public static class MembersRequestDTO{
-        private String id;
+
         private String deptName;
         private String name;
         private Long point;
-        private int penaltyCnt;
+        private Long penaltyCnt;
     }
 
     @Builder
