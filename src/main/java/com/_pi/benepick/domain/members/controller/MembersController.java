@@ -5,13 +5,10 @@ import com._pi.benepick.domain.members.dto.MembersRequest.*;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
 
 import com._pi.benepick.domain.members.entity.Members;
-import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.domain.members.service.MembersCommandService;
 import com._pi.benepick.domain.members.service.MembersQueryService;
-import com._pi.benepick.domain.penaltyHists.dto.PenaltyResponse.*;
 import com._pi.benepick.domain.penaltyHists.service.PenaltyHistsQueryService;
-import com._pi.benepick.domain.pointHists.dto.PointResponse.*;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.ApiResponse;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
@@ -39,7 +36,6 @@ public class MembersController {
     private final MembersQueryService membersQueryService;
     private final MembersRepository membersRepository;
 
-    private final PenaltyHistsQueryService penaltyHistsQueryService;
 
 
     @Operation(summary = "복지포인트 조회 - Mockup API", description = "사용자가 복지포인트를 조회합니다.")
@@ -60,8 +56,6 @@ public class MembersController {
         return ApiResponse.onSuccess(membersQueryService.getMemberinfo(members.getId()));
 
     }
-
-
 
     @Operation(summary = "비밀번호 변경", description = "사용자가 비밀번호를 변경합니다.")
     @PatchMapping("/password")

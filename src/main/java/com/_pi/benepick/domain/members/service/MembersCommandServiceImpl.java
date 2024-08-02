@@ -23,14 +23,13 @@ public class MembersCommandServiceImpl implements MembersCommandService{
 
     @Override
     public MembersuccessDTO changePassword(MemberPasswordDTO memberPasswordDTO, Members members){
-        Members members1=membersRepository.findById(members.getId()).orElseThrow(()->new ApiException(ErrorStatus._MEMBER_NOT_FOUND));
-        if (members1.getPassword().equals(memberPasswordDTO.getPassword())){
+        if (members.getPassword().equals(memberPasswordDTO.getPassword())){
             throw new ApiException(ErrorStatus._PASSWORD_ALREADY_EXISTS);
         }
         if(!isValid(memberPasswordDTO.getPassword())){
             throw new ApiException(ErrorStatus._PASSWORD_DISABLED);
         }
-        members1.setPassword( memberPasswordDTO.getPassword());
+        members.updatePassword( memberPasswordDTO.getPassword());
         return MembersuccessDTO.builder()
                 .msg("성공입니다.")
                 .build();

@@ -16,8 +16,4 @@ public interface MembersRepository extends JpaRepository<Members, String> {
 
     @Query("select m FROM  Members m where LOWER(m.name) LIKE  LOWER(CONCAT('%', :name, '%') )")
     Page<Members> findByNameContainingIgnoreCase(String name, Pageable pageable);
-
-    @Modifying
-    @Query("update Members m set m.password =:password where m.id =:id")
-    void updatePassword(String id, String password);
 }

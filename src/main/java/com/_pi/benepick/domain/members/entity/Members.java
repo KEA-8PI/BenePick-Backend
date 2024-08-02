@@ -23,7 +23,7 @@ import org.hibernate.annotations.SQLRestriction;
 @SQLRestriction("is_deleted = 'F'")
 @SQLDelete(sql = "UPDATE members SET is_deleted = 'T' WHERE id = ?")
 public class Members extends BaseJPATimeEntity {
-    public void setPassword(String password) {
+    public void updatePassword(String password) {
         this.password = password;
     }
 
