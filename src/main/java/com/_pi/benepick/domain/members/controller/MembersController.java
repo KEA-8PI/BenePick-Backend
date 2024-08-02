@@ -88,8 +88,8 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
     }
 
     @Operation(summary = "사원 정보 수정 - Mockup API", description = "사원 정보를 수정합니다. (관리자용)")
-    @PatchMapping("/info/{memberID}")
-    public ApiResponse<MembersuccessDTO> updateMemberInfo(@PathVariable String memberID, @RequestBody MembersRequestDTO membersRequestDTO){
+    @PatchMapping("/info/{memberId}")
+    public ApiResponse<MembersuccessDTO> updateMemberInfo(@PathVariable String memberId, @RequestBody MembersRequestDTO membersRequestDTO){
         return ApiResponse.onSuccess(MembersuccessDTO.builder()
                 .msg("수정되었습니다.")
                 .build());
