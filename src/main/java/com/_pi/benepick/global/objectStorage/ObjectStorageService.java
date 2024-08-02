@@ -80,32 +80,32 @@ public class ObjectStorageService {
         return fileList;
     }
 
-    // 엑셀 파일에서 추출한 사진 업로드
-    public List<String> uploadExcelFile(List<File> files) {
-        List<String> fileList = new ArrayList<>();
-
-        for (File file : files) {
-            try (FileInputStream fis = new FileInputStream(file)) {
-                Path path = Files.createTempFile(null, null);
-                Files.copy(fis, path, StandardCopyOption.REPLACE_EXISTING);
-
-                String fileName = createFileName(file.getName());
-
-                PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                        .bucket(bucketName)
-                        .key(fileName)
-                        .build();
-
-                s3Client.putObject(putObjectRequest, path);
-
-                fileList.add(endpoint + "/v1/" + projectID + "/" + bucketName + "/" + fileName);
-
-                Files.delete(path);
-            } catch (IOException e) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                        "파일 업로드에 실패했습니다.");
-            }
-        }
-        return fileList;
-    }
+//    // 엑셀 파일에서 추출한 사진 업로드
+//    public List<String> uploadExcelFile(List<File> files) {
+//        List<String> fileList = new ArrayList<>();
+//
+//        for (File file : files) {
+//            try (FileInputStream fis = new FileInputStream(file)) {
+//                Path path = Files.createTempFile(null, null);
+//                Files.copy(fis, path, StandardCopyOption.REPLACE_EXISTING);
+//
+//                String fileName = createFileName(file.getName());
+//
+//                PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+//                        .bucket(bucketName)
+//                        .key(fileName)
+//                        .build();
+//
+//                s3Client.putObject(putObjectRequest, path);
+//
+//                fileList.add(endpoint + "/v1/" + projectID + "/" + bucketName + "/" + fileName);
+//
+//                Files.delete(path);
+//            } catch (IOException e) {
+//                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+//                        "파일 업로드에 실패했습니다.");
+//            }
+//        }
+//        return fileList;
+//    }
 }

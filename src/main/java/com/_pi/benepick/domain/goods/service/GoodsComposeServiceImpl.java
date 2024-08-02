@@ -47,29 +47,26 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
         try (InputStream inputStream = file.getInputStream();
              Workbook workbook = new XSSFWorkbook(inputStream)) {
 
-            // 이미지 파일 추출
-            imageFiles = extractImagesFromWorkbook((XSSFWorkbook) workbook);
-
-            // 이미지 파일을 오브젝트 스토리지에 업로드하고 URL을 가져옴
-            List<String> uploadedUrls = objectStorageService.uploadExcelFile(imageFiles);
+//            // 이미지 파일 추출
+//            imageFiles = extractImagesFromWorkbook((XSSFWorkbook) workbook);
+//
+//            // 이미지 파일을 오브젝트 스토리지에 업로드하고 URL을 가져옴
+//            List<String> uploadedUrls = objectStorageService.uploadExcelFile(imageFiles);
 
             XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
             int urlIndex = 0; // 이미지 URL의 인덱스
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) { continue;}
-                // 현재 행에 해당하는 이미지 URL 가져오기
-                String uploadedImageUrl = urlIndex < uploadedUrls.size() ? uploadedUrls.get(urlIndex) : null;
-                urlIndex++;
+//                // 상품 이미지 번호에 맞는 url 반환
+//                String uploadedImageUrl = uploadedUrls.get(((int) row.getCell(2).getNumericCellValue())-1);
                 // 상품 응모 상태
                 LocalDateTime raffleStartAt = LocalDateTime.parse(row.getCell(6).getStringCellValue());
                 LocalDateTime raffleEndAt = LocalDateTime.parse(row.getCell(7).getStringCellValue());
                 GoodsStatus status = goodsCommandService.determineGoodsStatus(raffleStartAt, raffleEndAt);
-
                 // 상품 정보
                 Goods goods = Goods.builder()
                         .name(row.getCell(0).getStringCellValue())
                         .amounts((long) row.getCell(1).getNumericCellValue())
-                        .image(uploadedImageUrl)
                         .description(row.getCell(3).getStringCellValue())
                         .price((long) row.getCell(4).getNumericCellValue())
                         .discountPrice((long) row.getCell(5).getNumericCellValue())
@@ -97,20 +94,20 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
         return GoodsResponse.GoodsUploadResponseDTO.createSuccessResponse();
     }
 
-    // 이미지 파일 추출
-    private List<File> extractImagesFromWorkbook(XSSFWorkbook workbook) throws IOException {
-        List<File> imageFiles = new ArrayList<>();
-        // 워크북의 모든 그림 데이터를 반복
-        for (XSSFPictureData pictureData : workbook.getAllPictures()) {
-            log.info(pictureData.toString());
-            String fileExtension = pictureData.suggestFileExtension(); // 파일 확장자 결정
-            File tempFile = File.createTempFile("image", "." + fileExtension); // 임시 파일 생성
-            try (FileOutputStream out = new FileOutputStream(tempFile)) {
-                out.write(pictureData.getData()); // 그림 데이터를 파일로 저장
-            }
-            imageFiles.add(tempFile); // 리스트에 이미지 파일 추가
-        }
-        return imageFiles;
-    }
+//    // 이미지 파일 추출
+//    private List<File> extractImagesFromWorkbook(XSSFWorkbook workbook) throws IOException {
+//        List<File> imageFiles = new ArrayList<>();
+//        // 워크북의 모든 그림 데이터를 반복
+//        for (XSSFPictureData pictureData : workbook.getAllPictures()) {
+//            log.info(pictureData.toString());
+//            String fileExtension = pictureData.suggestFileExtension(); // 파일 확장자 결정
+//            File tempFile = File.createTempFile("image", "." + fileExtension); // 임시 파일 생성
+//            try (FileOutputStream out = new FileOutputStream(tempFile)) {
+//                out.write(pictureData.getData()); // 그림 데이터를 파일로 저장
+//            }
+//            imageFiles.add(tempFile); // 리스트에 이미지 파일 추가
+//        }
+//        return imageFiles;
+//    }
 }
 
