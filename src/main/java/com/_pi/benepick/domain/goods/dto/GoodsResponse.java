@@ -133,26 +133,7 @@ public class GoodsResponse {
         private List<GoodsSearchResponseDTO> goodsSearchDTOList;
     }
 
-    //상품 파일 업로드
     // 상품 추가 및 수정
-    @Builder
-    @Getter
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    @NoArgsConstructor
-    public static class GoodsUploadResponseDTO {
-        private String result;
-        public static GoodsUploadResponseDTO createSuccessResponse() {
-            return GoodsUploadResponseDTO.builder()
-                    .result("추가되었습니다.")
-                    .build();
-        }
-        public static GoodsUploadResponseDTO createFailureResponse() {
-            return GoodsUploadResponseDTO.builder()
-                    .result("실패하였습니다.")
-                    .build();
-        }
-    }
-
     @Builder
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -185,6 +166,14 @@ public class GoodsResponse {
                     .category(category)
                     .build();
         }
+    }
+    // 상품 파일 업로드
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    public static class GoodsUploadResponseDTO {
+        private List<GoodsAddResponseDTO> goodsUploadDTOList;
     }
 
     // 상품 삭제
