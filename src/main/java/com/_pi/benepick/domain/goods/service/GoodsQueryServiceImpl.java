@@ -42,7 +42,7 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
     // 상품 목록 조회 (+ 검색)
     @Override
     public GoodsResponse.GoodsListResponseDTO getGoodsList(Integer page, Integer size, String keyword) {
-        PageRequest pageRequest = PageRequest.of(page, size);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
         Page<Goods> goodsPage;
 
         if (keyword != null && !keyword.isEmpty()) {
@@ -107,7 +107,7 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
                 sort = Sort.by(Sort.Order.asc("raffleEndAt"), Sort.Order.asc("id"));
                 break;
             default:
-                sort = Sort.by(Sort.Order.asc("id")); // 기본
+                sort = Sort.by(Sort.Order.desc("id")); // 기본
         }
         return PageRequest.of(page, size, sort);
     }
