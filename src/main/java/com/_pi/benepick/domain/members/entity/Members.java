@@ -27,12 +27,17 @@ import org.hibernate.annotations.SQLRestriction;
 public class Members extends BaseJPATimeEntity {
     @Id
     private String id; //사원_id
+
     @Column(nullable = false)
     private String name; //사원 이름
+
     @Column(nullable = false)
     private String deptName; //소속부서
+
+    @Builder.Default
     @Column(nullable = false)
-    private String password; //비밀번호
+    private String password="0000"; //비밀번호
+
     @Column(nullable = false)
     private Long penaltyCnt; //잔여 패널티
     @Column(nullable = false)
@@ -43,6 +48,7 @@ public class Members extends BaseJPATimeEntity {
 
     private String profileImg; //프로필사진
 
+<<<<<<< HEAD
     public void setId(String id) {
         this.id = id;
     }
@@ -62,4 +68,6 @@ public class Members extends BaseJPATimeEntity {
     public void setPoint(Long point) {
         this.point = point;
     }
+=======
+>>>>>>> a433cb589ffda2a02997174fd8c1bf93c4f9dec6
 }

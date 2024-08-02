@@ -15,15 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import com._pi.benepick.domain.goods.entity.Goods;
+
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
-import com._pi.benepick.domain.members.entity.Members;
-import com._pi.benepick.domain.members.repository.MembersRepository;
-import lombok.RequiredArgsConstructor;
+
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,8 +32,14 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class MembersQueryServiceImpl implements MembersQueryService {
     private final MembersRepository membersRepository;
-
     private final PointHistsRepository pointHistsRepository;
+
+    public MembersDetailResponseDTO getMemberinfo(String id) {
+        Members members = membersRepository.findById(id).orElseThrow(() -> new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
+
+        return MembersDetailResponseDTO.from(members);
+    }
+
 
 
     //복지 포인트 내역 조회
@@ -54,6 +58,7 @@ public class MembersQueryServiceImpl implements MembersQueryService {
 
     @Override
     public MembersDetailListResponseDTO getMembersList(Integer page, Integer size, String keyword){
+
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<Members> membersPage;
         if(keyword !=null && !keyword.isEmpty()){
