@@ -41,9 +41,7 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
         // 카테고리
         if (categoryName != null && !categoryName.isEmpty()) {
             Categories category = categoriesRepository.findByName(categoryName).orElseThrow(() -> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
-            List<GoodsCategories> goodsCategoriesList = goodsCategoriesRepository.findByCategoryId_Id(category.getId());
-            List<Long> goodsIds = goodsCategoriesList.stream().map(goodsCategories -> goodsCategories.getGoodsId().getId()).collect(Collectors.toList());
-            goodsList = goodsRepository.findAllById(goodsIds);
+            goodsList = goodsRepository.findGoodsByCategoryId(category.getId());
         } else {
             goodsList = goodsRepository.findAll();
         }
@@ -56,13 +54,14 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
 
         // 회차별 당첨자 평균 응모 포인트
         List<Double> avgWinnerPointsPerRaffles = calculateAvgWinnerPointsPerRaffles(goodsList);
-
         // 회차별 총 응모 포인트
         List<Double> totalPointsPerRaffles = calculateTotalPointsPerRaffles(goodsList);
-
+        // 회차별 대기 충원율
+        List<Double> refillRatesPerRaffles = calculateRefillRatesPerRaffles(goodsList);
         return DashboardResponse.DashboardResponseDTO.builder()
                 .avgWinnerPointsPerRaffles(avgWinnerPointsPerRaffles)
                 .totalPointsPerRaffles(totalPointsPerRaffles)
+                .refillRatesPerRaffles(refillRatesPerRaffles)
                 .build();
     }
 
@@ -70,13 +69,10 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
     private List<Double> calculateAvgWinnerPointsPerRaffles(List<Goods> goodsList) {
         return goodsList.stream()
                 .map(goods -> {
-                    // Goods에 해당하는 WINNER 상태의 Draws
                     List<Draws> draws = drawsRepository.findDrawsByGoodsIdAndStatus(goods.getId(), Status.WINNER);
-                    // 해당 Draws의 Raffles의 Point
                     List<Long> points = draws.stream()
                             .map(draw -> draw.getRaffleId().getPoint())
                             .collect(Collectors.toList());
-                    // 평균
                     return points.stream()
                             .mapToDouble(Long::doubleValue)
                             .average()
@@ -89,17 +85,30 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
     private List<Double> calculateTotalPointsPerRaffles(List<Goods> goodsList) {
         return goodsList.stream()
                 .map(goods -> {
-                    // Goods에 해당하는 Raffles
                     List<Raffles> raffles = rafflesRepository.findAllByGoodsId(goods);
-                    // 해당 Raffles의 Point
                     List<Long> points = raffles.stream()
                             .map(Raffles::getPoint)
                             .collect(Collectors.toList());
-                    // 총 포인트
                     return points.stream()
                             .mapToDouble(Long::doubleValue)
                             .sum();
                 })
                 .collect(Collectors.toList());
     }
+
+    // 회차별 대기 충원율
+    private List<Double> calculateRefillRatesPerRaffles(List<Goods> goodsList) {
+        return goodsList.stream()
+                .map(goods -> {
+                    List<Long> raffleIds = rafflesRepository.findRaffleIdsByGoodsId(goods.getId());
+                    List<Draws> draws = drawsRepository.findByRaffleIds(raffleIds);
+                    long nonWinnerCount = drawsRepository.countByRaffleIdsAndStatus(raffleIds, Status.NON_WINNER);
+                    long cancelOrNoShowCount = drawsRepository.countByRaffleIdsAndStatus(raffleIds, Status.CANCEL) + drawsRepository.countByRaffleIdsAndStatus(raffleIds, Status.NO_SHOW);
+                    long totalDraws = draws.size();
+                    double refillRate = (totalDraws == 0) ? 0.0 : (cancelOrNoShowCount / (double) (totalDraws - nonWinnerCount));
+                    return refillRate;
+                })
+                .collect(Collectors.toList());
+    }
+
 }

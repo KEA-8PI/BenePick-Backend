@@ -19,4 +19,10 @@ public interface DrawsRepository extends JpaRepository<Draws, Long> {
 
     @Query("SELECT d FROM Draws d WHERE d.raffleId.goodsId.id = :goodsId AND d.status = :status")
     List<Draws> findDrawsByGoodsIdAndStatus(Long goodsId, Status status);
+
+    @Query("SELECT d FROM Draws d WHERE d.raffleId.id IN :raffleIds")
+    List<Draws> findByRaffleIds(List<Long> raffleIds);
+
+    @Query("SELECT COUNT(d) FROM Draws d WHERE d.raffleId.id IN :raffleIds AND d.status = :status")
+    long countByRaffleIdsAndStatus(List<Long> raffleIds, Status status);
 }

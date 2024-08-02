@@ -35,4 +35,7 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
             "GROUP BY g " +
             "ORDER BY COUNT(r) DESC, g.id ASC")
     Page<Goods> searchGoodsByRaffleCount(GoodsStatus goodsStatus, Long categoryId, String keyword, Pageable pageable);
+
+    @Query("SELECT g FROM Goods g JOIN GoodsCategories gc ON g.id = gc.goodsId.id WHERE gc.categoryId.id = :categoryId")
+    List<Goods> findGoodsByCategoryId(Long categoryId);
 }
