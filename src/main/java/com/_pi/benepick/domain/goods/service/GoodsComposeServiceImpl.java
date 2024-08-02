@@ -27,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +46,7 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
         List<Goods> goodsList = new ArrayList<>();
         List<GoodsCategories> goodsCategoriesList = new ArrayList<>();
         List<GoodsResponse.GoodsAddResponseDTO> goodsAddResponseDTOList = new ArrayList<>();
-        List<File> imageFiles = new ArrayList<>();
+//        List<File> imageFiles = new ArrayList<>();
 
         try (InputStream inputStream = file.getInputStream();
              Workbook workbook = new XSSFWorkbook(inputStream)) {
@@ -57,7 +58,7 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
 //        List<String> uploadedUrls = objectStorageService.uploadExcelFile(imageFiles);
 
             XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
-            int urlIndex = 0; // 이미지 URL의 인덱스
+//            int urlIndex = 0; // 이미지 URL의 인덱스
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) { continue;}
 //            // 상품 이미지 번호에 맞는 url 반환
@@ -87,12 +88,18 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
                         .categoryId(category)
                         .build();
                 goodsCategoriesList.add(goodsCategories);
-
-                GoodsResponse.GoodsAddResponseDTO goodsAddResponseDTO = GoodsResponse.GoodsAddResponseDTO.of(goods, categoryName);
-                goodsAddResponseDTOList.add(goodsAddResponseDTO);
             }
             goodsRepository.saveAll(goodsList);
             goodsCategoriesRepository.saveAll(goodsCategoriesList);
+
+            for (Goods goods : goodsList) {
+                Optional<GoodsCategories> goodsCategoriesOptional = goodsCategoriesRepository.findByGoodsId(goods);
+                if (goodsCategoriesOptional.isPresent()) {
+                    Categories category = goodsCategoriesOptional.get().getCategoryId();
+                    GoodsResponse.GoodsAddResponseDTO goodsAddResponseDTO = GoodsResponse.GoodsAddResponseDTO.of(goods, category.getName());
+                    goodsAddResponseDTOList.add(goodsAddResponseDTO);
+                }
+            }
 
         } catch (IOException e) {
             throw new ApiException(ErrorStatus._FILE_INPUT_DISABLED);
