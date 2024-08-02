@@ -29,12 +29,17 @@ public class Members extends BaseJPATimeEntity {
 
     @Id
     private String id; //사원_id
+
     @Column(nullable = false)
     private String name; //사원 이름
+
     @Column(nullable = false)
     private String deptName; //소속부서
+
+    @Builder.Default
     @Column(nullable = false)
-    private String password; //비밀번호
+    private String password="0000"; //비밀번호
+
     @Column(nullable = false)
     private Long penaltyCnt; //잔여 패널티
     @Column(nullable = false)
@@ -44,4 +49,5 @@ public class Members extends BaseJPATimeEntity {
     private Role role; //역할
 
     private String profileImg; //프로필사진
+
 }
