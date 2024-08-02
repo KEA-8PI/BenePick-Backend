@@ -79,7 +79,7 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
                         .build();
                 goodsList.add(goods);
                 // 카테고리
-                String categoryName = row.getCell(8).getStringCellValue();
+                String categoryName = row.getCell(7).getStringCellValue();
                 Categories category = categoriesRepository.findByName(categoryName)
                         .orElseThrow(() -> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
                 GoodsCategories goodsCategories = GoodsCategories.builder()
