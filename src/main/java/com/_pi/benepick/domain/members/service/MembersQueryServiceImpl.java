@@ -41,7 +41,7 @@ public class MembersQueryServiceImpl implements MembersQueryService {
     //복지 포인트 내역 조회
     @Override
     public PointHistListDTO getPointHist(Members member) {
-        Members members = membersRepository.findById(member.getId()).orElseThrow(() -> new ApiException(ErrorStatus._MEMBER_NOT_FOUND));
+        Members members = membersRepository.findById(member.getId()).orElseThrow(() -> new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
 
         List<PointHists> pointHists = pointHistsRepository.findAllByMemberId(member.getId());
         List<PointHistDTO> pointHistDTOS=pointHists.stream()

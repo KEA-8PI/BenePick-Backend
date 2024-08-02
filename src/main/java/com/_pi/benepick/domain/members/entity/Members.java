@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -20,6 +21,7 @@ import org.hibernate.annotations.SQLRestriction;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
+@DynamicUpdate //변경사항이 있는 것만 Update
 @SQLRestriction("is_deleted = 'F'")
 @SQLDelete(sql = "UPDATE members SET is_deleted = 'T' WHERE id = ?")
 public class Members extends BaseJPATimeEntity {
@@ -40,4 +42,24 @@ public class Members extends BaseJPATimeEntity {
     private Role role; //역할
 
     private String profileImg; //프로필사진
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
+    }
+
+    public void setPenaltyCnt(Long penaltyCnt) {
+        this.penaltyCnt = penaltyCnt;
+    }
+
+    public void setPoint(Long point) {
+        this.point = point;
+    }
 }

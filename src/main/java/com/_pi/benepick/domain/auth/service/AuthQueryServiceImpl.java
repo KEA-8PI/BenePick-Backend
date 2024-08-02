@@ -21,7 +21,7 @@ public class AuthQueryServiceImpl implements AuthQueryService {
     @Override
     public AuthLoginResponseDTO login(AuthLoginRequestDTO requestDTO, HttpServletResponse response) {
         Members member = membersRepository.findById(requestDTO.getId())
-                .orElseThrow(() -> new ApiException(ErrorStatus._MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
 
         if (!member.getPassword().equals(requestDTO.getPassword())) {
             throw new ApiException(ErrorStatus._MEMBER_PASSWORD_NOT_MATCH);

@@ -30,13 +30,19 @@ public class MembersCommandServiceImpl implements MembersCommandService{
         if(membersRepository.findById(member.getId()).get().getRole()== Role.MEMBER){
             new ApiException(ErrorStatus._UNAUTHORIZED);
         }
-        membersRepository.updateMembers(
-                memberid,
-                membersRequestDTO.getName(),
-                membersRequestDTO.getDeptName(),
-                membersRequestDTO.getPoint(),
-                membersRequestDTO.getPenaltyCnt()
-        );
+
+//        membersRepository.updateMembers(
+//                memberid,
+//                membersRequestDTO.getName(),
+//                membersRequestDTO.getDeptName(),
+//                membersRequestDTO.getPoint(),
+//                membersRequestDTO.getPenaltyCnt()
+//        );
+        members.setName(membersRequestDTO.getName());
+        members.setDeptName(membersRequestDTO.getDeptName());
+        members.setId(membersRequestDTO.getId());
+        members.setPenaltyCnt(members.getPenaltyCnt());
+        members.setPoint(members.getPoint());
         changePointHist(membersRequestDTO.getPoint(),memberid,"",members);
         changePenaltyHist(membersRequestDTO.getPenaltyCnt(),memberid," ",members);
         return MembersuccessDTO.builder()
@@ -47,6 +53,7 @@ public class MembersCommandServiceImpl implements MembersCommandService{
     private void changePointHist(Long point,String members,String content,Members member){
         Long totalPoint=membersRepository.findById(members).get().getPoint();
         Long result=totalPoint+point;
+        System.out.println("result = " + result);
         PointHists pointHists=PointHists.builder()
                 .pointChange(point)
                 .content(content)
@@ -59,6 +66,7 @@ public class MembersCommandServiceImpl implements MembersCommandService{
     private void changePenaltyHist(int penaltycnt,String members,String content,Members member){
         Long totalPenalty=membersRepository.findById(members).get().getPenaltyCnt();
         Long result=totalPenalty+penaltycnt;
+        System.out.println("result = " + result);
         PenaltyHists penaltyHists=PenaltyHists.builder()
                 .content(content)
                 .memberId(member)

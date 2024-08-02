@@ -104,7 +104,9 @@ return ApiResponse.onSuccess(MembersuccessDTO.builder()
     @Operation(summary = "사원 정보 수정", description = "사원 정보를 수정합니다. (관리자용)")
     @PatchMapping("/info/{memberID}")
     public ApiResponse<MembersuccessDTO> updateMemberInfo(@PathVariable String memberID, @RequestBody MembersRequestDTO membersRequestDTO){
+        System.out.println("========================");
         Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
+        System.out.println("member = " + member.getId());
         return ApiResponse.onSuccess(membersCommandService.updateMemberInfo(memberID,membersRequestDTO,member));
     }
     @Operation(summary = "사원 삭제 - Mockup API",description = "사원을 삭제합니다. (관리자용)")
