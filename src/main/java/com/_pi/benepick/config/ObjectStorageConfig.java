@@ -1,4 +1,4 @@
-package com._pi.benepick.global.objectStorage;
+package com._pi.benepick.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

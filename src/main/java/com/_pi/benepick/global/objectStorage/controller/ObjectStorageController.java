@@ -1,4 +1,5 @@
-package com._pi.benepick.global.objectStorage;
+package com._pi.benepick.global.objectStorage.controller;
+import com._pi.benepick.global.objectStorage.service.ObjectStorageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Image", description = "이미지 API")
-public class ImageController {
+public class ObjectStorageController {
     private final ObjectStorageService s3Service;
 
     @PostMapping(value = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
