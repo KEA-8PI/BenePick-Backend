@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -38,38 +39,40 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
     private final ObjectStorageService objectStorageService;
     private final GoodsCommandServiceImpl goodsCommandService;
 
+    // 상품 파일 추가
     @Override
     public GoodsResponse.GoodsUploadResponseDTO uploadGoodsFile(MultipartFile file) {
         List<Goods> goodsList = new ArrayList<>();
         List<GoodsCategories> goodsCategoriesList = new ArrayList<>();
+        List<GoodsResponse.GoodsAddResponseDTO> goodsAddResponseDTOList = new ArrayList<>();
         List<File> imageFiles = new ArrayList<>();
 
         try (InputStream inputStream = file.getInputStream();
              Workbook workbook = new XSSFWorkbook(inputStream)) {
 
-//            // 이미지 파일 추출
-//            imageFiles = extractImagesFromWorkbook((XSSFWorkbook) workbook);
+//        // 이미지 파일 추출
+//        imageFiles = extractImagesFromWorkbook((XSSFWorkbook) workbook);
 //
-//            // 이미지 파일을 오브젝트 스토리지에 업로드하고 URL을 가져옴
-//            List<String> uploadedUrls = objectStorageService.uploadExcelFile(imageFiles);
+//        // 이미지 파일을 오브젝트 스토리지에 업로드하고 URL을 가져옴
+//        List<String> uploadedUrls = objectStorageService.uploadExcelFile(imageFiles);
 
             XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
             int urlIndex = 0; // 이미지 URL의 인덱스
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) { continue;}
-//                // 상품 이미지 번호에 맞는 url 반환
-//                String uploadedImageUrl = uploadedUrls.get(((int) row.getCell(2).getNumericCellValue())-1);
+//            // 상품 이미지 번호에 맞는 url 반환
+//            String uploadedImageUrl = uploadedUrls.get(((int) row.getCell(2).getNumericCellValue())-1);
                 // 상품 응모 상태
-                LocalDateTime raffleStartAt = LocalDateTime.parse(row.getCell(6).getStringCellValue());
-                LocalDateTime raffleEndAt = LocalDateTime.parse(row.getCell(7).getStringCellValue());
+                LocalDateTime raffleStartAt = LocalDateTime.parse(row.getCell(5).getStringCellValue());
+                LocalDateTime raffleEndAt = LocalDateTime.parse(row.getCell(6).getStringCellValue());
                 GoodsStatus status = goodsCommandService.determineGoodsStatus(raffleStartAt, raffleEndAt);
                 // 상품 정보
                 Goods goods = Goods.builder()
                         .name(row.getCell(0).getStringCellValue())
                         .amounts((long) row.getCell(1).getNumericCellValue())
-                        .description(row.getCell(3).getStringCellValue())
-                        .price((long) row.getCell(4).getNumericCellValue())
-                        .discountPrice((long) row.getCell(5).getNumericCellValue())
+                        .description(row.getCell(2).getStringCellValue())
+                        .price((long) row.getCell(3).getNumericCellValue())
+                        .discountPrice((long) row.getCell(4).getNumericCellValue())
                         .raffleStartAt(raffleStartAt)
                         .raffleEndAt(raffleEndAt)
                         .goodsStatus(status)
@@ -84,14 +87,20 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
                         .categoryId(category)
                         .build();
                 goodsCategoriesList.add(goodsCategories);
+
+                GoodsResponse.GoodsAddResponseDTO goodsAddResponseDTO = GoodsResponse.GoodsAddResponseDTO.of(goods, categoryName);
+                goodsAddResponseDTOList.add(goodsAddResponseDTO);
             }
             goodsRepository.saveAll(goodsList);
             goodsCategoriesRepository.saveAll(goodsCategoriesList);
 
         } catch (IOException e) {
-            return GoodsResponse.GoodsUploadResponseDTO.createFailureResponse();
+            throw new ApiException(ErrorStatus._FILE_INPUT_DISABLED);
         }
-        return GoodsResponse.GoodsUploadResponseDTO.createSuccessResponse();
+
+        return GoodsResponse.GoodsUploadResponseDTO.builder()
+                .goodsUploadDTOList(goodsAddResponseDTOList)
+                .build();
     }
 
 //    // 이미지 파일 추출

@@ -23,6 +23,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _GOODS_NOT_FOUND(HttpStatus.BAD_REQUEST, "GOODS_001", "존재하지 않는 상품입니다."),
     _GOODS_CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "GOODS_002", "카테고리를 가지고 있는 않는 상품입니다.."),
     _CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "GOODS_003", "존재하지 않는 카테고리입니다."),
+    _FILE_INPUT_DISABLED(HttpStatus.BAD_REQUEST, "GOODS_004", "파일 추가가 불가능합니다."),
     _RAFFLES_NOT_FOUND(HttpStatus.NOT_FOUND, "RAFFLES_001", "존재하지 않는 응모입니다."),
     _RAFFLES_NOT_COMPLETED(HttpStatus.BAD_GATEWAY, "RAFFLES_002", "종료되지 않은 응모입니다."),
     _FILE_OUTPUT_DISABLED(HttpStatus.INTERNAL_SERVER_ERROR, "DRAWS_001", "파일 출력이 불가능합니다.");
