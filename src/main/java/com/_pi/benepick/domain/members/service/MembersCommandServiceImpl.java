@@ -26,11 +26,11 @@ public class MembersCommandServiceImpl implements MembersCommandService{
         if(!isValid(memberPasswordDTO.getPassword())){
             throw new ApiException(ErrorStatus._PASSWORD_DISABLED);
         }
-        membersRepository.updatePassword(
-                members.getId(),
-                memberPasswordDTO.getPassword()
-        );
-
+//        membersRepository.updatePassword(
+//                members.getId(),
+//                memberPasswordDTO.getPassword()
+//        );
+        members1.setPassword( memberPasswordDTO.getPassword());
         return MembersuccessDTO.builder()
                 .msg("성공입니다.")
                 .build();
