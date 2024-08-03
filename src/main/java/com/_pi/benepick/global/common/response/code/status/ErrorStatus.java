@@ -31,7 +31,8 @@ public enum ErrorStatus implements BaseErrorCode {
     //member관련
     _MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST,"MEMBERS_001","존재하지 않는 사원입니다."),
 
-    _FILE_OUTPUT_DISABLED(HttpStatus.INTERNAL_SERVER_ERROR, "DRAWS_001", "파일 출력이 불가능합니다.");
+    _FILE_OUTPUT_DISABLED(HttpStatus.INTERNAL_SERVER_ERROR, "DRAWS_001", "파일 출력이 불가능합니다."),
+    _NO_SUCH_ALGORITHM(HttpStatus.INTERNAL_SERVER_ERROR, "DRAWS_002", "Hash Algorithm 을 사용할 수 없습니다.");
 
 
 

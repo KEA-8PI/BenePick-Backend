@@ -1,6 +1,7 @@
 package com._pi.benepick.domain.draws.controller;
 
 import com._pi.benepick.domain.draws.dto.DrawsRequest;
+import com._pi.benepick.domain.draws.service.DrawsCommandService;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.global.common.exception.ApiException;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -35,6 +37,7 @@ import java.util.List;
 public class DrawsController {
 
     private final DrawsQueryService drawsQueryService;
+    private final DrawsCommandService drawsCommandService;
     private final MembersRepository membersRepository;
 
     @Operation(summary = "상품별 결과 조회", description = "상품의 추첨 결과가 당첨자인 사원들과 그 내역을 확인할 수 있습니다.(사용자 페이지)")
@@ -68,7 +71,7 @@ public class DrawsController {
     @PatchMapping("/winners/edit/{winnersId}")
     public ApiResponse<DrawsResponse.DrawsResponseByMembersDTO> editWinnerStatus(@PathVariable Long winnersId, @RequestBody DrawsRequest.DrawsRequestDTO dto) {
         Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
-        return ApiResponse.onSuccess(drawsQueryService.editWinnerStatus(member, winnersId, dto));
+        return ApiResponse.onSuccess(drawsCommandService.editWinnerStatus(member, winnersId, dto));
     }
 
     @Operation(summary = "추첨 결과 다운로드 - Mockup API", description = "추첨 결과가 정리된 엑셀 파일을 다운로드 할 수 있습니다.")
@@ -76,6 +79,16 @@ public class DrawsController {
     public void downloadExcel(@PathVariable Long goodsId, HttpServletResponse response) {
         Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
         drawsQueryService.downloadExcel(member, goodsId, response);
+    }
+
+    @Operation(summary = "추첨 테스트 용 삭제할 거임")
+    @GetMapping("/draw/test/{goodsId}")
+    public void drawTest(@PathVariable Long goodsId) {
+        try {
+            drawsCommandService.drawStart(goodsId);
+        } catch (NoSuchAlgorithmException e) {
+            throw new ApiException(ErrorStatus._NO_SUCH_ALGORITHM);
+        }
     }
 
 }

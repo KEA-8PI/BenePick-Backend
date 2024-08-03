@@ -87,16 +87,6 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
                 .build();
     }
 
-    public DrawsResponse.DrawsResponseByMembersDTO editWinnerStatus(Members members, Long winnerId, DrawsRequest.DrawsRequestDTO dto) {
-        if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        Draws draws = drawsRepository.findById(winnerId).orElseThrow(() -> new ApiException(ErrorStatus._RAFFLES_NOT_COMPLETED));
-
-        Draws newDraws = DrawsRequest.DrawsRequestDTO.updateStatus(draws, dto);
-        Draws savedDraws = drawsRepository.save(newDraws);
-
-        return DrawsResponse.DrawsResponseByMembersDTO.from(savedDraws);
-    }
-
     public void downloadExcel(Members members, Long goodsId, HttpServletResponse response) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
 

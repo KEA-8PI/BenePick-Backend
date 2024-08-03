@@ -86,7 +86,7 @@ public class GoodsResponse {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor
     public static class GoodsSeedsResponseDTO {
-        private Long seeds; //시드값
+        private String seeds; //시드값
 
         public static GoodsSeedsResponseDTO from(Goods goods){
             return GoodsSeedsResponseDTO.builder()

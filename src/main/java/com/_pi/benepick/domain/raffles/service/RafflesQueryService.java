@@ -9,5 +9,4 @@ import java.util.List;
 public interface RafflesQueryService {
     RafflesResponse.RafflesResponseByMembersListDTO getProgressRafflesByMemberId(String memberId); //상품 목록 조회
     RafflesResponse.RafflesResponseByGoodsListDTO getAllRafflesByGoodsId(Members members, Long goodsId); //상품 목록 조회
-    RafflesResponse.RafflesResponseByGoodsDTO applyRaffle(String memberId, Long goodsId, RafflesRequest.RafflesRequestDTO raffleAddDTO);
 }

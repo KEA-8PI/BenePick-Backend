@@ -43,11 +43,16 @@ public class Goods extends BaseJPATimeEntity {
     private String image; //상품 사진
     private String description; //설명
     @Builder.Default
-    private Long seeds = -1L; //시드값
+    private String seeds = String.valueOf(-1); //시드값
 
     @Enumerated(EnumType.STRING)
     private GoodsStatus goodsStatus; //상품응모상태 (PROGRESS,SCHEDULED,COMPLETED)
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "goodsId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Raffles> raffles; // 응모자 리스트
+
+    public void setRandomSeedsAndStatus(String seeds, GoodsStatus goodsStatus) {
+        this.seeds = seeds;
+        this.goodsStatus = goodsStatus;
+    }
 }

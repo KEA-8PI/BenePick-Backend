@@ -40,6 +40,8 @@ dependencies {
 	//For Object Storage(AWS S3 API)
 	implementation platform('software.amazon.awssdk:bom:2.23.7')
 	implementation "software.amazon.awssdk:s3"
+	// redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 processResources.dependsOn('copyGitSubmodule')

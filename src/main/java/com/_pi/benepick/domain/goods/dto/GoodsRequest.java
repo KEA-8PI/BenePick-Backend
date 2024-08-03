@@ -39,7 +39,7 @@ public class GoodsRequest {
                     .discountPrice(discountPrice)
                     .raffleStartAt(raffleStartAt)
                     .raffleEndAt(raffleEndAt)
-                    .seeds(-1L)
+                    .seeds(String.valueOf(-1))
                     .goodsStatus(status)
                     .build();
         }
