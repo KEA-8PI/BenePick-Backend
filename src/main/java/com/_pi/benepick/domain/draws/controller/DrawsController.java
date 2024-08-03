@@ -91,4 +91,10 @@ public class DrawsController {
         }
     }
 
+    @Operation(summary = "추첨 검증 - Mockup API", description = "시드값을 이용하여 추첨 로직 검증을 할 수 있습니다.")
+    @PostMapping("/verification")
+    public ApiResponse<DrawsResponse.DrawsResponseResultListDTO> verificationSeed(@RequestBody DrawsRequest.DrawsValidationDTO dto) {
+        return ApiResponse.onSuccess(drawsQueryService.verificationSeed(dto));
+    }
+
 }

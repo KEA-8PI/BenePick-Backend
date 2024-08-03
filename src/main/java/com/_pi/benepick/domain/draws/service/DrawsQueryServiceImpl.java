@@ -4,13 +4,18 @@ import com._pi.benepick.domain.draws.dto.DrawsRequest;
 import com._pi.benepick.domain.draws.dto.DrawsResponse;
 import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.draws.repository.DrawsRepository;
+import com._pi.benepick.domain.draws.service.algorithm.DrawAlgorithm;
+import com._pi.benepick.domain.draws.service.algorithm.RaffleDraw;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
+import com._pi.benepick.domain.goods.repository.GoodsRepository;
 import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
 import com._pi.benepick.domain.draws.entity.Status;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.domain.members.repository.MembersRepository;
+import com._pi.benepick.domain.raffles.entity.Raffles;
+import com._pi.benepick.domain.raffles.repository.RafflesRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,9 +25,11 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,9 +38,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DrawsQueryServiceImpl implements DrawsQueryService {
 
+    private final GoodsRepository goodsRepository;
     private final MembersRepository membersRepository;
     private final DrawsRepository drawsRepository;
+    private final RafflesRepository rafflesRepository;
     private final GoodsCategoriesRepository goodsCategoriesRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     public DrawsResponse.DrawsResponseByGoodsListDTO getResultByGoodsId(Long goodsId) {
         List<DrawsResponse.DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
@@ -84,6 +94,31 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
 
         return DrawsResponse.DrawsResponseByMembersListDTO.builder()
                 .drawsResponseByMembersList(drawsResponseByMembersDTOS)
+                .build();
+    }
+
+    public DrawsResponse.DrawsResponseResultListDTO verificationSeed(DrawsRequest.DrawsValidationDTO dto) {
+        Object seedValue = redisTemplate.opsForValue().get(dto.getSeed());
+        if (seedValue == null) {
+            throw new ApiException(ErrorStatus._BAD_REQUEST);
+        }
+        double seed = (double) seedValue;
+
+        Goods goods = goodsRepository.findById(dto.getGoodsId()).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
+        List<Raffles> rafflesList = rafflesRepository.findAllByGoodsId(goods);
+
+        List<Draws> drawsListResult = RaffleDraw.performDraw(seed, rafflesList, goods);
+        List<DrawsResponse.DrawsResponseResultDTO> drawsResponseResultDTOList = drawsListResult.stream()
+                .map(draws -> DrawsResponse.DrawsResponseResultDTO.builder()
+                        .status(draws.getStatus())
+                        .sequence(draws.getSequence())
+                        .memberId(draws.getRaffleId().getMemberId().getId())
+                        .memberName(draws.getRaffleId().getMemberId().getName())
+                        .build())
+                .collect(Collectors.toList());
+
+        return DrawsResponse.DrawsResponseResultListDTO.builder()
+                .drawsList(drawsResponseResultDTOList)
                 .build();
     }
 
