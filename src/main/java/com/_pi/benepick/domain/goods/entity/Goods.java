@@ -26,7 +26,6 @@ public class Goods extends BaseJPATimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //상품_id
-
     @Column(nullable = false)
     private String name; //이름
     @Column(nullable = false)
@@ -39,8 +38,11 @@ public class Goods extends BaseJPATimeEntity {
     private LocalDateTime raffleStartAt; //응모 시작일
     @Column(nullable = false)
     private LocalDateTime raffleEndAt; //응모 종료일
-
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String image; //상품 사진
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String description; //설명
     @Builder.Default
     private String seeds = String.valueOf(-1); //시드값

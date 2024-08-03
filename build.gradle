@@ -42,6 +42,17 @@ dependencies {
 	implementation "software.amazon.awssdk:s3"
 	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	// Spring Security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	testImplementation 'org.springframework.security:spring-security-test'
+	// JWT Token
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	// com.sun.xml.bind
+	implementation 'com.sun.xml.bind:jaxb-impl:4.0.1'
+	implementation 'com.sun.xml.bind:jaxb-core:4.0.1'
+	// javax.xml.bind
+	implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+
 }
 
 processResources.dependsOn('copyGitSubmodule')
