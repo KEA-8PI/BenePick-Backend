@@ -1,5 +1,6 @@
 package com._pi.benepick.domain.goods.entity;
 
+import com._pi.benepick.domain.hash.entity.Hash;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import com._pi.benepick.global.common.BaseJPATimeEntity;
 import jakarta.persistence.*;
@@ -44,8 +45,10 @@ public class Goods extends BaseJPATimeEntity {
     @Lob
     @Column(columnDefinition = "TEXT")
     private String description; //설명
-    @Builder.Default
-    private String seeds = String.valueOf(-1); //시드값
+
+    @OneToOne(fetch = FetchType.LAZY, targetEntity = Hash.class)
+    @JoinColumn(name = "hash_id")
+    private Hash hash; //응모_id
 
     @Enumerated(EnumType.STRING)
     private GoodsStatus goodsStatus; //상품응모상태 (PROGRESS,SCHEDULED,COMPLETED)
@@ -53,8 +56,8 @@ public class Goods extends BaseJPATimeEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "goodsId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Raffles> raffles; // 응모자 리스트
 
-    public void startDrawAndUpdateRandomizeSeedsAndStatus(String seeds, GoodsStatus goodsStatus) {
-        this.seeds = seeds;
+    public void startDrawAndUpdateRandomizeSeedsAndStatus(Hash hash, GoodsStatus goodsStatus) {
+        this.hash = hash;
         this.goodsStatus = goodsStatus;
     }
 }

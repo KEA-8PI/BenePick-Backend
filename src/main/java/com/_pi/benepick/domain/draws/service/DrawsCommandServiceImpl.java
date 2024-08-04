@@ -11,6 +11,8 @@ import com._pi.benepick.domain.draws.service.algorithm.RaffleDraw;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goods.repository.GoodsRepository;
+import com._pi.benepick.domain.hash.entity.Hash;
+import com._pi.benepick.domain.hash.repository.HashsRepository;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.domain.raffles.entity.Raffles;
@@ -18,7 +20,6 @@ import com._pi.benepick.domain.raffles.repository.RafflesRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -37,7 +39,7 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
     private final GoodsRepository goodsRepository;
     private final DrawsRepository drawsRepository;
     private final RafflesRepository rafflesRepository;
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final HashsRepository hashsRepository;
 
     public DrawsResponse.DrawsResponseByMembersDTO editWinnerStatus(Members members, Long winnerId, DrawsRequest.DrawsRequestDTO dto) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
@@ -52,7 +54,7 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
         return DrawsResponse.DrawsResponseByMembersDTO.from(savedDraws);
     }
 
-    public void drawStart(Long goodsId) throws NoSuchAlgorithmException {
+    public void drawStart(Long goodsId) {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
         // 현재 시각이 응모종료시간보다 이후여야하고, 상태가 PROGRESS 여야 한다.
         if (!(LocalDateTime.now().isAfter(goods.getRaffleEndAt()) && goods.getGoodsStatus().equals(GoodsStatus.PROGRESS))) {
@@ -62,7 +64,12 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
 
         double seed = DrawAlgorithm.generateSeed();
         String hash = DoubleToSHA256.getSHA256Hash(seed);
-        goods.startDrawAndUpdateRandomizeSeedsAndStatus(hash, GoodsStatus.COMPLETED);
+        Hash hash_entity = Hash.builder()
+                .hash(hash)
+                .seed(seed)
+                .build();
+        Hash savedHash = hashsRepository.save(hash_entity);
+        goods.startDrawAndUpdateRandomizeSeedsAndStatus(savedHash, GoodsStatus.COMPLETED);
 
         List<Draws> drawsList = RaffleDraw.performDraw(seed, rafflesList, goods);
 
@@ -71,18 +78,22 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
 
         // 레디스에 hash 와 seed 저장 필요
         // TODO: 레디스에 hash:seed key value로 저장하는 것 추가 필요.
-        redisTemplate.opsForValue().set(hash, seed);
+//        redisTemplate.opsForValue().set(hash, seed);
 
     }
 
     public DrawsResponse.DrawsResponseResultListDTO verificationSeed(Long goodsId, String hash) {
-        Object seedValue = redisTemplate.opsForValue().get(hash);
+        Optional<Hash> optionalHash = hashsRepository.findByHash(hash);
         double seed = 0;
-        if (seedValue == null) {
-            seed = DrawAlgorithm.generateSeed();
-            redisTemplate.opsForValue().set(hash, seed);
+
+        if (optionalHash.isPresent()) {
+            seed = optionalHash.get().getSeed();
         } else {
-            seed = (double) seedValue;
+            seed = DrawAlgorithm.generateSeed();
+            hashsRepository.save(Hash.builder()
+                    .seed(seed)
+                    .hash(hash)
+                    .build());
         }
 
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));

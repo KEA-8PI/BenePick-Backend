@@ -90,7 +90,7 @@ public class GoodsResponse {
 
         public static GoodsSeedsResponseDTO from(Goods goods){
             return GoodsSeedsResponseDTO.builder()
-                    .seeds(goods.getSeeds())
+                    .seeds(goods.getHash().getHash())
                     .build();
         }
     }
