@@ -12,5 +12,7 @@ public interface MembersQueryService {
     MembersResponse.MembersDetailListResponseDTO getMembersList(Integer page, Integer size, String keyword);
 
     PointResponse.PointHistListDTO getPointHist(Members member);
+
+    MembersResponse.MemberPointDTO getMemberPoint(Members members);
 }
 

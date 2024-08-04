@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -23,7 +22,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -75,4 +73,14 @@ public class MembersQueryServiceImpl implements MembersQueryService {
 
     }
 
+    @Override
+    public MemberPointDTO getMemberPoint(Members members){
+    Members members1=membersRepository.findById(members.getId()).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
+    Long point =  members1.getPoint();
+
+        return MemberPointDTO.builder()
+                .point(point)
+                .id(members1.getId())
+                .build();
+    }
 }
