@@ -54,7 +54,6 @@ public class MembersCommandServiceImpl implements MembersCommandService{
 
         Members members=membersRequestDTO.toEntity(membersRequestDTO);
         membersRepository.save(members);
-
         return MembersDetailResponseDTO.from(members);
 
     }
