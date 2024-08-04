@@ -42,6 +42,14 @@ public class RaffleDraw {
             }
         }
 
+        for (Raffles raffles : rafflesList) {
+            drawsList.add(Draws.builder()
+                    .raffleId(raffles)
+                    .sequence(0)
+                    .status(Status.NON_WINNER)
+                    .build());
+        }
+
         return drawsList;
     }
 

@@ -100,15 +100,26 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
     }
 
     public void downloadExcel(Members members, Long goodsId, HttpServletResponse response) {
-        if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
+        if (!(members.getRole().equals(Role.ADMIN))) {
+            throw new ApiException(ErrorStatus._UNAUTHORIZED);
+        }
 
-        // Sample data
-        List<List<String>> data = Arrays.asList(
-                Arrays.asList("Name", "Age", "Location"),
-                Arrays.asList("John Doe", "30", "New York"),
-                Arrays.asList("Jane Smith", "25", "Los Angeles"),
-                Arrays.asList("Mike Johnson", "35", "Chicago")
-        );
+        List<Draws> drawsList = drawsRepository.findByGoodsId(goodsId);
+
+        // 변경 가능한 리스트 사용
+        List<List<String>> data = new ArrayList<>();
+        data.add(Arrays.asList("Name", "ID", "Status", "Sequence"));
+
+        for (Draws draws : drawsList) {
+            data.add(
+                    Arrays.asList(
+                            draws.getRaffleId().getMemberId().getName(),
+                            String.valueOf(draws.getRaffleId().getMemberId().getId()),
+                            draws.getStatus().toString(),
+                            String.valueOf(draws.getSequence())
+                    )
+            );
+        }
 
         // Create a new workbook and sheet
         Workbook workbook = new XSSFWorkbook();
@@ -131,12 +142,10 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         int rowCount = 0;
         for (List<String> dto : data) {
             row = sheet.createRow(rowCount++);
-            cell = row.createCell(0);
-            cell.setCellValue(dto.get(0));
-            cell = row.createCell(1);
-            cell.setCellValue(dto.get(1));
-            cell = row.createCell(2);
-            cell.setCellValue(dto.get(2));
+            for (int i = 0; i < dto.size(); i++) {
+                cell = row.createCell(i);
+                cell.setCellValue(dto.get(i));
+            }
         }
 
         response.setContentType("ms-vnd/excel");
