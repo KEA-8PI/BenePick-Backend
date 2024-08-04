@@ -1,9 +1,14 @@
 package com._pi.benepick.domain.members.service;
 
+import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.members.dto.MembersRequest.*;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
+import com._pi.benepick.domain.penaltyHists.repository.PenaltyHistsRepository;
+import com._pi.benepick.domain.pointHists.repository.PointHistsRepository;
+import com._pi.benepick.domain.raffles.repository.RafflesRepository;
+import com._pi.benepick.domain.wishlists.repository.WishlistsRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import com._pi.benepick.domain.members.entity.Role;
@@ -12,14 +17,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.lang.reflect.Member;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class MembersCommandServiceImpl implements MembersCommandService{
     private final MembersRepository membersRepository;
+    private final PenaltyHistsRepository penaltyHistsRepository;
+    private final PointHistsRepository pointHistsRepository;
+    private final WishlistsRepository wishlistsRepository;
+    private final RafflesRepository rafflesRepository;
 
     @Override
     public MembersuccessDTO changePassword(MemberPasswordDTO memberPasswordDTO, Members members){
@@ -56,6 +65,32 @@ public class MembersCommandServiceImpl implements MembersCommandService{
         membersRepository.save(members);
 
         return MembersDetailResponseDTO.from(members);
+
+    }
+
+    @Override
+    public DeleteResponseDTO deleteMembers(DeleteMembersRequestDTO deleteMembersRequestDTO, Members members){
+        //관리자 인지 확인하는 로직
+        if(membersRepository.findById(members.getId()).get().getRole()== Role.MEMBER){
+            throw new ApiException(ErrorStatus._UNAUTHORIZED);
+        }
+        List<String> deletedId = new ArrayList<>();
+
+        for(String id:deleteMembersRequestDTO.getId()){
+            Members member = membersRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
+            membersRepository.deleteById(id);
+
+            penaltyHistsRepository.deleteAllByMemberId(id);
+            pointHistsRepository.deleteAllByMemberId(id);
+            wishlistsRepository.deleteAllByMemberId(id);
+            rafflesRepository.deleteAllByMemberId(id, GoodsStatus.PROGRESS);
+
+            deletedId.add(id);
+        }
+        return DeleteResponseDTO.builder()
+                .msg("사원 삭제 성공")
+                .id(deletedId)
+                .build();
 
     }
 

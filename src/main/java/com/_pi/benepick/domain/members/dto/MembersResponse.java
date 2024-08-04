@@ -73,6 +73,7 @@ public class MembersResponse {
     @Setter
     public static class DeleteResponseDTO{
         private String msg;
+        private List<String> id;
     }
 
     @Builder

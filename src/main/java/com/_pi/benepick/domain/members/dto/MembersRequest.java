@@ -5,6 +5,8 @@ import com._pi.benepick.domain.members.entity.Role;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public class MembersRequest {
 
 
@@ -19,6 +21,14 @@ public class MembersRequest {
         private Long point;
         private Long penaltyCnt;
         private Role role;
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    public static class DeleteMembersRequestDTO{
+        private List<String> id;
     }
 
     @Builder
