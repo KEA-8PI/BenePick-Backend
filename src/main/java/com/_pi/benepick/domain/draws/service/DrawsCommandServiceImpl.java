@@ -20,15 +20,18 @@ import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class DrawsCommandServiceImpl implements DrawsCommandService {
 
     private final GoodsRepository goodsRepository;
@@ -43,6 +46,9 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
         Draws newDraws = DrawsRequest.DrawsRequestDTO.updateStatus(draws, dto);
         Draws savedDraws = drawsRepository.save(newDraws);
 
+        // NO_SHOW로 변경하였을 때
+        // TODO: 패널티 히스토리 추가 및 패널티 부여.
+
         return DrawsResponse.DrawsResponseByMembersDTO.from(savedDraws);
     }
 
@@ -54,9 +60,9 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
         }
         List<Raffles> rafflesList = rafflesRepository.findAllByGoodsId(goods);
 
-        double seed = new DrawAlgorithm(-1).getSeed();
+        double seed = DrawAlgorithm.generateSeed();
         String hash = DoubleToSHA256.getSHA256Hash(seed);
-        goods.setRandomSeedsAndStatus(hash, GoodsStatus.COMPLETED);
+        goods.startDrawAndUpdateRandomizeSeedsAndStatus(hash, GoodsStatus.COMPLETED);
 
         List<Draws> drawsList = RaffleDraw.performDraw(seed, rafflesList, goods);
 
@@ -67,6 +73,34 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
         // TODO: 레디스에 hash:seed key value로 저장하는 것 추가 필요.
         redisTemplate.opsForValue().set(hash, seed);
 
+    }
+
+    public DrawsResponse.DrawsResponseResultListDTO verificationSeed(Long goodsId, String hash) {
+        Object seedValue = redisTemplate.opsForValue().get(hash);
+        double seed = 0;
+        if (seedValue == null) {
+            seed = DrawAlgorithm.generateSeed();
+            redisTemplate.opsForValue().set(hash, seed);
+        } else {
+            seed = (double) seedValue;
+        }
+
+        Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
+        List<Raffles> rafflesList = rafflesRepository.findAllByGoodsId(goods);
+
+        List<Draws> drawsListResult = RaffleDraw.performDraw(seed, rafflesList, goods);
+        List<DrawsResponse.DrawsResponseResultDTO> drawsResponseResultDTOList = drawsListResult.stream()
+                .map(draws -> DrawsResponse.DrawsResponseResultDTO.builder()
+                        .status(draws.getStatus())
+                        .sequence(draws.getSequence())
+                        .memberId(draws.getRaffleId().getMemberId().getId())
+                        .memberName(draws.getRaffleId().getMemberId().getName())
+                        .build())
+                .collect(Collectors.toList());
+
+        return DrawsResponse.DrawsResponseResultListDTO.builder()
+                .drawsList(drawsResponseResultDTOList)
+                .build();
     }
 
 }

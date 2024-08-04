@@ -53,7 +53,7 @@ public class Goods extends BaseJPATimeEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "goodsId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Raffles> raffles; // 응모자 리스트
 
-    public void setRandomSeedsAndStatus(String seeds, GoodsStatus goodsStatus) {
+    public void startDrawAndUpdateRandomizeSeedsAndStatus(String seeds, GoodsStatus goodsStatus) {
         this.seeds = seeds;
         this.goodsStatus = goodsStatus;
     }

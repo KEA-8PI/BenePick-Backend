@@ -13,5 +13,4 @@ public interface DrawsQueryService {
     DrawsResponse.DrawsResponseByGoodsListDTO getWinnersByGoodsId(Members members, Long goodsId);
     DrawsResponse.DrawsResponseByMembersListDTO getCompleteRafflesByMemberId(String memberId);
     void downloadExcel(Members members, Long goodsId, HttpServletResponse response);
-    DrawsResponse.DrawsResponseResultListDTO verificationSeed(DrawsRequest.DrawsValidationDTO dto);
 }

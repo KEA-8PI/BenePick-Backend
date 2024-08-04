@@ -9,4 +9,5 @@ import java.security.NoSuchAlgorithmException;
 public interface DrawsCommandService {
     DrawsResponse.DrawsResponseByMembersDTO editWinnerStatus(Members members, Long winnerId, DrawsRequest.DrawsRequestDTO dto);
     void drawStart(Long goodsId) throws NoSuchAlgorithmException;
+    DrawsResponse.DrawsResponseResultListDTO verificationSeed(Long goodsId, String seed);
 }

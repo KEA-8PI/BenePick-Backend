@@ -25,17 +25,11 @@ public class RafflesRequest {
                     .build();
         }
 
-        public static Raffles toEntity(Long id, Members memberId, Goods goodsId, RafflesRequestDTO dto) {
+        public static Raffles toEntity(Long id, Members memberId, Goods goodsId, Long point) {
             return Raffles.builder()
                     .id(id)
                     .memberId(memberId)
                     .goodsId(goodsId)
-                    .point(dto.point)
-                    .build();
-        }
-
-        public static RafflesRequestDTO updatePoint(RafflesRequestDTO dto, Long point) {
-            return RafflesRequestDTO.builder()
                     .point(point)
                     .build();
         }

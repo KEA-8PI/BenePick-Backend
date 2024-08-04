@@ -14,11 +14,13 @@ import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class RafflesCommandServiceImpl implements RafflesCommandService{
 
     private final RafflesRepository rafflesRepository;
@@ -35,13 +37,13 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
         // historyService.addPointUsageHistory(memberId, pointsToDeduct, "Raffle Participation");
         Optional<Raffles> optionalRaffles = rafflesRepository.findByGoodsIdAndMemberId(goods, members);
         if (optionalRaffles.isPresent()) {
-            Raffles raffles1 = optionalRaffles.get();
-            Long point = raffleAddDTO.getPoint() + raffles1.getPoint();
-            Raffles raffles = RafflesRequest.RafflesRequestDTO.toEntity(
-                    raffles1.getId(),
+            Raffles raffles = optionalRaffles.get();
+            Long point = raffleAddDTO.getPoint() + raffles.getPoint();
+            raffles = RafflesRequest.RafflesRequestDTO.toEntity(
+                    raffles.getId(),
                     members,
                     goods,
-                    RafflesRequest.RafflesRequestDTO.updatePoint(raffleAddDTO, point)
+                    point
             );
             Raffles savedRaffles = rafflesRepository.save(raffles);
 

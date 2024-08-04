@@ -27,13 +27,4 @@ public class DrawsRequest {
         }
     }
 
-    @Builder
-    @Getter
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    @NoArgsConstructor
-    public static class DrawsValidationDTO {
-        private String seed;
-        private Long goodsId;
-    }
-
 }

@@ -27,6 +27,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class DrawsQueryServiceImpl implements DrawsQueryService {
 
     private final GoodsRepository goodsRepository;
@@ -94,31 +96,6 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
 
         return DrawsResponse.DrawsResponseByMembersListDTO.builder()
                 .drawsResponseByMembersList(drawsResponseByMembersDTOS)
-                .build();
-    }
-
-    public DrawsResponse.DrawsResponseResultListDTO verificationSeed(DrawsRequest.DrawsValidationDTO dto) {
-        Object seedValue = redisTemplate.opsForValue().get(dto.getSeed());
-        if (seedValue == null) {
-            throw new ApiException(ErrorStatus._BAD_REQUEST);
-        }
-        double seed = (double) seedValue;
-
-        Goods goods = goodsRepository.findById(dto.getGoodsId()).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
-        List<Raffles> rafflesList = rafflesRepository.findAllByGoodsId(goods);
-
-        List<Draws> drawsListResult = RaffleDraw.performDraw(seed, rafflesList, goods);
-        List<DrawsResponse.DrawsResponseResultDTO> drawsResponseResultDTOList = drawsListResult.stream()
-                .map(draws -> DrawsResponse.DrawsResponseResultDTO.builder()
-                        .status(draws.getStatus())
-                        .sequence(draws.getSequence())
-                        .memberId(draws.getRaffleId().getMemberId().getId())
-                        .memberName(draws.getRaffleId().getMemberId().getName())
-                        .build())
-                .collect(Collectors.toList());
-
-        return DrawsResponse.DrawsResponseResultListDTO.builder()
-                .drawsList(drawsResponseResultDTOList)
                 .build();
     }
 
