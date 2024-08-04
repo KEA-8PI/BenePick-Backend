@@ -36,13 +36,11 @@ public class MembersCommandServiceImpl implements MembersCommandService{
         if(membersRepository.findById(member.getId()).get().getRole()== Role.MEMBER){
             new ApiException(ErrorStatus._UNAUTHORIZED);
         }
-
-        members.updateName(membersRequestDTO.getName());
-        members.updateDeptName(membersRequestDTO.getDeptName());
         changePointHist(membersRequestDTO.getPoint(),memberid,"",members);
         changePenaltyHist(membersRequestDTO.getPenaltyCnt(),memberid," ",members);
-        members.updatePoint(membersRequestDTO.getPoint());
-        members.updatePenaltyCnt(membersRequestDTO.getPenaltyCnt());
+
+        members.updateInfo(membersRequestDTO);
+
         return MembersuccessDTO.builder()
                 .msg("수정되었습니다.")
                 .build();

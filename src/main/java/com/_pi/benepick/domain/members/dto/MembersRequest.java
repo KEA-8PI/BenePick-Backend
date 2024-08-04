@@ -19,6 +19,11 @@ public class MembersRequest {
         private Long point;
         private Long penaltyCnt;
         private Role role;
+
+        public Members updateInfo(Members members){
+
+
+        }
     }
 
     @Builder
