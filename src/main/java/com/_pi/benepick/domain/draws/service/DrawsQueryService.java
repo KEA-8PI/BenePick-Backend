@@ -5,8 +5,6 @@ import com._pi.benepick.domain.draws.dto.DrawsResponse;
 import com._pi.benepick.domain.members.entity.Members;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
-
 public interface DrawsQueryService {
     DrawsResponse.DrawsResponseByGoodsListDTO getResultByGoodsId(Long goodsId);
     DrawsResponse.DrawsResponseByGoodsListDTO getWaitlistByGoodsId(Members members, Long goodsId);

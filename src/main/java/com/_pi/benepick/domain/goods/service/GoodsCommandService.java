@@ -2,7 +2,6 @@ package com._pi.benepick.domain.goods.service;
 
 import com._pi.benepick.domain.goods.dto.GoodsRequest;
 import com._pi.benepick.domain.goods.dto.GoodsResponse;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 

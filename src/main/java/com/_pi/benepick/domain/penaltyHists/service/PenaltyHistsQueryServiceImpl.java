@@ -33,7 +33,7 @@ public class PenaltyHistsQueryServiceImpl implements PenaltyHistsQueryService
            PenaltyResponseDTO dto=PenaltyResponseDTO.builder()
                    .penaltyCount(p.getPenaltyCount())
                    .totalPenalty(p.getTotalPenalty())
-                   .createdAt(p.getCreated_at())
+                   .createdAt(p.getCreatedAt())
                    .content(p.getContent())
                    .build();
            result.add(dto);
