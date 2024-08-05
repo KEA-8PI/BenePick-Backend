@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.domain.Page;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -38,4 +37,6 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
 
     @Query("SELECT g FROM Goods g JOIN GoodsCategories gc ON g.id = gc.goodsId.id WHERE gc.categoryId.id = :categoryId")
     List<Goods> findGoodsByCategoryId(Long categoryId);
+    List<Goods> findByRaffleEndAtBeforeAndGoodsStatus(LocalDateTime now, GoodsStatus status);
+    List<Goods> findByRaffleStartAtBeforeAndGoodsStatus(LocalDateTime now, GoodsStatus status);
 }

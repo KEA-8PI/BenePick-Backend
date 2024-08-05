@@ -1,10 +1,6 @@
 package com._pi.benepick.domain.dashboard.dto;
 
-import com._pi.benepick.domain.goods.dto.GoodsResponse;
-import com._pi.benepick.domain.goods.entity.Goods;
 import lombok.*;
-
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 

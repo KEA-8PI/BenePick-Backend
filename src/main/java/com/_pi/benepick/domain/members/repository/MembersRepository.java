@@ -15,4 +15,5 @@ public interface MembersRepository extends JpaRepository<Members, String> {
 
     @Query("select m FROM  Members m where LOWER(m.name) LIKE  LOWER(CONCAT('%', :name, '%') )")
     Page<Members> findByNameContainingIgnoreCase(String name, Pageable pageable);
+
 }
