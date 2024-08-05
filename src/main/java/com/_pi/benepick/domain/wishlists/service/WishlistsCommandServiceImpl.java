@@ -28,10 +28,8 @@ public class WishlistsCommandServiceImpl implements WishlistsCommandSerivce{
                 .goodsId(goods)
                 .memberId(members)
                 .build();
-
-        Wishlists wishlists1 = wishlistsRepository.save(wishlists);
-
-        return WishlistAddDTO.from(wishlists1);
+       wishlistsRepository.save(wishlists);
+        return WishlistAddDTO.from(wishlists);
 
     }
 }

@@ -8,7 +8,6 @@ public class WishlistRequest {
 
     @Builder
     @Getter
-    @Setter
     @AllArgsConstructor
     @NoArgsConstructor
     public static class WishlistRequestDTO{

@@ -52,16 +52,11 @@ public class WishlistResponse {
     public static class WishlistAddDTO{
         Long id;
         Goods goods;
-        LocalDateTime createdAt;
-        LocalDateTime updatedAt;
-        char isDeleted;
 
         public static WishlistAddDTO from(Wishlists wishlists){
             return WishlistAddDTO.builder()
                     .id(wishlists.getId())
-                    .createdAt(wishlists.getCreated_at())
                     .goods(wishlists.getGoodsId())
-                    .isDeleted(wishlists.getIs_deleted())
                     .build();
         }
 
