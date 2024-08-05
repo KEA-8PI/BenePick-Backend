@@ -20,10 +20,6 @@ public class MembersRequest {
         private Long penaltyCnt;
         private Role role;
 
-        public Members updateInfo(Members members){
-
-
-        }
     }
 
     @Builder
