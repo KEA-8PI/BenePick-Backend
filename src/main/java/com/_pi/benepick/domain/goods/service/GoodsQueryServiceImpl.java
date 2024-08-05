@@ -20,7 +20,6 @@ import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,7 +53,7 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
 
         List<GoodsResponse.GoodsResponseDTO> goodsDTOList = goodsPage.getContent().stream()
                 .map(GoodsResponse.GoodsResponseDTO::from)
-                .collect(Collectors.toList());
+                .toList();
 
         return GoodsResponse.GoodsListResponseDTO.builder()
                 .goodsDTOList(goodsDTOList)
@@ -91,7 +90,7 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
 
         List<GoodsResponse.GoodsSearchResponseDTO> goodsSearchDTOList = goodsPage.getContent().stream()
                 .map(g -> GoodsResponse.GoodsSearchResponseDTO.of(g, category))
-                .collect(Collectors.toList());
+                .toList();
         return GoodsResponse.GoodsListSearchResponseDTO.builder()
                 .goodsSearchDTOList(goodsSearchDTOList)
                 .build();

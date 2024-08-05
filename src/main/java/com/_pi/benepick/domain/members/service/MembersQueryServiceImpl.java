@@ -21,10 +21,6 @@ import com._pi.benepick.domain.members.dto.MembersResponse.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
-
-import java.util.stream.Collectors;
-
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -43,12 +39,10 @@ public class MembersQueryServiceImpl implements MembersQueryService {
     //복지 포인트 내역 조회
     @Override
     public PointHistListDTO getPointHist(Members member) {
-        Members members = membersRepository.findById(member.getId()).orElseThrow(() -> new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
-
         List<PointHists> pointHists = pointHistsRepository.findAllByMemberId(member.getId());
         List<PointHistDTO> pointHistDTOS=pointHists.stream()
                 .map(PointHistDTO::from)
-                .collect(Collectors.toList());
+                .toList();
         return PointHistListDTO.builder()
                 .pointHistDTOS(pointHistDTOS)
                 .build();
@@ -65,7 +59,7 @@ public class MembersQueryServiceImpl implements MembersQueryService {
         else {
             membersPage=membersRepository.findAll(pageRequest);
         }
-        List<MembersDetailResponseDTO> membersDetailResponseDTOList=membersPage.getContent().stream().map(MembersDetailResponseDTO::from).collect(Collectors.toList());
+        List<MembersDetailResponseDTO> membersDetailResponseDTOList=membersPage.getContent().stream().map(MembersDetailResponseDTO::from).toList();
 
         return MembersDetailListResponseDTO.builder()
                 .membersDetailResponseDTOList(membersDetailResponseDTOList)

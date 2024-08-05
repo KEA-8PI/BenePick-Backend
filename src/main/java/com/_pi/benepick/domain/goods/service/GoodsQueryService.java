@@ -3,10 +3,6 @@ package com._pi.benepick.domain.goods.service;
 import com._pi.benepick.domain.goods.dto.GoodsResponse;
 import com._pi.benepick.domain.goods.entity.GoodsFilter;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 public interface GoodsQueryService {
     GoodsResponse.GoodsDetailResponseDTO getGoodsInfo(Long goodsId); // 상품 상세 조회
