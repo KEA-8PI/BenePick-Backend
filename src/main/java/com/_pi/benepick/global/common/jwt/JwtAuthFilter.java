@@ -1,11 +1,10 @@
 package com._pi.benepick.global.common.jwt;
 
 
-import com._pi.benepick.global.common.jwt.dto.JwtParameters.JwtPair;
+import com._pi.benepick.global.common.jwt.dto.JwtResponse.JwtPairDTO;
+import com._pi.benepick.global.common.jwt.entity.JwtTokens;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,7 +12,6 @@ import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @RequiredArgsConstructor
@@ -28,13 +26,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         // 유효성 검사 후 SecurityContext에 저장
         if (token != null) {
-            if (jwtTokenProvider.validateToken(token)) {
+            if (jwtTokenProvider.validateAccessToken(token)) {
                 //토큰이 유효함
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else if (jwtTokenProvider.validateRefreshToken(token)) {
                 // 리프래시토큰으로 액세스토큰 재발급
-                JwtPair newToken = jwtTokenProvider.refreshAccessToken(token);
+                JwtPairDTO newToken = jwtTokenProvider.refreshAccessToken(token);
                 if (newToken != null) {
 //                   // 새로운 액세스 토큰이 발급되면 SecurityContext에 저장
                     Authentication authentication = jwtTokenProvider.getAuthentication(newToken.getAccessToken());
