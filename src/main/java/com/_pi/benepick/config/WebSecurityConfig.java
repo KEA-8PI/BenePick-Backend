@@ -37,13 +37,12 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable) //csrf 비활성화
-                .cors(AbstractHttpConfigurer::disable)
                 // 세션 사용 안함
-                .sessionManagement((sessionManagement) ->
+                .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 // 회원가입, 로그인 관련 API는 Jwt 인증 없이 접근 가능
-                .authorizeHttpRequests((requests) ->
+                .authorizeHttpRequests(requests ->
                         requests.requestMatchers("/auth/login").permitAll()
                         //Swagger 관련 권한 설정
                         .requestMatchers(SWAGGER_PERMIT_URL_ARRAY).permitAll()

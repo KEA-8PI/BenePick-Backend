@@ -38,23 +38,23 @@ public class GoodsController {
 
     //상품 상세 조회
     @Operation(summary = "상품 상세 조회", description = "상품의 상세 정보를 조회합니다.(진행:PROGRESS,예정:SCHEDULED,종료:COMPLETED)")
-    @GetMapping("/{goods_id}")
-    public ApiResponse<GoodsResponse.GoodsDetailResponseDTO> getGoodsInfo(@PathVariable Long goods_id) {
-        return ApiResponse.onSuccess(goodsQueryService.getGoodsInfo(goods_id));
+    @GetMapping("/{goodsId}")
+    public ApiResponse<GoodsResponse.GoodsDetailResponseDTO> getGoodsInfo(@PathVariable Long goodsId) {
+        return ApiResponse.onSuccess(goodsQueryService.getGoodsInfo(goodsId));
     }
 
     //시드 값 조회
     @Operation(summary = "시드값 조회", description = "상품의 시드값을 조회합니다.")
-    @GetMapping("/seeds/{goods_id}")
-    public ApiResponse<GoodsResponse.GoodsSeedsResponseDTO> getSeeds(@PathVariable Long goods_id) {
-        return ApiResponse.onSuccess(goodsQueryService.getSeeds(goods_id));
+    @GetMapping("/seeds/{goodsId}")
+    public ApiResponse<GoodsResponse.GoodsSeedsResponseDTO> getSeeds(@PathVariable Long goodsId) {
+        return ApiResponse.onSuccess(goodsQueryService.getSeeds(goodsId));
     }
 
     //상품 검색
     @Operation(summary = "상품 검색 (메인페이지용)", description = "선택된 필터,카테고리,검색어를 기반으로 상품을 조회합니다.")
-    @GetMapping("/search/{goods_status}")
-    public ApiResponse<GoodsResponse.GoodsListSearchResponseDTO> searchGoods(@PathVariable GoodsStatus goods_status, @RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String keyword, @RequestParam GoodsFilter sortBy, @RequestParam(required = false) String category) {
-        return ApiResponse.onSuccess(goodsQueryService.searchGoods(goods_status, page, size, keyword, sortBy, category));
+    @GetMapping("/search/{goodsStatus}")
+    public ApiResponse<GoodsResponse.GoodsListSearchResponseDTO> searchGoods(@PathVariable GoodsStatus goodsStatus, @RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String keyword, @RequestParam GoodsFilter sortBy, @RequestParam(required = false) String category) {
+        return ApiResponse.onSuccess(goodsQueryService.searchGoods(goodsStatus, page, size, keyword, sortBy, category));
     }
 
     //상품 추가
@@ -73,9 +73,9 @@ public class GoodsController {
 
     //상품 수정
     @Operation(summary = "상품 수정", description = "상품 상세 정보를 수정합니다.")
-    @PostMapping("/update/{goods_id}")
-    public ApiResponse<GoodsResponse.GoodsAddResponseDTO> updateGoods(@PathVariable Long goods_id, @RequestBody GoodsRequest.GoodsRequestDTO goodsUpdateDTO) {
-        return ApiResponse.onSuccess(goodsCommandService.updateGoods(goods_id, goodsUpdateDTO));
+    @PostMapping("/update/{goodsId}")
+    public ApiResponse<GoodsResponse.GoodsAddResponseDTO> updateGoods(@PathVariable Long goodsId, @RequestBody GoodsRequest.GoodsRequestDTO goodsUpdateDTO) {
+        return ApiResponse.onSuccess(goodsCommandService.updateGoods(goodsId, goodsUpdateDTO));
     }
 
     //상품 삭제

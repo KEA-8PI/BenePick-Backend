@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -99,7 +98,7 @@ public class MembersCommandServiceImpl implements MembersCommandService{
             throw new ApiException(ErrorStatus._ALREADY_EXIST_MEMBER);
         }
 
-        if(membersRepository.findById(member.getId()).get().getRole()== Role.MEMBER){
+        if(member.getRole() == Role.MEMBER){
             throw new ApiException(ErrorStatus._UNAUTHORIZED);
         }
 
