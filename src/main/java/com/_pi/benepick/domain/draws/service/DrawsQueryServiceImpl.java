@@ -27,15 +27,16 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class DrawsQueryServiceImpl implements DrawsQueryService {
 
     private final GoodsRepository goodsRepository;
@@ -49,7 +50,7 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         List<DrawsResponse.DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
                 .filter(draws -> draws.getStatus() == Status.WINNER || draws.getStatus() == Status.CONFIRM)
                 .map(DrawsResponse.DrawsResponseByGoodsDTO::from)
-                .collect(Collectors.toList());
+                .toList();
 
         return DrawsResponse.DrawsResponseByGoodsListDTO.builder()
                 .drawsResponseByGoodsDTOList(drawsResponseByGoodsDTOS)
@@ -61,7 +62,7 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         List<DrawsResponse.DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
                 .filter(draws -> draws.getStatus() == Status.WAITLIST)
                 .map(DrawsResponse.DrawsResponseByGoodsDTO::from)
-                .collect(Collectors.toList());
+            .toList();
 
         return DrawsResponse.DrawsResponseByGoodsListDTO.builder()
                 .drawsResponseByGoodsDTOList(drawsResponseByGoodsDTOS)
@@ -73,7 +74,7 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         List<DrawsResponse.DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
                 .filter(draws -> draws.getStatus() != Status.WAITLIST && draws.getStatus() != Status.NON_WINNER)
                 .map(DrawsResponse.DrawsResponseByGoodsDTO::from)
-                .collect(Collectors.toList());
+            .toList();
 
         return DrawsResponse.DrawsResponseByGoodsListDTO.builder()
                 .drawsResponseByGoodsDTOList(drawsResponseByGoodsDTOS)
@@ -90,48 +91,34 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
 
                     return DrawsResponse.DrawsResponseByMembersDTO.of(draws, categoryName);
                 })
-                .collect(Collectors.toList());
+            .toList();
 
         return DrawsResponse.DrawsResponseByMembersListDTO.builder()
                 .drawsResponseByMembersList(drawsResponseByMembersDTOS)
                 .build();
     }
 
-    public DrawsResponse.DrawsResponseResultListDTO verificationSeed(DrawsRequest.DrawsValidationDTO dto) {
-        Object seedValue = redisTemplate.opsForValue().get(dto.getSeed());
-        if (seedValue == null) {
-            throw new ApiException(ErrorStatus._BAD_REQUEST);
-        }
-        double seed = (double) seedValue;
-
-        Goods goods = goodsRepository.findById(dto.getGoodsId()).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
-        List<Raffles> rafflesList = rafflesRepository.findAllByGoodsId(goods);
-
-        List<Draws> drawsListResult = RaffleDraw.performDraw(seed, rafflesList, goods);
-        List<DrawsResponse.DrawsResponseResultDTO> drawsResponseResultDTOList = drawsListResult.stream()
-                .map(draws -> DrawsResponse.DrawsResponseResultDTO.builder()
-                        .status(draws.getStatus())
-                        .sequence(draws.getSequence())
-                        .memberId(draws.getRaffleId().getMemberId().getId())
-                        .memberName(draws.getRaffleId().getMemberId().getName())
-                        .build())
-                .collect(Collectors.toList());
-
-        return DrawsResponse.DrawsResponseResultListDTO.builder()
-                .drawsList(drawsResponseResultDTOList)
-                .build();
-    }
-
     public void downloadExcel(Members members, Long goodsId, HttpServletResponse response) {
-        if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
+        if (!(members.getRole().equals(Role.ADMIN))) {
+            throw new ApiException(ErrorStatus._UNAUTHORIZED);
+        }
 
-        // Sample data
-        List<List<String>> data = Arrays.asList(
-                Arrays.asList("Name", "Age", "Location"),
-                Arrays.asList("John Doe", "30", "New York"),
-                Arrays.asList("Jane Smith", "25", "Los Angeles"),
-                Arrays.asList("Mike Johnson", "35", "Chicago")
-        );
+        List<Draws> drawsList = drawsRepository.findByGoodsId(goodsId);
+
+        // 변경 가능한 리스트 사용
+        List<List<String>> data = new ArrayList<>();
+        data.add(Arrays.asList("Name", "ID", "Status", "Sequence"));
+
+        for (Draws draws : drawsList) {
+            data.add(
+                    Arrays.asList(
+                            draws.getRaffleId().getMemberId().getName(),
+                            String.valueOf(draws.getRaffleId().getMemberId().getId()),
+                            draws.getStatus().toString(),
+                            String.valueOf(draws.getSequence())
+                    )
+            );
+        }
 
         // Create a new workbook and sheet
         Workbook workbook = new XSSFWorkbook();
@@ -154,12 +141,10 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         int rowCount = 0;
         for (List<String> dto : data) {
             row = sheet.createRow(rowCount++);
-            cell = row.createCell(0);
-            cell.setCellValue(dto.get(0));
-            cell = row.createCell(1);
-            cell.setCellValue(dto.get(1));
-            cell = row.createCell(2);
-            cell.setCellValue(dto.get(2));
+            for (int i = 0; i < dto.size(); i++) {
+                cell = row.createCell(i);
+                cell.setCellValue(dto.get(i));
+            }
         }
 
         response.setContentType("ms-vnd/excel");

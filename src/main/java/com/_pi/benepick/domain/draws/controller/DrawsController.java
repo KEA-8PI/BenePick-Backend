@@ -7,17 +7,11 @@ import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com._pi.benepick.domain.draws.dto.DrawsResponse;
-import com._pi.benepick.domain.draws.entity.Status;
 import com._pi.benepick.domain.draws.service.DrawsQueryService;
-import com._pi.benepick.domain.raffles.controller.RafflesController;
 import com._pi.benepick.global.common.response.ApiResponse;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -81,20 +75,10 @@ public class DrawsController {
         drawsQueryService.downloadExcel(member, goodsId, response);
     }
 
-    @Operation(summary = "추첨 테스트 용 삭제할 거임")
-    @GetMapping("/draw/test/{goodsId}")
-    public void drawTest(@PathVariable Long goodsId) {
-        try {
-            drawsCommandService.drawStart(goodsId);
-        } catch (NoSuchAlgorithmException e) {
-            throw new ApiException(ErrorStatus._NO_SUCH_ALGORITHM);
-        }
-    }
-
     @Operation(summary = "추첨 검증 - Mockup API", description = "시드값을 이용하여 추첨 로직 검증을 할 수 있습니다.")
-    @PostMapping("/verification")
-    public ApiResponse<DrawsResponse.DrawsResponseResultListDTO> verificationSeed(@RequestBody DrawsRequest.DrawsValidationDTO dto) {
-        return ApiResponse.onSuccess(drawsQueryService.verificationSeed(dto));
+    @GetMapping("/verification/{goodsId}/{seed}")
+    public ApiResponse<DrawsResponse.DrawsResponseResultListDTO> verificationSeed(@PathVariable Long goodsId, @PathVariable String seed) {
+        return ApiResponse.onSuccess(drawsCommandService.verificationSeed(goodsId, seed));
     }
 
 }
