@@ -1,8 +1,9 @@
 package com._pi.benepick.domain.members.dto;
 
 import com._pi.benepick.domain.members.entity.Members;
+
 import lombok.*;
-import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
@@ -12,7 +13,6 @@ public class MembersResponse {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    @Setter
     public static class MembersDetailResponseDTO{
         private String id;
         private String name;

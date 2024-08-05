@@ -5,7 +5,9 @@ import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goods.repository.GoodsRepository;
 import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
 import com._pi.benepick.domain.members.entity.Members;
+import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.domain.members.repository.MembersRepository;
+import com._pi.benepick.domain.raffles.dto.RafflesRequest;
 import com._pi.benepick.domain.raffles.dto.RafflesResponse;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import com._pi.benepick.domain.raffles.repository.RafflesRepository;
@@ -13,13 +15,14 @@ import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RafflesQueryServiceImpl implements RafflesQueryService {
 
     private final RafflesRepository rafflesRepository;
@@ -52,7 +55,8 @@ public class RafflesQueryServiceImpl implements RafflesQueryService {
         }
     }
 
-    public RafflesResponse.RafflesResponseByGoodsListDTO getAllRafflesByGoodsId(Long goodsId) {
+    public RafflesResponse.RafflesResponseByGoodsListDTO getAllRafflesByGoodsId(Members members, Long goodsId) {
+        if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         Optional<Goods> goodsOptional = goodsRepository.findById(goodsId);
 
         if (goodsOptional.isPresent()) {
@@ -61,7 +65,7 @@ public class RafflesQueryServiceImpl implements RafflesQueryService {
 
             List<RafflesResponse.RafflesResponseByGoodsDTO> rafflesResponseByGoodsDTOS = rafflesList.stream()
                     .map(RafflesResponse.RafflesResponseByGoodsDTO::from)
-                    .collect(Collectors.toList());
+                .toList();
 
             return RafflesResponse.RafflesResponseByGoodsListDTO.builder()
                     .rafflesResponseByGoodsList(rafflesResponseByGoodsDTOS)

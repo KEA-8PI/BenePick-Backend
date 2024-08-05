@@ -1,20 +1,20 @@
 package com._pi.benepick.domain.members.controller;
-
-
 import com._pi.benepick.domain.members.dto.MembersRequest.*;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
+
 import com._pi.benepick.domain.members.service.MembersQueryService;
-import com._pi.benepick.domain.penaltyHists.dto.PenaltyResponse.*;
-import com._pi.benepick.domain.pointHists.dto.PointResponse.*;
+
+import com._pi.benepick.domain.members.service.MembersCommandService;
+import com._pi.benepick.global.common.exception.ApiException;
+
 import com._pi.benepick.global.common.response.ApiResponse;
+import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
+
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,8 +29,13 @@ import java.util.Optional;
 @RequestMapping("/member")
 @Tag(name = "Members", description = "사원 API")
 public class MembersController {
-private final MembersQueryService membersQueryService;
+
+
+
+    private final MembersCommandService membersCommandService;
+    private final MembersQueryService membersQueryService;
     private final MembersRepository membersRepository;
+
     @Operation(summary = "복지포인트 조회 - Mockup API", description = "사용자가 복지포인트를 조회합니다.")
     @GetMapping("/point")
     public ApiResponse<MemberPointDTO> getMemberpoint(){
@@ -43,65 +47,35 @@ private final MembersQueryService membersQueryService;
 
     }
 
-    @Operation(summary = "내 정보 조회 - Mockup API", description = "사용자가 본인 정보를 조회합니다.")
+    @Operation(summary = "내 정보 조회", description = "사용자가 본인 정보를 조회합니다.")
     @GetMapping("/info")
     public ApiResponse<MembersDetailResponseDTO> getMemberInfo(){
-        MembersDetailResponseDTO membersDetailResponseDTO=new MembersDetailResponseDTO();
-        membersDetailResponseDTO.setId("alex.js");
-        membersDetailResponseDTO.setName("alex");
-        membersDetailResponseDTO.setDeptName("서비스 개발팀");
-        membersDetailResponseDTO.setPoint((long)1000);
-        membersDetailResponseDTO.setPenaltyCnt((long)100);
-        return ApiResponse.onSuccess(membersDetailResponseDTO);
+        Members members=membersRepository.findById("string").orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
+        return ApiResponse.onSuccess(membersQueryService.getMemberinfo(members.getId()));
 
     }
 
-
-    @Operation(summary = "복지포인트내역 조회 - Mockup API", description = "사용자가 본인의 포인트 사용 내역을 조회합니다.")
-    @GetMapping("/point-hist")
-    public ApiResponse<PointHistListDTO> getMemberpointInfo(){
-       PointHistDTO pointHistDTO1=new PointHistDTO((long)100,"macbook pro 응모");
-        PointHistDTO pointHistDTO2=new PointHistDTO((long)200,"호텔 숙박권 응모");
-       List<PointHistDTO> pointHistDTOS=Arrays.asList(pointHistDTO1,pointHistDTO2);
-
-       return ApiResponse.onSuccess(PointHistListDTO.builder()
-               .pointHistDTOS(pointHistDTOS)
-               .build());
-    }
-
-    @Operation(summary = "패널티내역 조회 - Mockup API", description = "사용자가 본인의 패널티 내역을 조회합니다.")
-    @GetMapping("/penalty-hist")
-    public ApiResponse<PenaltyListResponseDTO> getMemberpenaltyInfo(){
-        PenaltyResponseDTO penaltyResponseDTO1=new PenaltyResponseDTO("2023-02-01 00:34:13.778134","노쇼",1,3);
-        List<PenaltyResponseDTO> penaltyResponseDTOList=Arrays.asList(penaltyResponseDTO1);
-
-        return ApiResponse.onSuccess(
-                PenaltyListResponseDTO.builder()
-                        .penaltyResponseDTOList(penaltyResponseDTOList)
-                        .build()
-        );
-    }
-
-    @Operation(summary = "비밀번호 변경 - Mockup API", description = "사용자가 비밀번호를 변경합니다.")
+    @Operation(summary = "비밀번호 변경", description = "사용자가 비밀번호를 변경합니다.")
     @PatchMapping("/password")
     public ApiResponse<MembersuccessDTO> updatePassword(@RequestBody MemberPasswordDTO memberPasswordDTO){
-return ApiResponse.onSuccess(MembersuccessDTO.builder()
-                .msg("수정되었습니다.")
-        .build());
+        Members member = membersRepository.findById("test1").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
+return ApiResponse.onSuccess(membersCommandService.changePassword(memberPasswordDTO,member));
     }
 
-    @Operation(summary = "사원 목록 조회 및 검색 - Mockup API", description = "사원 목록을 조회하고 검색합니다 (관리자용)")
+    @Operation(summary = "사원 목록 조회 및 검색", description = "사원 목록을 조회하고 검색합니다 (관리자용)")
     @GetMapping("/list")
-    public ApiResponse<MembersDetailListResponseDTO> getMemberList(@RequestParam Integer page, @RequestParam Integer size, @RequestParam String keywordName){
+    public ApiResponse<MembersDetailListResponseDTO> getMemberList(@RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String keywordName){
+
         return ApiResponse.onSuccess(membersQueryService.getMembersList(page,size,keywordName));
+
+
     }
 
-    @Operation(summary = "사원 등록 - Mockup API", description = "사원을 등록합니다 (관리자용)")
+    @Operation(summary = "사원 등록", description = "사원을 등록합니다 (관리자용)")
     @PostMapping("/add")
-    public ApiResponse<MembersuccessDTO> addMember(@RequestBody MembersRequestDTO membersRequestDTO){
-        return ApiResponse.onSuccess(MembersuccessDTO.builder()
-                .msg("수정되었습니다.")
-                .build());
+    public ApiResponse<MembersDetailResponseDTO> addMember(@RequestBody AdminMemberRequestDTO membersRequestDTO){
+        Members members=membersRepository.findById("string").orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
+        return ApiResponse.onSuccess(membersCommandService.addMembers(membersRequestDTO,members));
     }
 
     @Operation(summary = "복지포인트 파일 업로드 - Mockup API", description = "복지 포인트 파일을 업로드합니다. (관리자용)")
@@ -112,14 +86,12 @@ return ApiResponse.onSuccess(MembersuccessDTO.builder()
                 .build());
     }
 
-    @Operation(summary = "사원 정보 수정 - Mockup API", description = "사원 정보를 수정합니다. (관리자용)")
+    @Operation(summary = "사원 정보 수정", description = "사원 정보를 수정합니다. (관리자용)")
     @PatchMapping("/info/{memberID}")
     public ApiResponse<MembersuccessDTO> updateMemberInfo(@PathVariable String memberID, @RequestBody MembersRequestDTO membersRequestDTO){
-        return ApiResponse.onSuccess(MembersuccessDTO.builder()
-                .msg("수정되었습니다.")
-                .build());
+        Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
+        return ApiResponse.onSuccess(membersCommandService.updateMemberInfo(memberID,membersRequestDTO,member));
     }
-
     @Operation(summary = "사원 삭제 - Mockup API",description = "사원을 삭제합니다. (관리자용)")
     @DeleteMapping("/{memberId}")
     public ApiResponse<DeleteResponseDTO> deleteMember(@PathVariable String memberId){

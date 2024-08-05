@@ -1,5 +1,6 @@
 package com._pi.benepick.domain.goods.entity;
 
+import com._pi.benepick.domain.hash.entity.Hash;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import com._pi.benepick.global.common.BaseJPATimeEntity;
 import jakarta.persistence.*;
@@ -12,7 +13,6 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,7 +26,6 @@ public class Goods extends BaseJPATimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //상품_id
-
     @Column(nullable = false)
     private String name; //이름
     @Column(nullable = false)
@@ -39,15 +38,30 @@ public class Goods extends BaseJPATimeEntity {
     private LocalDateTime raffleStartAt; //응모 시작일
     @Column(nullable = false)
     private LocalDateTime raffleEndAt; //응모 종료일
-
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String image; //상품 사진
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String description; //설명
-    @Builder.Default
-    private Long seeds = -1L; //시드값
+
+    @OneToOne(fetch = FetchType.LAZY, targetEntity = Hash.class)
+    @JoinColumn(name = "hash_id")
+    private Hash hash; //응모_id
 
     @Enumerated(EnumType.STRING)
     private GoodsStatus goodsStatus; //상품응모상태 (PROGRESS,SCHEDULED,COMPLETED)
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "goodsId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Raffles> raffles; // 응모자 리스트
+
+    public void startDraw(Hash hash, GoodsStatus goodsStatus) {
+        this.hash = hash;
+        this.goodsStatus = goodsStatus;
+    }
+
+    public void updateStatus(GoodsStatus newStatus) {
+        this.goodsStatus = newStatus;
+    }
+
 }

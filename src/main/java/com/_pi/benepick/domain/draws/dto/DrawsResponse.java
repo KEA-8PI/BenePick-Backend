@@ -2,6 +2,8 @@ package com._pi.benepick.domain.draws.dto;
 
 import com._pi.benepick.domain.draws.entity.Status;
 import com._pi.benepick.domain.draws.entity.Draws;
+import com._pi.benepick.domain.members.entity.Members;
+import com._pi.benepick.domain.raffles.entity.Raffles;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,7 +27,7 @@ public class DrawsResponse {
         private int sequence;
         private Status drawStatus; // 당첨 상태
         private LocalDateTime rafflesAt;
-        private String category_name; //카테고리 이름
+        private String categoryName; //카테고리 이름
 
         public static DrawsResponse.DrawsResponseByMembersDTO of(Draws draws, String categoryName) {
             return DrawsResponseByMembersDTO.builder()
@@ -35,8 +37,20 @@ public class DrawsResponse {
                     .point(draws.getRaffleId().getPoint())
                     .sequence(draws.getSequence())
                     .drawStatus(draws.getStatus())
-                    .rafflesAt(draws.getRaffleId().getUpdated_at())
-                    .category_name(categoryName)
+                    .rafflesAt(draws.getRaffleId().getUpdatedAt())
+                    .categoryName(categoryName)
+                    .build();
+        }
+
+        public static DrawsResponse.DrawsResponseByMembersDTO from(Draws draws) {
+            return DrawsResponseByMembersDTO.builder()
+                    .id(draws.getRaffleId().getId())
+                    .memberId(draws.getRaffleId().getMemberId().getId())
+                    .goodsId(draws.getRaffleId().getGoodsId().getId())
+                    .point(draws.getRaffleId().getPoint())
+                    .sequence(draws.getSequence())
+                    .drawStatus(draws.getStatus())
+                    .rafflesAt(draws.getRaffleId().getUpdatedAt())
                     .build();
         }
     }
@@ -64,10 +78,21 @@ public class DrawsResponse {
                     .goodsId(draws.getRaffleId().getGoodsId().getId())
                     .point(draws.getRaffleId().getPoint())
                     .drawStatus(draws.getStatus())
-                    .rafflesAt(draws.getRaffleId().getUpdated_at())
+                    .rafflesAt(draws.getRaffleId().getUpdatedAt())
                     .build();
         }
 
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class DrawsResponseResultDTO {
+        private Status status;
+        private int sequence;
+        private String memberId;
+        private String memberName;
     }
 
     @Builder
@@ -84,6 +109,14 @@ public class DrawsResponse {
     @NoArgsConstructor
     public static class DrawsResponseByGoodsListDTO {
         private List<DrawsResponse.DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOList;
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class DrawsResponseResultListDTO {
+        private List<DrawsResponse.DrawsResponseResultDTO> drawsList;
     }
 
 }

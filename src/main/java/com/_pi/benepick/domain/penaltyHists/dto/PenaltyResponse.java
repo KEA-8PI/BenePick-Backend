@@ -13,7 +13,7 @@ public class PenaltyResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class PenaltyResponseDTO{
-        private String createdAt;
+        private LocalDateTime createdAt;
         private String content;
         private int penaltyCount;
         private int totalPenalty;

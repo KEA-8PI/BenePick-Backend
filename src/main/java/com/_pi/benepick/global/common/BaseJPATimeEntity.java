@@ -1,16 +1,11 @@
 package com._pi.benepick.global.common;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-
 import java.io.Serializable;
-import lombok.Builder;
-import lombok.Builder.Default;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import java.time.LocalDateTime;
 
 @Getter
@@ -21,17 +16,17 @@ public abstract class BaseJPATimeEntity implements Serializable {
     // Entity가 생성되어 저장될 때 시간이 자동 저장됩니다.
     @CreatedDate
     @Column(updatable = false)
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     // 조회한 Entity 값을 변경할 때 시간이 자동 저장됩니다.
     @LastModifiedDate
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
 
     // 삭제 여부 ( 'F', 'T' )
     @Column(nullable = false)
-    private char is_deleted = 'F';
+    private char isDeleted = 'F';
 
     protected void update(){
-        updated_at = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 }

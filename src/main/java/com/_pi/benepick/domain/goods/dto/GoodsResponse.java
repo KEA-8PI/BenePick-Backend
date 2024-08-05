@@ -86,11 +86,11 @@ public class GoodsResponse {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor
     public static class GoodsSeedsResponseDTO {
-        private Long seeds; //시드값
+        private String seeds; //시드값
 
         public static GoodsSeedsResponseDTO from(Goods goods){
             return GoodsSeedsResponseDTO.builder()
-                    .seeds(goods.getSeeds())
+                    .seeds(goods.getHash().getHash())
                     .build();
         }
     }
@@ -121,7 +121,7 @@ public class GoodsResponse {
                     .raffleStartAt(goods.getRaffleStartAt())
                     .raffleEndAt(goods.getRaffleEndAt())
                     .category(category)
-                    .count(2L)
+                    .count((long) goods.getRaffles().size())
                     .build();
         }
     }
@@ -133,26 +133,7 @@ public class GoodsResponse {
         private List<GoodsSearchResponseDTO> goodsSearchDTOList;
     }
 
-    //상품 파일 업로드
     // 상품 추가 및 수정
-    @Builder
-    @Getter
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    @NoArgsConstructor
-    public static class GoodsUploadResponseDTO {
-        private String result;
-        public static GoodsUploadResponseDTO createSuccessResponse() {
-            return GoodsUploadResponseDTO.builder()
-                    .result("추가되었습니다.")
-                    .build();
-        }
-        public static GoodsUploadResponseDTO createFailureResponse() {
-            return GoodsUploadResponseDTO.builder()
-                    .result("실패하였습니다.")
-                    .build();
-        }
-    }
-
     @Builder
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -185,6 +166,14 @@ public class GoodsResponse {
                     .category(category)
                     .build();
         }
+    }
+    // 상품 파일 업로드
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    public static class GoodsUploadResponseDTO {
+        private List<GoodsAddResponseDTO> goodsUploadDTOList;
     }
 
     // 상품 삭제
