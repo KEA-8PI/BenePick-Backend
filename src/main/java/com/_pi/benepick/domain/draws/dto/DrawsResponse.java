@@ -25,7 +25,7 @@ public class DrawsResponse {
         private int sequence;
         private Status drawStatus; // 당첨 상태
         private LocalDateTime rafflesAt;
-        private String category_name; //카테고리 이름
+        private String categoryName; //카테고리 이름
 
         public static DrawsResponse.DrawsResponseByMembersDTO of(Draws draws, String categoryName) {
             return DrawsResponseByMembersDTO.builder()
@@ -35,8 +35,8 @@ public class DrawsResponse {
                     .point(draws.getRaffleId().getPoint())
                     .sequence(draws.getSequence())
                     .drawStatus(draws.getStatus())
-                    .rafflesAt(draws.getRaffleId().getUpdated_at())
-                    .category_name(categoryName)
+                    .rafflesAt(draws.getRaffleId().getUpdatedAt())
+                    .categoryName(categoryName)
                     .build();
         }
 
@@ -48,7 +48,7 @@ public class DrawsResponse {
                     .point(draws.getRaffleId().getPoint())
                     .sequence(draws.getSequence())
                     .drawStatus(draws.getStatus())
-                    .rafflesAt(draws.getRaffleId().getUpdated_at())
+                    .rafflesAt(draws.getRaffleId().getUpdatedAt())
                     .build();
         }
     }
@@ -76,7 +76,7 @@ public class DrawsResponse {
                     .goodsId(draws.getRaffleId().getGoodsId().getId())
                     .point(draws.getRaffleId().getPoint())
                     .drawStatus(draws.getStatus())
-                    .rafflesAt(draws.getRaffleId().getUpdated_at())
+                    .rafflesAt(draws.getRaffleId().getUpdatedAt())
                     .build();
         }
 

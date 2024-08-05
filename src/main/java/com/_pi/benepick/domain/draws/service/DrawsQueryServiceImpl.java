@@ -4,7 +4,6 @@ import com._pi.benepick.domain.draws.dto.DrawsRequest;
 import com._pi.benepick.domain.draws.dto.DrawsResponse;
 import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.draws.repository.DrawsRepository;
-import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
 import com._pi.benepick.domain.draws.entity.Status;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +37,7 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         List<DrawsResponse.DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
                 .filter(draws -> draws.getStatus() == Status.WINNER || draws.getStatus() == Status.CONFIRM)
                 .map(DrawsResponse.DrawsResponseByGoodsDTO::from)
-                .collect(Collectors.toList());
+                .toList();
 
         return DrawsResponse.DrawsResponseByGoodsListDTO.builder()
                 .drawsResponseByGoodsDTOList(drawsResponseByGoodsDTOS)
@@ -51,7 +49,7 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         List<DrawsResponse.DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
                 .filter(draws -> draws.getStatus() == Status.WAITLIST)
                 .map(DrawsResponse.DrawsResponseByGoodsDTO::from)
-                .collect(Collectors.toList());
+            .toList();
 
         return DrawsResponse.DrawsResponseByGoodsListDTO.builder()
                 .drawsResponseByGoodsDTOList(drawsResponseByGoodsDTOS)
@@ -63,7 +61,7 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         List<DrawsResponse.DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
                 .filter(draws -> draws.getStatus() != Status.WAITLIST && draws.getStatus() != Status.NON_WINNER)
                 .map(DrawsResponse.DrawsResponseByGoodsDTO::from)
-                .collect(Collectors.toList());
+            .toList();
 
         return DrawsResponse.DrawsResponseByGoodsListDTO.builder()
                 .drawsResponseByGoodsDTOList(drawsResponseByGoodsDTOS)
@@ -80,7 +78,7 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
 
                     return DrawsResponse.DrawsResponseByMembersDTO.of(draws, categoryName);
                 })
-                .collect(Collectors.toList());
+            .toList();
 
         return DrawsResponse.DrawsResponseByMembersListDTO.builder()
                 .drawsResponseByMembersList(drawsResponseByMembersDTOS)
