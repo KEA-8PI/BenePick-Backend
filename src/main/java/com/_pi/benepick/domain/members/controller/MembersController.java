@@ -21,6 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -79,12 +80,10 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
         return ApiResponse.onSuccess(membersCommandService.addMembers(membersRequestDTO,members));
     }
 
-    @Operation(summary = "복지포인트 파일 업로드 - Mockup API", description = "복지 포인트 파일을 업로드합니다. (관리자용)")
+    @Operation(summary = "복지포인트 파일 업로드", description = "복지 포인트 파일을 업로드합니다. (관리자용)")
     @PostMapping(value="/point/upload",consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<MembersuccessDTO> uploadPointFile(@RequestPart("file") MultipartFile file){
-        return ApiResponse.onSuccess(MembersuccessDTO.builder()
-                .msg("수정되었습니다.")
-                .build());
+    public ApiResponse<MembersDetailListResponseDTO> uploadPointFile(@RequestPart("file") MultipartFile file) throws IOException {
+        return  ApiResponse.onSuccess(membersCommandService.uploadPointFile(file));
     }
 
     @Operation(summary = "사원 정보 수정 - Mockup API", description = "사원 정보를 수정합니다. (관리자용)")

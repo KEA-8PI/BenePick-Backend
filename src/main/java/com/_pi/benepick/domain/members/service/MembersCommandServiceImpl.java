@@ -1,6 +1,8 @@
 package com._pi.benepick.domain.members.service;
 
+import com._pi.benepick.domain.goods.dto.GoodsResponse;
 import com._pi.benepick.domain.members.dto.MembersRequest.*;
+import com._pi.benepick.domain.members.dto.MembersResponse;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
@@ -8,16 +10,26 @@ import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import com._pi.benepick.domain.members.entity.Role;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 
-import java.lang.reflect.Member;
-import java.util.Optional;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class MembersCommandServiceImpl implements MembersCommandService{
     private final MembersRepository membersRepository;
 
@@ -59,5 +71,30 @@ public class MembersCommandServiceImpl implements MembersCommandService{
 
     }
 
+    // 복지포인트 파일 업로드
+    @Override
+    public MembersDetailListResponseDTO uploadPointFile(MultipartFile file) {
+        List<MembersDetailResponseDTO> updatedMembersList = new ArrayList<>();
+        try (InputStream inputStream = file.getInputStream();
+             Workbook workbook = new XSSFWorkbook(inputStream)) {
+            XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) { continue;}
+
+                String id = row.getCell(0).getStringCellValue();
+                Long pointChange = (long)row.getCell(1).getNumericCellValue();
+
+                log.info("Processing ID: " + id + ", Point Change: " + pointChange);
+
+                membersRepository.updatePoints(id, pointChange);
+                Members updatedMember = membersRepository.findById(id).orElseThrow(() -> new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
+                updatedMembersList.add(MembersDetailResponseDTO.from(updatedMember));
+            }
+        } catch (IOException e) {
+            throw new ApiException(ErrorStatus._FILE_INPUT_DISABLED);
+        }
+        return MembersDetailListResponseDTO.builder()
+                .membersDetailResponseDTOList(updatedMembersList).build();
+    }
 
 }
