@@ -1,6 +1,7 @@
 package com._pi.benepick.domain.wishlists.service;
 
 
+import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.wishlists.dto.WishlistResponse;
 import com._pi.benepick.domain.wishlists.entity.Wishlists;
 import com._pi.benepick.domain.wishlists.repository.WishlistsRepository;
@@ -16,9 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class WishlistsCommandServiceImpl implements WishlistsCommandSerivce{
     private final WishlistsRepository wishlistsRepository;
     @Override
-    public WishlistResponse.WishlistSuccessDTO deleteWishlist(Long wishlistId){
+    public WishlistResponse.WishlistSuccessDTO deleteWishlist(Long wishlistId, Members members){
         Wishlists wishlists = wishlistsRepository.findById(wishlistId).orElseThrow(()->new ApiException(ErrorStatus._WISHLIST_NOT_FOUND));
-
+    if(!wishlists.getMemberId().getId().equals(members.getId())){
+        throw new ApiException(ErrorStatus._WISHLIST_NOT_FOUND);
+    }
     wishlistsRepository.deleteById(wishlistId);
         return WishlistResponse.WishlistSuccessDTO.builder()
                 .id(wishlists.getId())

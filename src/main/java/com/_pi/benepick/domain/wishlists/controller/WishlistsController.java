@@ -49,8 +49,9 @@ public class WishlistsController {
     @Operation(summary = "위시리스트 삭제",description = "사용자가 위시리스트를 삭제합니다." )
     @DeleteMapping("/delete/{wishlistId}")
     public ApiResponse<WishlistSuccessDTO> deletewishList(@PathVariable Long wishlistId){
+        Members members=membersRepository.findById("gcu").orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
         return ApiResponse.onSuccess(
-               wishlistsCommandSerivce.deleteWishlist(wishlistId)
+               wishlistsCommandSerivce.deleteWishlist(wishlistId,members)
         );
     }
 
