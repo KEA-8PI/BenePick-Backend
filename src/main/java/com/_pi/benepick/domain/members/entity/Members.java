@@ -23,7 +23,6 @@ import java.util.Objects;
 @DynamicUpdate //변경사항이 있는 것만 Update
 @SQLRestriction("is_deleted = 'F'")
 @SQLDelete(sql = "UPDATE members SET is_deleted = 'T' WHERE id = ?")
-@Setter
 public class Members extends BaseJPATimeEntity {
     public void updatePassword(String password) {
         this.password = password;
