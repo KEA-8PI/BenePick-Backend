@@ -1,9 +1,6 @@
 package com._pi.benepick.domain.members.controller;
-
-
 import com._pi.benepick.domain.members.dto.MembersRequest.*;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
-
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.domain.members.service.MembersCommandService;
@@ -86,14 +83,12 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
                 .build());
     }
 
-    @Operation(summary = "사원 정보 수정 - Mockup API", description = "사원 정보를 수정합니다. (관리자용)")
-    @PatchMapping("/info/{memberId}")
-    public ApiResponse<MembersuccessDTO> updateMemberInfo(@PathVariable String memberId, @RequestBody MembersRequestDTO membersRequestDTO){
-        return ApiResponse.onSuccess(MembersuccessDTO.builder()
-                .msg("수정되었습니다.")
-                .build());
+    @Operation(summary = "사원 정보 수정", description = "사원 정보를 수정합니다. (관리자용)")
+    @PatchMapping("/info/{memberID}")
+    public ApiResponse<MembersuccessDTO> updateMemberInfo(@PathVariable String memberID, @RequestBody MembersRequestDTO membersRequestDTO){
+        Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
+        return ApiResponse.onSuccess(membersCommandService.updateMemberInfo(memberID,membersRequestDTO,member));
     }
-
     @Operation(summary = "사원 삭제 - Mockup API",description = "사원을 삭제합니다. (관리자용)")
     @DeleteMapping("/{memberId}")
     public ApiResponse<DeleteResponseDTO> deleteMember(@PathVariable String memberId){
