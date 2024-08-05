@@ -76,16 +76,11 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
     // 회차별 당첨자 평균 응모 포인트
     private List<Double> calculateAvgWinnerPointsPerRaffles(List<Goods> goodsList) {
         return goodsList.stream()
-                .map(goods -> {
-                    List<Draws> draws = drawsRepository.findDrawsByGoodsIdAndStatuses(goods.getId(), WinnedStatus);
-                    return draws.stream()
-                            .map(draw -> draw.getRaffleId().getPoint())
-                            .mapToDouble(Long::doubleValue)
-                            .average()
-                            .orElse(0.0);
-                })
+                .map(goods -> drawsRepository.findAveragePointByGoodsIdAndStatus(goods.getId(), Status.WINNER))
+                .map(avg -> avg != null ? avg : 0.0)
                 .collect(Collectors.toList());
     }
+
 
     // 회차별 총 응모 포인트
     private List<Double> calculateTotalPointsPerRaffles(List<Goods> goodsList) {
