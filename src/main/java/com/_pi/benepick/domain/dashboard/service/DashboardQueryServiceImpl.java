@@ -8,7 +8,6 @@ import com._pi.benepick.domain.draws.entity.Status;
 import com._pi.benepick.domain.draws.repository.DrawsRepository;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.repository.GoodsRepository;
-import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import com._pi.benepick.domain.raffles.repository.RafflesRepository;
 import com._pi.benepick.global.common.exception.ApiException;
@@ -45,7 +44,7 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
         // 회차별 대기 충원율
         List<Double> refillRatesPerRaffles = calculateRefillRatesPerRaffles(goodsList);
         // 응모자 중 당첨자 순위 top5
-        List<Integer> mostWinnedRanks = calculateMostWinnedRanks(goodsList);
+        List<Map.Entry<Integer, Double>> mostWinnedRanks = calculateMostWinnedRanks(goodsList);
         // 당첨자 평균 응모 포인트
         Double avgWinnerPoints = calculateAvgWinnerPoints(goodsList);
 
@@ -114,25 +113,26 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
     }
 
     // 응모자 중 당첨자 순위 top5
-    private List<Integer> calculateMostWinnedRanks(List<Goods> goodsList) {
+    private List<Map.Entry<Integer, Double>> calculateMostWinnedRanks(List<Goods> goodsList) {
         Map<Integer, Integer> rankCountMap = new HashMap<>();
         goodsList.forEach(goods -> {
             List<Raffles> raffles = rafflesRepository.findAllByGoodsId(goods);
             raffles.forEach(raffle -> {
                 List<Draws> draws = drawsRepository.findDrawsByRaffleIdAndStatuses(raffle.getId(), WinnedStatus);
-                draws.sort(Comparator.comparing(draw -> draw.getRaffleId().getPoint(), Comparator.reverseOrder()));
                 for (int i = 0; i < draws.size(); i++) {
                     int rank = i + 1;
                     rankCountMap.put(rank, rankCountMap.getOrDefault(rank, 0) + 1);
                 }
             });
         });
+        int totalRankCount = rankCountMap.values().stream().mapToInt(Integer::intValue).sum();
         return rankCountMap.entrySet().stream()
                 .sorted(Map.Entry.<Integer, Integer>comparingByValue().reversed())
                 .limit(5)
-                .map(Map.Entry::getKey)
+                .map(entry -> Map.entry(entry.getKey(), entry.getValue() / (double) totalRankCount))
                 .collect(Collectors.toList());
     }
+
 
     // 당첨자 평균 응모 포인트
     private Double calculateAvgWinnerPoints(List<Goods> goodsList) {
