@@ -69,16 +69,12 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
                 .seed(seed)
                 .build();
         Hash savedHash = hashsRepository.save(hash_entity);
-        goods.startDrawAndUpdateRandomizeSeedsAndStatus(savedHash, GoodsStatus.COMPLETED);
+        goods.startDraw(savedHash, GoodsStatus.COMPLETED);
 
         List<Draws> drawsList = RaffleDraw.performDraw(seed, rafflesList, goods);
 
         drawsRepository.saveAll(drawsList);
         goodsRepository.save(goods);
-
-        // 레디스에 hash 와 seed 저장 필요
-        // TODO: 레디스에 hash:seed key value로 저장하는 것 추가 필요.
-//        redisTemplate.opsForValue().set(hash, seed);
 
     }
 

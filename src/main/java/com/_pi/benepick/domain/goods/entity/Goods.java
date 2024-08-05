@@ -55,7 +55,7 @@ public class Goods extends BaseJPATimeEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "goodsId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Raffles> raffles; // 응모자 리스트
 
-    public void startDrawAndUpdateRandomizeSeedsAndStatus(Hash hash, GoodsStatus goodsStatus) {
+    public void startDraw(Hash hash, GoodsStatus goodsStatus) {
         this.hash = hash;
         this.goodsStatus = goodsStatus;
     }
