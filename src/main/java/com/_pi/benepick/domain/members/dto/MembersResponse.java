@@ -28,9 +28,7 @@ public class MembersResponse {
                     .name(members.getName())
                     .deptName(members.getDeptName())
                     .penaltyCnt(members.getPenaltyCnt())
-
                     .point(members.getPoint())
-
                     .build();
         }
     }
