@@ -1,6 +1,7 @@
 package com._pi.benepick.domain.dashboard.controller;
 
 import com._pi.benepick.domain.dashboard.dto.DashboardResponse;
+import com._pi.benepick.domain.dashboard.service.DashboardQueryService;
 import com._pi.benepick.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,20 +21,11 @@ import java.util.List;
 @Slf4j
 @Tag(name = "Dashboard", description = "대시보드 API")
 public class DashboardController {
-    @Operation(summary = "대시보드 조회 - Mockup API", description = "대시보드를 조회합니다.")
+    private final DashboardQueryService dashboardQueryService;
+
+    @Operation(summary = "대시보드 조회", description = "대시보드를 조회합니다.")
     @GetMapping("/dashboard")
-    public ApiResponse<DashboardResponse.DashboardResponseDTO> getDashboard(@RequestParam String category, @RequestParam @DateTimeFormat LocalDateTime startDate, @RequestParam @DateTimeFormat LocalDateTime endDate) {
-        Double result = 1.0;
-        Double result1 = 2.0;
-        List<Double> resultList = Arrays.asList(result, result1);
-        int result2 = 1;
-        int result3 = 2;
-        List<Integer> resultList2 = Arrays.asList(result2, result3);
-        return ApiResponse.onSuccess(DashboardResponse.DashboardResponseDTO.builder()
-                .avgWinnerPointsPerRaffles(resultList)
-                .totalPointsPerRaffles(resultList)
-                .refillRatesPerRaffles(resultList)
-                .mostWinnedRanks(resultList2)
-                .avgWinnerPoints(100.5)
-                .build());    }
+    public ApiResponse<DashboardResponse.DashboardResponseDTO> getDashboard(@RequestParam(required = false) String category, @RequestParam @DateTimeFormat LocalDateTime startDate, @RequestParam @DateTimeFormat LocalDateTime endDate) {
+        return ApiResponse.onSuccess(dashboardQueryService.getDashboard(category, startDate, endDate));
+    }
 }

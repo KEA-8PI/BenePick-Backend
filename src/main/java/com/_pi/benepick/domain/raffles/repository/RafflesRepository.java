@@ -16,5 +16,7 @@ public interface RafflesRepository extends JpaRepository<Raffles, Long> {
 
     List<Raffles> findAllByMemberId(Members members);
 
+    @Query("SELECT r.id FROM Raffles r WHERE r.goodsId.id = :goodsId")
+    List<Long> findRaffleIdsByGoodsId(Long goodsId);
     Optional<Raffles> findByGoodsIdAndMemberId(Goods goods, Members members);
 }
