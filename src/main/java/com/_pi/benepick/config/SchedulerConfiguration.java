@@ -16,7 +16,7 @@ public class SchedulerConfiguration {
     private final DrawsCommandService drawsCommandService;
 
     // 매일 밤 자정에 실행
-    @Scheduled(cron = "20 03 16 * * ?")
+    @Scheduled(cron = "01 00 00 * * ?")
     public void cronTask() {
         LocalDateTime now = LocalDateTime.now();
         drawsCommandService.updateGoodsStatus(now);
