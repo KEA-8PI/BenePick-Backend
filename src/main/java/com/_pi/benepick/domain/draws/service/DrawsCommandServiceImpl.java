@@ -54,28 +54,39 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
         return DrawsResponse.DrawsResponseByMembersDTO.from(savedDraws);
     }
 
-    public void drawStart(Long goodsId) {
-        Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
-        // 현재 시각이 응모종료시간보다 이후여야하고, 상태가 PROGRESS 여야 한다.
-        if (!(LocalDateTime.now().isAfter(goods.getRaffleEndAt()) && goods.getGoodsStatus().equals(GoodsStatus.PROGRESS))) {
-            throw new ApiException(ErrorStatus._BAD_REQUEST);
+    public void drawStart(LocalDateTime now) {
+        List<Goods> goodsList = goodsRepository.findByRaffleEndAtBeforeAndGoodsStatus(now, GoodsStatus.PROGRESS);
+
+        for (Goods goods : goodsList) {
+            // 현재 시각이 응모종료시간보다 이후여야하고, 상태가 PROGRESS 여야 한다.
+            if (!(LocalDateTime.now().isAfter(goods.getRaffleEndAt()) && goods.getGoodsStatus().equals(GoodsStatus.PROGRESS))) {
+                throw new ApiException(ErrorStatus._BAD_REQUEST);
+            }
+            List<Raffles> rafflesList = rafflesRepository.findAllByGoodsId(goods);
+
+            double seed = DrawAlgorithm.generateSeed();
+            String hash = DoubleToSHA256.getSHA256Hash(seed);
+            Hash hash_entity = Hash.builder()
+                    .hash(hash)
+                    .seed(seed)
+                    .build();
+            Hash savedHash = hashsRepository.save(hash_entity);
+            goods.startDraw(savedHash, GoodsStatus.COMPLETED);
+
+            List<Draws> drawsList = RaffleDraw.performDraw(seed, rafflesList, goods);
+
+            drawsRepository.saveAll(drawsList);
+            goodsRepository.save(goods);
         }
-        List<Raffles> rafflesList = rafflesRepository.findAllByGoodsId(goods);
 
-        double seed = DrawAlgorithm.generateSeed();
-        String hash = DoubleToSHA256.getSHA256Hash(seed);
-        Hash hash_entity = Hash.builder()
-                .hash(hash)
-                .seed(seed)
-                .build();
-        Hash savedHash = hashsRepository.save(hash_entity);
-        goods.startDraw(savedHash, GoodsStatus.COMPLETED);
+    }
 
-        List<Draws> drawsList = RaffleDraw.performDraw(seed, rafflesList, goods);
-
-        drawsRepository.saveAll(drawsList);
-        goodsRepository.save(goods);
-
+    public void updateGoodsStatus(LocalDateTime now) {
+        List<Goods> goodsList = goodsRepository.findByRaffleStartAtBeforeAndGoodsStatus(now, GoodsStatus.SCHEDULED);
+        for (Goods goods : goodsList) {
+            goods.updateStatus(GoodsStatus.PROGRESS);
+            goodsRepository.save(goods);
+        }
     }
 
     public DrawsResponse.DrawsResponseResultListDTO verificationSeed(Long goodsId, String hash) {

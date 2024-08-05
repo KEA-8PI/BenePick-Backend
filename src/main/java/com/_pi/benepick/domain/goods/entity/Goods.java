@@ -59,4 +59,9 @@ public class Goods extends BaseJPATimeEntity {
         this.hash = hash;
         this.goodsStatus = goodsStatus;
     }
+
+    public void updateStatus(GoodsStatus newStatus) {
+        this.goodsStatus = newStatus;
+    }
+
 }
