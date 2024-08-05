@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface GoodsRepository extends JpaRepository<Goods, Long> {
@@ -33,4 +34,7 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
             "GROUP BY g " +
             "ORDER BY COUNT(r) DESC, g.id ASC")
     Page<Goods> searchGoodsByRaffleCount(GoodsStatus goodsStatus, Long categoryId, String keyword, Pageable pageable);
+
+    List<Goods> findByRaffleEndAtBeforeAndGoodsStatus(LocalDateTime now, GoodsStatus status);
+    List<Goods> findByRaffleStartAtBeforeAndGoodsStatus(LocalDateTime now, GoodsStatus status);
 }

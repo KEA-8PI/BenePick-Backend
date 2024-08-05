@@ -75,12 +75,6 @@ public class DrawsController {
         drawsQueryService.downloadExcel(member, goodsId, response);
     }
 
-    @Operation(summary = "추첨 테스트 용 삭제할 거임")
-    @GetMapping("/draw/test/{goodsId}")
-    public void drawTest(@PathVariable Long goodsId) throws NoSuchAlgorithmException {
-        drawsCommandService.drawStart(goodsId);
-    }
-
     @Operation(summary = "추첨 검증 - Mockup API", description = "시드값을 이용하여 추첨 로직 검증을 할 수 있습니다.")
     @GetMapping("/verification/{goodsId}/{seed}")
     public ApiResponse<DrawsResponse.DrawsResponseResultListDTO> verificationSeed(@PathVariable Long goodsId, @PathVariable String seed) {
