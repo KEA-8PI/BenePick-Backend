@@ -39,12 +39,9 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class DrawsQueryServiceImpl implements DrawsQueryService {
 
-    private final GoodsRepository goodsRepository;
     private final MembersRepository membersRepository;
     private final DrawsRepository drawsRepository;
-    private final RafflesRepository rafflesRepository;
     private final GoodsCategoriesRepository goodsCategoriesRepository;
-    private final RedisTemplate<String, Object> redisTemplate;
 
     public DrawsResponse.DrawsResponseByGoodsListDTO getResultByGoodsId(Long goodsId) {
         List<DrawsResponse.DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()

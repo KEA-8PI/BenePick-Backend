@@ -35,6 +35,9 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
         // 히스토리 반영 부분
         // TODO: 포인트 소모 히스토리 서비스 로직 구현 필요
         // historyService.addPointUsageHistory(memberId, pointsToDeduct, "Raffle Participation");
+        members.updatePoint(raffleAddDTO.getPoint());
+        membersRepository.save(members);
+
         Optional<Raffles> optionalRaffles = rafflesRepository.findByGoodsIdAndMemberId(goods, members);
         if (optionalRaffles.isPresent()) {
             Raffles raffles = optionalRaffles.get();

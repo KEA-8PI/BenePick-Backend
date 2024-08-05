@@ -15,6 +15,7 @@ import com._pi.benepick.domain.hash.entity.Hash;
 import com._pi.benepick.domain.hash.repository.HashsRepository;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
+import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import com._pi.benepick.domain.raffles.repository.RafflesRepository;
 import com._pi.benepick.global.common.exception.ApiException;
@@ -39,6 +40,7 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
     private final DrawsRepository drawsRepository;
     private final RafflesRepository rafflesRepository;
     private final HashsRepository hashsRepository;
+    private final MembersRepository membersRepository;
 
     public DrawsResponse.DrawsResponseByMembersDTO editWinnerStatus(Members members, Long winnerId, DrawsRequest.DrawsRequestDTO dto) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
@@ -49,6 +51,7 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
 
         // NO_SHOW로 변경하였을 때
         // TODO: 패널티 히스토리 추가 및 패널티 부여.
+
 
         return DrawsResponse.DrawsResponseByMembersDTO.from(savedDraws);
     }
@@ -74,6 +77,13 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
 
             List<Draws> drawsList = RaffleDraw.performDraw(seed, rafflesList, goods);
 
+            for (Draws draws : drawsList) {
+                if (draws.getStatus().equals(Status.NON_WINNER)) {
+                    Members members = draws.getRaffleId().getMemberId();
+                    members.updatePoint(-(draws.getRaffleId().getPoint()));
+                    membersRepository.save(members);
+                }
+            }
             drawsRepository.saveAll(drawsList);
             goodsRepository.save(goods);
         }
