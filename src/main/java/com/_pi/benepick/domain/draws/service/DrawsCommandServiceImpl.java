@@ -80,7 +80,7 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
             for (Draws draws : drawsList) {
                 if (draws.getStatus().equals(Status.NON_WINNER)) {
                     Members members = draws.getRaffleId().getMemberId();
-                    members.updatePoint(-(draws.getRaffleId().getPoint()));
+                    members.updatePoint(-(draws.getRaffleId().getPoint() / 2));
                     membersRepository.save(members);
                 }
             }
