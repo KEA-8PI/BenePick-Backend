@@ -21,7 +21,8 @@ public interface RafflesRepository extends JpaRepository<Raffles, Long> {
     List<Raffles> findAllByMemberId(Members members);
 
     @Modifying
-
     @Query("delete from Raffles p where p.memberId.id =:id and p.goodsId.goodsStatus =:status")
     void deleteAllByMemberId(String id, GoodsStatus status);
+
+    List<Raffles> findAllByMemberId_Id(String id);
 }

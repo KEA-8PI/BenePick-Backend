@@ -1,5 +1,6 @@
 package com._pi.benepick.domain.members.service;
 
+import com._pi.benepick.domain.draws.repository.DrawsRepository;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.members.dto.MembersRequest.*;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
@@ -7,6 +8,7 @@ import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.domain.penaltyHists.repository.PenaltyHistsRepository;
 import com._pi.benepick.domain.pointHists.repository.PointHistsRepository;
+import com._pi.benepick.domain.raffles.entity.Raffles;
 import com._pi.benepick.domain.raffles.repository.RafflesRepository;
 import com._pi.benepick.domain.wishlists.repository.WishlistsRepository;
 import com._pi.benepick.global.common.exception.ApiException;
@@ -29,6 +31,7 @@ public class MembersCommandServiceImpl implements MembersCommandService{
     private final PointHistsRepository pointHistsRepository;
     private final WishlistsRepository wishlistsRepository;
     private final RafflesRepository rafflesRepository;
+    private final DrawsRepository drawsRepository;
 
     @Override
     public MembersuccessDTO changePassword(MemberPasswordDTO memberPasswordDTO, Members members){
@@ -78,13 +81,17 @@ public class MembersCommandServiceImpl implements MembersCommandService{
 
         for(String id:deleteMembersRequestDTO.getId()){
             Members member = membersRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
-            membersRepository.deleteById(id);
-
             penaltyHistsRepository.deleteAllByMemberId(id);
             pointHistsRepository.deleteAllByMemberId(id);
             wishlistsRepository.deleteAllByMemberId(id);
-            rafflesRepository.deleteAllByMemberId(id, GoodsStatus.PROGRESS);
+            List<Raffles> rafflesList = rafflesRepository.findAllByMemberId_Id(id);
 
+            // For each raffle, delete associated draws
+            for (Raffles raffle : rafflesList) {
+                drawsRepository.deleteAllByMemberId(raffle.getId());
+            }
+            rafflesRepository.deleteAllByMemberId(id, GoodsStatus.PROGRESS);
+            membersRepository.deleteById(id);
             deletedId.add(id);
         }
         return DeleteResponseDTO.builder()
