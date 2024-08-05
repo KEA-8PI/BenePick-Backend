@@ -1,13 +1,10 @@
 package com._pi.benepick.domain.pointHists.dto;
 
-import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.pointHists.entity.PointHists;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.awt.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,7 +27,7 @@ public class PointResponse {
                     .content(pointHists.getContent())
                     .totalPoint(pointHists.getTotalPoint())
                     .pointChange(pointHists.getPointChange())
-                    .createdAt(pointHists.getCreated_at())
+                    .createdAt(pointHists.getCreatedAt())
                     .build();
         }
 

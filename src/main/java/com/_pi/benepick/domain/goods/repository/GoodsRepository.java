@@ -7,10 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.domain.Page;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface GoodsRepository extends JpaRepository<Goods, Long> {
@@ -35,4 +35,9 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
             "ORDER BY COUNT(r) DESC, g.id ASC")
     Page<Goods> searchGoodsByRaffleCount(GoodsStatus goodsStatus, Long categoryId, String keyword, Pageable pageable);
 
+<<<<<<< HEAD
+=======
+    List<Goods> findByRaffleEndAtBeforeAndGoodsStatus(LocalDateTime now, GoodsStatus status);
+    List<Goods> findByRaffleStartAtBeforeAndGoodsStatus(LocalDateTime now, GoodsStatus status);
+>>>>>>> 4351767d7e5f60ee112bf68d01663d17fae51d2f
 }

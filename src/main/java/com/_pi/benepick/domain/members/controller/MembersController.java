@@ -1,14 +1,10 @@
 package com._pi.benepick.domain.members.controller;
-
-
 import com._pi.benepick.domain.members.dto.MembersRequest.*;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
-
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.domain.members.service.MembersCommandService;
 import com._pi.benepick.domain.members.service.MembersQueryService;
-import com._pi.benepick.domain.penaltyHists.service.PenaltyHistsQueryService;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.ApiResponse;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
@@ -87,12 +83,11 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
                 .build());
     }
 
-    @Operation(summary = "사원 정보 수정 - Mockup API", description = "사원 정보를 수정합니다. (관리자용)")
-    @PatchMapping("/info/{memberId}")
-    public ApiResponse<MembersuccessDTO> updateMemberInfo(@PathVariable String memberId, @RequestBody MembersRequestDTO membersRequestDTO){
-        return ApiResponse.onSuccess(MembersuccessDTO.builder()
-                .msg("수정되었습니다.")
-                .build());
+    @Operation(summary = "사원 정보 수정", description = "사원 정보를 수정합니다. (관리자용)")
+    @PatchMapping("/info/{memberID}")
+    public ApiResponse<MembersuccessDTO> updateMemberInfo(@PathVariable String memberID, @RequestBody MembersRequestDTO membersRequestDTO){
+        Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
+        return ApiResponse.onSuccess(membersCommandService.updateMemberInfo(memberID,membersRequestDTO,member));
     }
 
     @Operation(summary = "사원 삭제",description = "사원을 삭제합니다. (관리자용)")
@@ -100,6 +95,8 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
     public ApiResponse<DeleteResponseDTO> deleteMember(@RequestBody DeleteMembersRequestDTO deleteMembersRequestDTO){
         Members members=membersRepository.findById("string").orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
         return ApiResponse.onSuccess(membersCommandService.deleteMembers(deleteMembersRequestDTO,members));
+
+
     }
 
     @Operation(summary = "사원 추가 파일 등록 - Mockup API", description = "복지 포인트 파일을 업로드합니다. (관리자용)")
