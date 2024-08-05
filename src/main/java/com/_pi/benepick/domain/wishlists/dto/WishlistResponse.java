@@ -39,6 +39,5 @@ public class WishlistResponse {
     @NoArgsConstructor
     public static class WishlistSuccessDTO{
         Long id;
-        String msg;
     }
 }

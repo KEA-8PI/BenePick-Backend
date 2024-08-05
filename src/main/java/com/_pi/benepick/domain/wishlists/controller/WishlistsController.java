@@ -42,7 +42,6 @@ public class WishlistsController {
     public ApiResponse<WishlistSuccessDTO> addwishList(@PathVariable String goodsId){
         return ApiResponse.onSuccess(
                 WishlistSuccessDTO.builder()
-                        .msg("추가되었습니다")
                         .build()
         );
     }

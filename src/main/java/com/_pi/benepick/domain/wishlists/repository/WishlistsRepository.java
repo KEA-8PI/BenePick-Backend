@@ -9,6 +9,4 @@ import java.util.Optional;
 
 public interface WishlistsRepository extends JpaRepository<Wishlists, Long> {
 
-    Optional<Wishlists> findByGoodsId_Id(Long id);
-    void deleteAllByGoodsId_Id(Long id);
 }

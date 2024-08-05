@@ -22,7 +22,6 @@ public class WishlistsCommandServiceImpl implements WishlistsCommandSerivce{
     wishlistsRepository.deleteById(wishlistId);
         return WishlistResponse.WishlistSuccessDTO.builder()
                 .id(wishlists.getId())
-                .msg("위시리스트 삭제완료")
                 .build();
 
     }
