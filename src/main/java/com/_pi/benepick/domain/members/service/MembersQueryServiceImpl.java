@@ -75,12 +75,12 @@ public class MembersQueryServiceImpl implements MembersQueryService {
 
     @Override
     public MemberPointDTO getMemberPoint(Members members){
-    Members members1=membersRepository.findById(members.getId()).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
-    Long point =  members1.getPoint();
+
+    Long point =  members.getPoint();
 
         return MemberPointDTO.builder()
                 .point(point)
-                .id(members1.getId())
+                .id(members.getId())
                 .build();
     }
 }
