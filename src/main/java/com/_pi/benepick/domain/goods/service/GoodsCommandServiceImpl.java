@@ -9,14 +9,12 @@ import com._pi.benepick.domain.goods.dto.GoodsRequest;
 import com._pi.benepick.domain.goods.dto.GoodsResponse;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
-
 import com._pi.benepick.domain.goods.repository.GoodsRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -29,11 +27,9 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
     private final GoodsCategoriesRepository goodsCategoriesRepository;
     private final CategoriesRepository categoriesRepository;
 
-    //상품 엑셀 추가
-
     // 상품 추가 ( 응모 상태 자동 수정 )
     @Override
-    public GoodsResponse.GoodsResponseDTO addGoods(GoodsRequest.GoodsRequestDTO goodsAddDTO) {
+    public GoodsResponse.GoodsAddResponseDTO addGoods(GoodsRequest.GoodsRequestDTO goodsAddDTO) {
         // 현재시간과 비교하여 GoodsStatus를 결정
         GoodsStatus status = determineGoodsStatus(goodsAddDTO.getRaffleStartAt(), goodsAddDTO.getRaffleEndAt());
 
@@ -47,12 +43,12 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
                 .build();
         goodsCategoriesRepository.save(goodsCategories);
 
-        return GoodsResponse.GoodsResponseDTO.of(savedGoods, category.getName());
+        return GoodsResponse.GoodsAddResponseDTO.of(savedGoods, category.getName());
     }
 
     // 상품 수정 ( 응모 상태 자동 수정 )
     @Override
-    public GoodsResponse.GoodsResponseDTO updateGoods(Long goodsId, GoodsRequest.GoodsRequestDTO goodsUpdateDTO) {
+    public GoodsResponse.GoodsAddResponseDTO updateGoods(Long goodsId, GoodsRequest.GoodsRequestDTO goodsUpdateDTO) {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
 
         // 현재시간과 비교하여 GoodsStatus를 결정
@@ -78,11 +74,11 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
 
         Goods updatedGoods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
 
-        return GoodsResponse.GoodsResponseDTO.of(updatedGoods, category.getName());
+        return GoodsResponse.GoodsAddResponseDTO.of(updatedGoods, category.getName());
     }
 
     // 현재 시간에 따라 GoodsStatus를 결정하는 메소드
-    private GoodsStatus determineGoodsStatus(LocalDateTime raffleStartAt, LocalDateTime raffleEndAt) {
+    public GoodsStatus determineGoodsStatus(LocalDateTime raffleStartAt, LocalDateTime raffleEndAt) {
         LocalDateTime now = LocalDateTime.now();
         if (raffleStartAt.isAfter(now)) {
             return GoodsStatus.SCHEDULED; // 현재 시간보다 시작 시간이 늦으면 예정 상태

@@ -1,4 +1,4 @@
-package com._pi.benepick.domain.winners.entity;
+package com._pi.benepick.domain.draws.entity;
 
 import com._pi.benepick.global.common.BaseJPATimeEntity;
 import com._pi.benepick.domain.raffles.entity.Raffles;
@@ -17,13 +17,13 @@ import org.hibernate.annotations.SQLRestriction;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @SQLRestriction("is_deleted = 'F'")
-@SQLDelete(sql = "UPDATE winners SET is_deleted = 'T' WHERE id = ?")
-public class Winners extends BaseJPATimeEntity {
+@SQLDelete(sql = "UPDATE draws SET is_deleted = 'T' WHERE id = ?")
+public class Draws extends BaseJPATimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //추첨_id
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Raffles.class)
+    @OneToOne(fetch = FetchType.LAZY, targetEntity = Raffles.class)
     @JoinColumn(name = "raffle_id")
     private Raffles raffleId; //응모_id
 

@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import lombok.RequiredArgsConstructor;
 
 public class GoodsRequest {
 
