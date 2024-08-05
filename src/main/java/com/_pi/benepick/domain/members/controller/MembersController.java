@@ -34,14 +34,11 @@ public class MembersController {
 
 
 
-    @Operation(summary = "복지포인트 조회 - Mockup API", description = "사용자가 복지포인트를 조회합니다.")
+    @Operation(summary = "복지포인트 조회 ", description = "사용자가 복지포인트를 조회합니다.")
     @GetMapping("/point")
     public ApiResponse<MemberPointDTO> getMemberpoint(){
-        MemberPointDTO memberPointDTO = new MemberPointDTO();
-        memberPointDTO.setId("thwjd0808");
-        memberPointDTO.setPoint((long)100);
-
-        return ApiResponse.onSuccess(memberPointDTO);
+        Members members=membersRepository.findById("gcu").orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
+        return ApiResponse.onSuccess(membersQueryService.getMemberPoint(members));
 
     }
 
