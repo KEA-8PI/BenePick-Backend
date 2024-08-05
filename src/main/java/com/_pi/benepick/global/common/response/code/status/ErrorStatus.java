@@ -39,9 +39,10 @@ public enum ErrorStatus implements BaseErrorCode {
 
 
     _MEMBER_PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "MEMBER_002", "비밀번호가 일치하지 않습니다."),
-
+  
     //auth 관련
-    _FILE_OUTPUT_DISABLED(HttpStatus.INTERNAL_SERVER_ERROR, "DRAWS_001", "파일 출력이 불가능합니다.");
+    _FILE_OUTPUT_DISABLED(HttpStatus.INTERNAL_SERVER_ERROR, "DRAWS_001", "파일 출력이 불가능합니다."),
+    _NO_SUCH_ALGORITHM(HttpStatus.INTERNAL_SERVER_ERROR, "DRAWS_002", "Hash Algorithm 을 사용할 수 없습니다.");
 
 
 

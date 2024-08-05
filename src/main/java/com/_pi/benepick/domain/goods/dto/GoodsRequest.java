@@ -38,7 +38,6 @@ public class GoodsRequest {
                     .discountPrice(discountPrice)
                     .raffleStartAt(raffleStartAt)
                     .raffleEndAt(raffleEndAt)
-                    .seeds(-1L)
                     .goodsStatus(status)
                     .build();
         }

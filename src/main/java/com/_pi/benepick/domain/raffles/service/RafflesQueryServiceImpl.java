@@ -74,18 +74,4 @@ public class RafflesQueryServiceImpl implements RafflesQueryService {
             throw new ApiException(ErrorStatus._GOODS_NOT_FOUND);
         }
     }
-
-    public RafflesResponse.RafflesResponseByGoodsDTO applyRaffle(String memberId, Long goodsId, RafflesRequest.RafflesRequestDTO raffleAddDTO) {
-        Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
-        Members members = membersRepository.findById(memberId).orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
-        if (!(members.getRole().equals(Role.MEMBER))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
-
-        // 히스토리 반영 부분
-        // TODO: 포인트 소모 히스토리 서비스 로직 구현 필요
-        // historyService.addPointUsageHistory(memberId, pointsToDeduct, "Raffle Participation");
-        Raffles raffles = RafflesRequest.RafflesRequestDTO.toEntity(members, goods, raffleAddDTO);
-        Raffles savedRaffles = rafflesRepository.save(raffles);
-
-        return RafflesResponse.RafflesResponseByGoodsDTO.from(savedRaffles);
-    }
 }

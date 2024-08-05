@@ -2,6 +2,8 @@ package com._pi.benepick.domain.draws.dto;
 
 import com._pi.benepick.domain.draws.entity.Status;
 import com._pi.benepick.domain.draws.entity.Draws;
+import com._pi.benepick.domain.members.entity.Members;
+import com._pi.benepick.domain.raffles.entity.Raffles;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -86,6 +88,17 @@ public class DrawsResponse {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
+    public static class DrawsResponseResultDTO {
+        private Status status;
+        private int sequence;
+        private String memberId;
+        private String memberName;
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class DrawsResponseByMembersListDTO {
         private List<DrawsResponse.DrawsResponseByMembersDTO> drawsResponseByMembersList;
     }
@@ -96,6 +109,14 @@ public class DrawsResponse {
     @NoArgsConstructor
     public static class DrawsResponseByGoodsListDTO {
         private List<DrawsResponse.DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOList;
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class DrawsResponseResultListDTO {
+        private List<DrawsResponse.DrawsResponseResultDTO> drawsList;
     }
 
 }
