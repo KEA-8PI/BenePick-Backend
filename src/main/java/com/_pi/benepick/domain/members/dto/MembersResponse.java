@@ -70,7 +70,7 @@ public class MembersResponse {
     @NoArgsConstructor
     @Setter
     public static class DeleteResponseDTO{
-        private String msg;
+        private List<String> memberid;
     }
 
     @Builder

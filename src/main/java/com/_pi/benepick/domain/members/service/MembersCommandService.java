@@ -15,5 +15,7 @@ public interface MembersCommandService {
 
     MembersResponse.MembersDetailResponseDTO addMembers(MembersRequest.AdminMemberRequestDTO membersRequestDTO, Members members);
 
+    MembersResponse.DeleteResponseDTO deleteMembers(MembersRequest.DeleteMembersRequestDTO deleteMembersRequestDTO, Members members);
+
     MembersResponse.MembersDetailListResponseDTO uploadMemberFile(MultipartFile file); // 사원 정보 파일 업로드
 }

@@ -86,12 +86,14 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
         Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
         return ApiResponse.onSuccess(membersCommandService.updateMemberInfo(memberID,membersRequestDTO,member));
     }
-    @Operation(summary = "사원 삭제 - Mockup API",description = "사원을 삭제합니다. (관리자용)")
-    @DeleteMapping("/{memberId}")
-    public ApiResponse<DeleteResponseDTO> deleteMember(@PathVariable String memberId){
-        return ApiResponse.onSuccess(DeleteResponseDTO.builder()
-                        .msg("삭제되었습니다.")
-                .build());
+
+    @Operation(summary = "사원 삭제",description = "사원을 삭제합니다. (관리자용)")
+    @DeleteMapping("/")
+    public ApiResponse<DeleteResponseDTO> deleteMember(@RequestBody DeleteMembersRequestDTO deleteMembersRequestDTO){
+        Members members=membersRepository.findById("string").orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
+        return ApiResponse.onSuccess(membersCommandService.deleteMembers(deleteMembersRequestDTO,members));
+
+
     }
 
     @Operation(summary = "사원 추가 파일 등록", description = "복지 포인트 파일을 업로드합니다. (관리자용)")

@@ -6,6 +6,8 @@ import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goodsCategories.entity.GoodsCategories;
 import com._pi.benepick.domain.members.dto.MembersRequest;
 
+import com._pi.benepick.domain.draws.repository.DrawsRepository;
+import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.members.dto.MembersRequest.*;
 
 import com._pi.benepick.domain.members.dto.MembersResponse;
@@ -13,10 +15,16 @@ import com._pi.benepick.domain.members.dto.MembersResponse.*;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
 
+import com._pi.benepick.domain.penaltyHists.repository.PenaltyHistsRepository;
+import com._pi.benepick.domain.pointHists.repository.PointHistsRepository;
+import com._pi.benepick.domain.raffles.entity.Raffles;
+import com._pi.benepick.domain.raffles.repository.RafflesRepository;
+import com._pi.benepick.domain.wishlists.repository.WishlistsRepository;
+
+
 import com._pi.benepick.domain.penaltyHists.entity.PenaltyHists;
 import com._pi.benepick.domain.penaltyHists.repository.PenaltyHistsRepository;
 import com._pi.benepick.domain.pointHists.entity.PointHists;
-import com._pi.benepick.domain.pointHists.repository.PointHistsRepository;
 
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
@@ -38,6 +46,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -46,8 +60,13 @@ public class MembersCommandServiceImpl implements MembersCommandService{
 
 
     private final MembersRepository membersRepository;
-    private final PointHistsRepository pointHistsRepository;
+
     private final PenaltyHistsRepository penaltyHistsRepository;
+    private final PointHistsRepository pointHistsRepository;
+    private final WishlistsRepository wishlistsRepository;
+    private final RafflesRepository rafflesRepository;
+    private final DrawsRepository drawsRepository;
+
     @Override
     public MembersuccessDTO updateMemberInfo(String memberid, MembersRequest.MembersRequestDTO membersRequestDTO,Members member){
         Members members=membersRepository.findById(memberid).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
@@ -128,6 +147,28 @@ public class MembersCommandServiceImpl implements MembersCommandService{
     }
 
     @Override
+    public DeleteResponseDTO deleteMembers(DeleteMembersRequestDTO deleteMembersRequestDTO, Members members){
+        //관리자 인지 확인하는 로직
+        if(membersRepository.findById(members.getId()).get().getRole()== Role.MEMBER){
+            throw new ApiException(ErrorStatus._UNAUTHORIZED);
+        }
+        List<String> deletedId = new ArrayList<>();
+
+        for(String id:deleteMembersRequestDTO.getId()){
+            Members member = membersRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
+            penaltyHistsRepository.deleteAllByMemberId_Id(id);
+            pointHistsRepository.deleteAllByMemberId_Id(id);
+            wishlistsRepository.deleteAllByMemberId_Id(id);
+          rafflesRepository.deleteAllByMemberId_IdAndGoodsId_GoodsStatus(id,GoodsStatus.PROGRESS);
+            membersRepository.deleteById(id);
+            deletedId.add(id);
+        }
+        return DeleteResponseDTO.builder()
+                .memberid(deletedId)
+                .build();
+
+    }
+
     public MembersResponse.MembersDetailListResponseDTO uploadMemberFile(MultipartFile file) {
         List<Members> membersList = new ArrayList<>();
         try (InputStream inputStream = file.getInputStream();
