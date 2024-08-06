@@ -4,12 +4,18 @@ import com._pi.benepick.domain.draws.dto.DrawsRequest;
 import com._pi.benepick.domain.draws.dto.DrawsResponse;
 import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.draws.repository.DrawsRepository;
+import com._pi.benepick.domain.draws.service.algorithm.DrawAlgorithm;
+import com._pi.benepick.domain.draws.service.algorithm.RaffleDraw;
+import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
+import com._pi.benepick.domain.goods.repository.GoodsRepository;
 import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
 import com._pi.benepick.domain.draws.entity.Status;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.domain.members.repository.MembersRepository;
+import com._pi.benepick.domain.raffles.entity.Raffles;
+import com._pi.benepick.domain.raffles.repository.RafflesRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,19 +25,26 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class DrawsQueryServiceImpl implements DrawsQueryService {
 
+    private final GoodsRepository goodsRepository;
     private final MembersRepository membersRepository;
     private final DrawsRepository drawsRepository;
+    private final RafflesRepository rafflesRepository;
     private final GoodsCategoriesRepository goodsCategoriesRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     public DrawsResponse.DrawsResponseByGoodsListDTO getResultByGoodsId(Long goodsId) {
         List<DrawsResponse.DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
@@ -85,26 +98,27 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
                 .build();
     }
 
-    public DrawsResponse.DrawsResponseByMembersDTO editWinnerStatus(Members members, Long winnerId, DrawsRequest.DrawsRequestDTO dto) {
-        if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        Draws draws = drawsRepository.findById(winnerId).orElseThrow(() -> new ApiException(ErrorStatus._RAFFLES_NOT_COMPLETED));
-
-        Draws newDraws = DrawsRequest.DrawsRequestDTO.updateStatus(draws, dto);
-        Draws savedDraws = drawsRepository.save(newDraws);
-
-        return DrawsResponse.DrawsResponseByMembersDTO.from(savedDraws);
-    }
-
     public void downloadExcel(Members members, Long goodsId, HttpServletResponse response) {
-        if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
+        if (!(members.getRole().equals(Role.ADMIN))) {
+            throw new ApiException(ErrorStatus._UNAUTHORIZED);
+        }
 
-        // Sample data
-        List<List<String>> data = Arrays.asList(
-                Arrays.asList("Name", "Age", "Location"),
-                Arrays.asList("John Doe", "30", "New York"),
-                Arrays.asList("Jane Smith", "25", "Los Angeles"),
-                Arrays.asList("Mike Johnson", "35", "Chicago")
-        );
+        List<Draws> drawsList = drawsRepository.findByGoodsId(goodsId);
+
+        // 변경 가능한 리스트 사용
+        List<List<String>> data = new ArrayList<>();
+        data.add(Arrays.asList("Name", "ID", "Status", "Sequence"));
+
+        for (Draws draws : drawsList) {
+            data.add(
+                    Arrays.asList(
+                            draws.getRaffleId().getMemberId().getName(),
+                            String.valueOf(draws.getRaffleId().getMemberId().getId()),
+                            draws.getStatus().toString(),
+                            String.valueOf(draws.getSequence())
+                    )
+            );
+        }
 
         // Create a new workbook and sheet
         Workbook workbook = new XSSFWorkbook();
@@ -127,12 +141,10 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         int rowCount = 0;
         for (List<String> dto : data) {
             row = sheet.createRow(rowCount++);
-            cell = row.createCell(0);
-            cell.setCellValue(dto.get(0));
-            cell = row.createCell(1);
-            cell.setCellValue(dto.get(1));
-            cell = row.createCell(2);
-            cell.setCellValue(dto.get(2));
+            for (int i = 0; i < dto.size(); i++) {
+                cell = row.createCell(i);
+                cell.setCellValue(dto.get(i));
+            }
         }
 
         response.setContentType("ms-vnd/excel");

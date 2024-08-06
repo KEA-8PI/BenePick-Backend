@@ -1,7 +1,10 @@
 package com._pi.benepick.domain.wishlists.dto;
 
+import com._pi.benepick.domain.goods.entity.Goods;
+import com._pi.benepick.domain.wishlists.entity.Wishlists;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class WishlistResponse {
@@ -38,6 +41,25 @@ public class WishlistResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class WishlistSuccessDTO{
-        String msg;
+        Long id;
     }
+
+    @Builder
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class WishlistAddDTO{
+        Long id;
+        Goods goods;
+
+        public static WishlistAddDTO from(Wishlists wishlists){
+            return WishlistAddDTO.builder()
+                    .id(wishlists.getId())
+                    .goods(wishlists.getGoodsId())
+                    .build();
+        }
+
+    }
+
 }

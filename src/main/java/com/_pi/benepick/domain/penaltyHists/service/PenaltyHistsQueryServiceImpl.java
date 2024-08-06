@@ -27,7 +27,10 @@ public class PenaltyHistsQueryServiceImpl implements PenaltyHistsQueryService
     @Override
     public PenaltyListResponseDTO getPenaltyHists(Members member){
         Members members=membersRepository.findById(member.getId()).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
-       List<PenaltyHists> penaltyHistsList= penaltyHistsRepository.findAllByMemberId(members.getId());
+
+       List<PenaltyHists> penaltyHistsList= penaltyHistsRepository.findAllByMemberId_Id(members.getId());
+
+
        List<PenaltyResponseDTO> result=new ArrayList<>();
        for(PenaltyHists p: penaltyHistsList){
            PenaltyResponseDTO dto=PenaltyResponseDTO.builder()
