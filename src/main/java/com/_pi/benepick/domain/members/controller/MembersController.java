@@ -96,16 +96,10 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
 
     }
 
-    @Operation(summary = "사원 추가 파일 등록 - Mockup API", description = "복지 포인트 파일을 업로드합니다. (관리자용)")
+    @Operation(summary = "사원 추가 파일 등록", description = "복지 포인트 파일을 업로드합니다. (관리자용)")
     @PostMapping(value="/add/upload",consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<MemberIDListResponseDTO> uploadMemberFile(@RequestPart("file") MultipartFile file){
-
-        String id="123";
-        String id1="456";
-        List<String> membersList = Arrays.asList(id, id);
-        return ApiResponse.onSuccess(MemberIDListResponseDTO.builder()
-                        .id(membersList)
-                .build());
+    public ApiResponse<MembersDetailListResponseDTO> uploadMemberFile(@RequestPart("file") MultipartFile file){
+        return ApiResponse.onSuccess(membersCommandService.uploadMemberFile(file));
     }
 
 }
