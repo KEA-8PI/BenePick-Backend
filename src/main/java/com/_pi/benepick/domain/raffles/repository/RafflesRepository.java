@@ -5,6 +5,7 @@ import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import org.springframework.data.jpa.repository.JpaRepository;
+
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -19,14 +20,13 @@ public interface RafflesRepository extends JpaRepository<Raffles, Long> {
 
     List<Raffles> findAllByMemberId(Members members);
 
-    @Modifying
-    @Query("delete from Raffles p where p.memberId.id =:id and p.goodsId.goodsStatus =:status")
-    void deleteAllByMemberId(String id, GoodsStatus status);
-
     List<Raffles> findAllByMemberId_Id(String id);
+
+    @Query("SELECT r.id FROM Raffles r WHERE r.goodsId.id = :goodsId")
+    List<Long> findRaffleIdsByGoodsId(Long goodsId);
 
     Optional<Raffles> findByGoodsIdAndMemberId(Goods goods, Members members);
 
-    void deleteAllByMemberId_IdAndGoodsId_GoodsStatus_Progress(String id,GoodsStatus goodsStatus);
+  void deleteAllByMemberId_IdAndGoodsId_GoodsStatus(String id,GoodsStatus goodsStatus);
 
 }

@@ -36,6 +36,9 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
     Page<Goods> searchGoodsByRaffleCount(GoodsStatus goodsStatus, Long categoryId, String keyword, Pageable pageable);
 
 
+    @Query("SELECT g FROM Goods g JOIN GoodsCategories gc ON g.id = gc.goodsId.id WHERE gc.categoryId.id = :categoryId")
+    List<Goods> findGoodsByCategoryId(Long categoryId);
+
     List<Goods> findByRaffleEndAtBeforeAndGoodsStatus(LocalDateTime now, GoodsStatus status);
     List<Goods> findByRaffleStartAtBeforeAndGoodsStatus(LocalDateTime now, GoodsStatus status);
 

@@ -123,7 +123,6 @@ public class MembersCommandServiceImpl implements MembersCommandService{
 
         Members members=membersRequestDTO.toEntity(membersRequestDTO);
         membersRepository.save(members);
-
         return MembersDetailResponseDTO.from(members);
 
     }
@@ -141,14 +140,7 @@ public class MembersCommandServiceImpl implements MembersCommandService{
             penaltyHistsRepository.deleteAllByMemberId_Id(id);
             pointHistsRepository.deleteAllByMemberId_Id(id);
             wishlistsRepository.deleteAllByMemberId_Id(id);
-           // List<Raffles> rafflesList = rafflesRepository.findAllByMemberId_Id(id);
-
-            // For each raffle, delete associated draws
-//            for (Raffles raffle : rafflesList) {
-//                drawsRepository.deleteAllByMemberId(raffle.getId());
-//            }
-          //  rafflesRepository.deleteAllByMemberId(id, GoodsStatus.PROGRESS);
-            rafflesRepository.deleteAllByMemberId_IdAndGoodsId_GoodsStatus_Progress(id,GoodsStatus.PROGRESS);
+          rafflesRepository.deleteAllByMemberId_IdAndGoodsId_GoodsStatus(id,GoodsStatus.PROGRESS);
             membersRepository.deleteById(id);
             deletedId.add(id);
         }

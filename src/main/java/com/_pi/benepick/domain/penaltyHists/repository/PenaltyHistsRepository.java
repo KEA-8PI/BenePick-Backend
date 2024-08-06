@@ -22,14 +22,8 @@ public interface PenaltyHistsRepository extends JpaRepository<PenaltyHists, Long
     @Query("select p from PenaltyHists p where p.memberId.id =:id")
     PenaltyHists findAllByMemberId(String id);
 
-//    @Query("select p from PenaltyHists  p where p.memberId.id =:id")
-//
-//    List<PenaltyHists> findAllByMemberId(String id);
-    @Modifying
-    @Query("delete PenaltyHists p where p.memberId.id =:id")
-    void deleteAllByMemberId(String id);
 
-    List<PenaltyHists> findAllByMemberIdList(String id);
+    List<PenaltyHists> findAllByMemberId_Id(String id);
 
     void deleteAllByMemberId_Id(String id);
 
