@@ -6,6 +6,8 @@ import com._pi.benepick.domain.alarm.message.Message;
 import com._pi.benepick.domain.alarm.message.TextBlock;
 import com._pi.benepick.domain.alarm.message.ButtonBlock;
 import com._pi.benepick.domain.alarm.message.Action;
+import com._pi.benepick.global.common.exception.ApiException;
+import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -65,7 +67,7 @@ public class KakaoWorkAlarmServiceImpl implements AlarmService {
         try {
             return mapper.writeValueAsString(message);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new ApiException(ErrorStatus._INTERNAL_SERVER_ERROR);
         }
     }
 }

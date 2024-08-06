@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import lombok.RequiredArgsConstructor;
 
 public class GoodsRequest {
 
@@ -39,7 +38,6 @@ public class GoodsRequest {
                     .discountPrice(discountPrice)
                     .raffleStartAt(raffleStartAt)
                     .raffleEndAt(raffleEndAt)
-                    .seeds(-1L)
                     .goodsStatus(status)
                     .build();
         }

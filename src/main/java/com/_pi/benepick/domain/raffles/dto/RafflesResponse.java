@@ -27,7 +27,7 @@ public class RafflesResponse {
                     .id(raffles.getId())
                     .memberName(raffles.getMemberId().getName())
                     .point(raffles.getPoint())
-                    .rafflesAt(raffles.getUpdated_at())
+                    .rafflesAt(raffles.getUpdatedAt())
                     .build();
         }
 
@@ -42,14 +42,14 @@ public class RafflesResponse {
         private Long id; // 응모_id
         private Long point; // 사용포인트
         private LocalDateTime rafflesAt;
-        private String category_name; //카테고리 이름
+        private String categoryName; //카테고리 이름
 
         public static RafflesResponseByMembersDTO of(Raffles raffles, String categoryName) {
             return RafflesResponseByMembersDTO.builder()
                     .id(raffles.getId())
                     .point(raffles.getPoint())
-                    .rafflesAt(raffles.getUpdated_at())
-                    .category_name(categoryName)
+                    .rafflesAt(raffles.getUpdatedAt())
+                    .categoryName(categoryName)
                     .build();
         }
     }
