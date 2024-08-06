@@ -1,8 +1,10 @@
 package com._pi.benepick.domain.auth.controller;
 
 import com._pi.benepick.domain.auth.dto.AuthRequest.AuthLoginRequestDTO;
+import com._pi.benepick.domain.auth.dto.AuthRequest.AuthLogoutRequestDTO;
 import com._pi.benepick.domain.auth.dto.AuthResponse.AuthLoginResponseDTO;
-import com._pi.benepick.domain.auth.service.AuthQueryService;
+import com._pi.benepick.domain.auth.dto.AuthResponse.AuthLogoutResponseDTO;
+import com._pi.benepick.domain.auth.service.AuthCommandService;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.global.common.annotation.MemberObject;
@@ -25,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Auth", description = "인증 API")
 public class AuthController {
     private final MembersRepository membersRepository;
-    private final AuthQueryService authQueryService;
+    private final AuthCommandService authCommandService;
 
     @PostMapping("/login")
     @Operation(summary = "로그인", description = "사용자 아이디와 비밀번호를 입력받아 로그인 요청을 수행합니다.")
@@ -33,13 +35,13 @@ public class AuthController {
         // 로그인 서비스로직 구현 후 아래의 코드는 삭제할 예정입니다.
         // 사용자 정보 검증 후 토큰 발급
         // 발급한 토큰을 레디스와 쿠키에 등록한다.
-        return ApiResponse.onSuccess(authQueryService.login(requestDTO, response));
+        return ApiResponse.onSuccess(authCommandService.login(requestDTO, response));
     }
 
     @PostMapping("/logout")
-    @Operation(summary = "로그아웃 - Mockup API", description = "사용자 아이디를 입력받아 로그아웃 요청을 수행합니다.")
-    public ApiResponse<String> logout(@RequestBody AuthLoginRequestDTO requestDTO){
-        return ApiResponse.onSuccess("로그아웃 되었습니다.");
+    @Operation(summary = "로그아웃", description = "사용자 아이디를 입력받아 로그아웃 요청을 수행합니다.")
+    public ApiResponse<AuthLogoutResponseDTO> logout(@MemberObject Members members, @RequestBody AuthLogoutRequestDTO requestDTO){
+        return ApiResponse.onSuccess(authCommandService.logout(members, requestDTO));
     }
 
     @PostMapping("/refresh")

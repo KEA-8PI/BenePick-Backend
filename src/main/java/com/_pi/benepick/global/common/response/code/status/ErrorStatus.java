@@ -39,10 +39,12 @@ public enum ErrorStatus implements BaseErrorCode {
     //wishlist 관련
     _WISHLIST_NOT_FOUND(HttpStatus.NOT_FOUND,"WISHLIST_001","존재하지 않는 위시리스트입니다."),
 
-  
-    //auth 관련
+    // draw관련
     _FILE_OUTPUT_DISABLED(HttpStatus.INTERNAL_SERVER_ERROR, "DRAWS_001", "파일 출력이 불가능합니다."),
-    _NO_SUCH_ALGORITHM(HttpStatus.INTERNAL_SERVER_ERROR, "DRAWS_002", "Hash Algorithm 을 사용할 수 없습니다.");
+    _NO_SUCH_ALGORITHM(HttpStatus.INTERNAL_SERVER_ERROR, "DRAWS_002", "Hash Algorithm 을 사용할 수 없습니다."),
+
+    //auth 관련
+    _INVALID_TOKEN(HttpStatus.BAD_REQUEST, "AUTH_001", "유효하지 않은 토큰입니다.");
 
 
 
