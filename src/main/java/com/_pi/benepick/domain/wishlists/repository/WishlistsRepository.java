@@ -6,7 +6,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 public interface WishlistsRepository extends JpaRepository<Wishlists, Long> {
-    @Modifying
-    @Query("delete from Wishlists p where p.memberId.id =:id")
-    void deleteAllByMemberId(String id);
+//    @Modifying
+//    @Query("delete from Wishlists p where p.memberId.id =:id")
+//    void deleteAllByMemberId(String id);
+void deleteAllByMemberId_Id(String id);
 }

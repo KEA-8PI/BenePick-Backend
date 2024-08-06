@@ -35,9 +35,8 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
             "ORDER BY COUNT(r) DESC, g.id ASC")
     Page<Goods> searchGoodsByRaffleCount(GoodsStatus goodsStatus, Long categoryId, String keyword, Pageable pageable);
 
-<<<<<<< HEAD
-=======
+
     List<Goods> findByRaffleEndAtBeforeAndGoodsStatus(LocalDateTime now, GoodsStatus status);
     List<Goods> findByRaffleStartAtBeforeAndGoodsStatus(LocalDateTime now, GoodsStatus status);
->>>>>>> 4351767d7e5f60ee112bf68d01663d17fae51d2f
+
 }

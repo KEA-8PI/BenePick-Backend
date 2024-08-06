@@ -139,15 +139,16 @@ public class MembersCommandServiceImpl implements MembersCommandService{
         for(String id:deleteMembersRequestDTO.getId()){
             Members member = membersRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
             penaltyHistsRepository.deleteAllByMemberId_Id(id);
-            pointHistsRepository.deleteAllByMemberId(id);
-            wishlistsRepository.deleteAllByMemberId(id);
-            List<Raffles> rafflesList = rafflesRepository.findAllByMemberId_Id(id);
+            pointHistsRepository.deleteAllByMemberId_Id(id);
+            wishlistsRepository.deleteAllByMemberId_Id(id);
+           // List<Raffles> rafflesList = rafflesRepository.findAllByMemberId_Id(id);
 
             // For each raffle, delete associated draws
-            for (Raffles raffle : rafflesList) {
-                drawsRepository.deleteAllByMemberId(raffle.getId());
-            }
-            rafflesRepository.deleteAllByMemberId(id, GoodsStatus.PROGRESS);
+//            for (Raffles raffle : rafflesList) {
+//                drawsRepository.deleteAllByMemberId(raffle.getId());
+//            }
+          //  rafflesRepository.deleteAllByMemberId(id, GoodsStatus.PROGRESS);
+            rafflesRepository.deleteAllByMemberId_IdAndGoodsId_GoodsStatus_Progress(id,GoodsStatus.PROGRESS);
             membersRepository.deleteById(id);
             deletedId.add(id);
         }
