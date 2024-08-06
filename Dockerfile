@@ -14,6 +14,9 @@ COPY gradle gradle
 COPY src src
 COPY config config
 
+# Copy config files to the resources directory
+RUN mkdir -p src/main/resources && cp config/benepick/*.yml src/main/resources/
+
 # Run the Gradle build to create the executable JAR file
 RUN ./gradlew clean build --no-daemon
 
