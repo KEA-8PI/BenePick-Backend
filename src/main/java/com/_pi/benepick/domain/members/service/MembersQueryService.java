@@ -16,5 +16,6 @@ public interface MembersQueryService {
 
     PointResponse.PointHistListDTO getPointHist(Members member);
 
+    MembersResponse.MemberPointDTO getMemberPoint(Members members);
 }
 
