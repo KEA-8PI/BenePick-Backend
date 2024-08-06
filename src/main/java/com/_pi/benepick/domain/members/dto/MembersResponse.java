@@ -28,9 +28,7 @@ public class MembersResponse {
                     .name(members.getName())
                     .deptName(members.getDeptName())
                     .penaltyCnt(members.getPenaltyCnt())
-
                     .point(members.getPoint())
-
                     .build();
         }
     }
@@ -72,7 +70,7 @@ public class MembersResponse {
     @NoArgsConstructor
     @Setter
     public static class DeleteResponseDTO{
-        private String msg;
+        private List<String> memberid;
     }
 
     @Builder

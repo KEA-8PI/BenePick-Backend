@@ -21,8 +21,8 @@ import java.util.List;
 @RequestMapping("/wishlists")
 public class WishlistsController {
 
-    private final WishlistsCommandSerivce wishlistsCommandSerivce;
     private final MembersRepository membersRepository;
+    private final WishlistsCommandSerivce wishlistsCommandSerivce;
     @Operation(summary = "위시리스트 응모 상태별 조회 - Mockup API",description = "사용자가 본인의 위시리스트를 조회합니다.")
     @GetMapping("/{goodsStatus}")
     public ApiResponse<WishlistListDTO> getwishList(@PathVariable String goodsStatus){
@@ -37,13 +37,11 @@ public class WishlistsController {
         );
     }
 
-    @Operation(summary = "위시리스트 추가 - MockupAPI", description = "사용자가 위시리스트를 추가합니다.")
+    @Operation(summary = "위시리스트 추가", description = "사용자가 위시리스트를 추가합니다.")
     @PostMapping("/add/{goodsId}")
-    public ApiResponse<WishlistSuccessDTO> addwishList(@PathVariable String goodsId){
-        return ApiResponse.onSuccess(
-                WishlistSuccessDTO.builder()
-                        .build()
-        );
+    public ApiResponse<WishlistAddDTO> addwishList(@PathVariable Long goodsId){
+        Members members=membersRepository.findById("string").orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
+        return ApiResponse.onSuccess(wishlistsCommandSerivce.addWishlist(members,goodsId));
     }
 
     @Operation(summary = "위시리스트 삭제",description = "사용자가 위시리스트를 삭제합니다." )
