@@ -1,8 +1,14 @@
 package com._pi.benepick.domain.members.service;
+import com._pi.benepick.domain.categories.entity.Categories;
+import com._pi.benepick.domain.goods.dto.GoodsResponse;
+import com._pi.benepick.domain.goods.entity.Goods;
+import com._pi.benepick.domain.goods.entity.GoodsStatus;
+import com._pi.benepick.domain.goodsCategories.entity.GoodsCategories;
 import com._pi.benepick.domain.members.dto.MembersRequest;
 
 import com._pi.benepick.domain.members.dto.MembersRequest.*;
 
+import com._pi.benepick.domain.members.dto.MembersResponse;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
@@ -16,8 +22,21 @@ import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import com._pi.benepick.domain.members.entity.Role;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -108,5 +127,38 @@ public class MembersCommandServiceImpl implements MembersCommandService{
 
     }
 
+    @Override
+    public MembersResponse.MembersDetailListResponseDTO uploadMemberFile(MultipartFile file) {
+        List<Members> membersList = new ArrayList<>();
+        try (InputStream inputStream = file.getInputStream();
+             Workbook workbook = new XSSFWorkbook(inputStream)) {
+
+            XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) { continue;}
+
+                Members members = Members.builder()
+                        .id(row.getCell(0).getStringCellValue())
+                        .name(row.getCell(1).getStringCellValue())
+                        .deptName(row.getCell(2).getStringCellValue())
+                        .password(row.getCell(3).getStringCellValue())
+                        .penaltyCnt((long) row.getCell(4).getNumericCellValue())
+                        .point((long) row.getCell(5).getNumericCellValue())
+                        .role(Role.MEMBER)
+                        .build();
+                membersList.add(members);
+            }
+            membersRepository.saveAll(membersList);
+        } catch (IOException e) {
+            throw new ApiException(ErrorStatus._FILE_INPUT_DISABLED);
+        }
+        List<MembersDetailResponseDTO> responseDTOList = membersList.stream()
+                .map(MembersDetailResponseDTO::from)
+                .collect(Collectors.toList());
+
+        return MembersResponse.MembersDetailListResponseDTO.builder()
+                .membersDetailResponseDTOList(responseDTOList)
+                .build();
+    }
 
 }
