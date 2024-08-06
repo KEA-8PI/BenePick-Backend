@@ -3,9 +3,12 @@ import com._pi.benepick.domain.members.dto.MembersRequest.*;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
-import com._pi.benepick.domain.members.service.MembersCommandService;
+
 import com._pi.benepick.domain.members.service.MembersQueryService;
+
+import com._pi.benepick.domain.members.service.MembersCommandService;
 import com._pi.benepick.global.common.exception.ApiException;
+
 import com._pi.benepick.global.common.response.ApiResponse;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +29,7 @@ import java.util.List;
 @RequestMapping("/member")
 @Tag(name = "Members", description = "사원 API")
 public class MembersController {
+
 
 
     private final MembersCommandService membersCommandService;
@@ -59,9 +63,10 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
 
     @Operation(summary = "사원 목록 조회 및 검색", description = "사원 목록을 조회하고 검색합니다 (관리자용)")
     @GetMapping("/list")
-    public ApiResponse<MembersDetailListResponseDTO> getMemberList(@RequestParam Integer page, @RequestParam Integer size, @RequestParam String keywordName){
+    public ApiResponse<MembersDetailListResponseDTO> getMemberList(@RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String keywordName){
 
         return ApiResponse.onSuccess(membersQueryService.getMembersList(page,size,keywordName));
+
 
     }
 
