@@ -20,7 +20,7 @@ public class WishlistsCommandServiceImpl implements WishlistsCommandSerivce{
     public WishlistResponse.WishlistSuccessDTO deleteWishlist(Long wishlistId, Members members){
         Wishlists wishlists = wishlistsRepository.findById(wishlistId).orElseThrow(()->new ApiException(ErrorStatus._WISHLIST_NOT_FOUND));
     if(!wishlists.getMemberId().getId().equals(members.getId())){
-        throw new ApiException(ErrorStatus._WISHLIST_NOT_FOUND);
+        throw new ApiException(ErrorStatus._FORBIDDEN);
     }
     wishlistsRepository.deleteById(wishlistId);
         return WishlistResponse.WishlistSuccessDTO.builder()
