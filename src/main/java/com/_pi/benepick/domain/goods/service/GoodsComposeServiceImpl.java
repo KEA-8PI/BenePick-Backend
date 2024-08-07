@@ -8,6 +8,11 @@ import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goods.repository.GoodsRepository;
 import com._pi.benepick.domain.goodsCategories.entity.GoodsCategories;
 import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
+import com._pi.benepick.domain.members.entity.Members;
+import com._pi.benepick.domain.members.entity.Role;
+import com._pi.benepick.domain.members.repository.MembersRepository;
+import com._pi.benepick.domain.raffles.entity.Raffles;
+import com._pi.benepick.domain.wishlists.entity.Wishlists;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +40,7 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
     private final GoodsCategoriesRepository goodsCategoriesRepository;
     private final CategoriesRepository categoriesRepository;
     private final GoodsCommandServiceImpl goodsCommandService;
+    private final MembersRepository membersRepository;
 
     // 상품 파일 추가
     @Override
@@ -94,6 +100,40 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
         return GoodsResponse.GoodsUploadResponseDTO.builder()
                 .goodsUploadDTOList(goodsAddResponseDTOList)
                 .build();
+    }
+
+    // 상품 삭제
+    @Override
+    public GoodsResponse.GoodsDeleteResponseDTO deleteGoods(List<Long> deleteList, Members members) {
+        //관리자 인지 확인하는 로직
+        if(membersRepository.findById(members.getId()).get().getRole()== Role.MEMBER){
+            throw new ApiException(ErrorStatus._UNAUTHORIZED);
+        }
+
+        List<Goods> goodsList = goodsRepository.findAllById(deleteList);
+        if (goodsList.size() != deleteList.size()) {
+            throw new ApiException(ErrorStatus._GOODS_NOT_FOUND);
+        }
+        for (Goods goods : goodsList) {
+            goods.updateDeleted();
+            for (Raffles raffle : goods.getRaffles()) {
+                raffle.updateDeleted();
+                if (raffle.getDraw() != null) {
+                    raffle.getDraw().updateDeleted();
+                }
+            }
+            for (Wishlists wishlist : goods.getWishlists()) {
+                wishlist.updateDeleted();
+            }
+            if (goods.getGoodsCategories() != null) {
+                goods.getGoodsCategories().updateDeleted();
+            }
+            if (goods.getHash() != null) {
+                goods.getHash().updateDeleted();
+            }
+            goodsRepository.save(goods);
+        }
+        return GoodsResponse.GoodsDeleteResponseDTO.from(goodsList);
     }
 }
 

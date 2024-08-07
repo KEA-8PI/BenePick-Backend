@@ -10,6 +10,7 @@ import com._pi.benepick.domain.goods.dto.GoodsResponse;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goods.repository.GoodsRepository;
+import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import com._pi.benepick.domain.wishlists.entity.Wishlists;
 import com._pi.benepick.global.common.exception.ApiException;
@@ -89,34 +90,5 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
         } else {
             return GoodsStatus.PROGRESS; // 시작 시간이 지나고 종료 시간이 아직 오지 않았으면 진행 중 상태
         }
-    }
-
-    // 상품 삭제
-    @Override
-    public GoodsResponse.GoodsDeleteResponseDTO deleteGoods(List<Long> deleteList) {
-        List<Goods> goodsList = goodsRepository.findAllById(deleteList);
-        if (goodsList.size() != deleteList.size()) {
-            throw new ApiException(ErrorStatus._GOODS_NOT_FOUND);
-        }
-        for (Goods goods : goodsList) {
-            goods.updateDeleted();
-            for (Raffles raffle : goods.getRaffles()) {
-                raffle.updateDeleted();
-                if (raffle.getDraw() != null) {
-                    raffle.getDraw().updateDeleted();
-                }
-            }
-            for (Wishlists wishlist : goods.getWishlists()) {
-                wishlist.updateDeleted();
-            }
-            if (goods.getGoodsCategories() != null) {
-                goods.getGoodsCategories().updateDeleted();
-            }
-            if (goods.getHash() != null) {
-                goods.getHash().updateDeleted();
-            }
-            goodsRepository.save(goods);
-        }
-        return GoodsResponse.GoodsDeleteResponseDTO.from(goodsList);
     }
 }

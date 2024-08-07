@@ -7,7 +7,11 @@ import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goods.service.GoodsCommandService;
 import com._pi.benepick.domain.goods.service.GoodsComposeService;
 import com._pi.benepick.domain.goods.service.GoodsQueryService;
+import com._pi.benepick.domain.members.entity.Members;
+import com._pi.benepick.domain.members.repository.MembersRepository;
+import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.ApiResponse;
+import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +32,7 @@ public class GoodsController {
     private final GoodsQueryService goodsQueryService;
     private final GoodsCommandService goodsCommandService;
     private final GoodsComposeService goodsComposeService;
+    private final MembersRepository membersRepository;
 
     //상품 목록 조회
     @Operation(summary = "상품 목록 조회 (관리자용)", description = "검색어에 따른 상품의 모든 목록을 조회합니다. (진행:PROGRESS,예정:SCHEDULED,종료:COMPLETED)")
@@ -82,6 +87,7 @@ public class GoodsController {
     @Operation(summary = "상품 삭제", description = "상품을 삭제합니다.")
     @DeleteMapping("/delete")
     public ApiResponse<GoodsResponse.GoodsDeleteResponseDTO> deleteGoods(@RequestParam List<Long> deleteList) {
-        return ApiResponse.onSuccess(goodsCommandService.deleteGoods(deleteList));
+        Members members=membersRepository.findById("string").orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
+        return ApiResponse.onSuccess(goodsComposeService.deleteGoods(deleteList,members));
     }
 }
