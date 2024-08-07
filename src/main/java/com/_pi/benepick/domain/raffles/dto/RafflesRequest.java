@@ -22,6 +22,7 @@ public class RafflesRequest {
                     .memberId(memberId)
                     .goodsId(goodsId)
                     .point(dto.point)
+                    .penaltyFlag('F')
                     .build();
         }
 
@@ -31,8 +32,10 @@ public class RafflesRequest {
                     .memberId(memberId)
                     .goodsId(goodsId)
                     .point(point)
+                    .penaltyFlag('F')
                     .build();
         }
+
     }
 
 }

@@ -1,5 +1,6 @@
 package com._pi.benepick.domain.raffles.entity;
 
+import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.global.common.BaseJPATimeEntity;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.members.entity.Members;
@@ -35,5 +36,12 @@ public class Raffles extends BaseJPATimeEntity {
 
     @Column(nullable = false)
     private Long point; //사용포인트
+
+    @Column(nullable = false)
+    private char penaltyFlag = 'F';
+
+    public void updatePenalty(Character penaltyFlag) {
+        this.penaltyFlag = penaltyFlag;
+    }
 
 }

@@ -64,7 +64,11 @@ public class Members extends BaseJPATimeEntity {
     }
 
     public void updatePoint(Long point) {
-            this.point = this.point - point;
+        this.point = this.point - point;
+    }
+
+    public void updatePenalty(Long penaltyCnt) {
+        this.penaltyCnt = penaltyCnt;
     }
 
 }

@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -34,13 +35,24 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
 
         // 히스토리 반영 부분
         // TODO: 포인트 소모 히스토리 서비스 로직 구현 필요
-        // historyService.addPointUsageHistory(memberId, pointsToDeduct, "Raffle Participation");
+
+
+
         members.updatePoint(raffleAddDTO.getPoint());
         membersRepository.save(members);
+
+        // historyService.addPointUsageHistory(memberId, pointsToDeduct, "Raffle Participation");
+        // 패널티 가지고 있을 때
+        // TODO: 패널티에 따라 응모하는 포인트 차감하고 패널티 횟수도 감소.
+//        if (members.getPenaltyCnt() > 0) {
+//            double penaltyPoint = raffleAddDTO.getPoint() * 0.9;
+//            raffleAddDTO.setPoint(Math.round(penaltyPoint));
+//        }
 
         Optional<Raffles> optionalRaffles = rafflesRepository.findByGoodsIdAndMemberId(goods, members);
         if (optionalRaffles.isPresent()) {
             Raffles raffles = optionalRaffles.get();
+            LocalDateTime dateTime = LocalDateTime.now();
             Long point = raffleAddDTO.getPoint() + raffles.getPoint();
             raffles = RafflesRequest.RafflesRequestDTO.toEntity(
                     raffles.getId(),
@@ -48,12 +60,19 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
                     goods,
                     point
             );
+            if (members.getPenaltyCnt() > 0 && raffles.getPoint() >= 100 && raffles.getPenaltyFlag() == 'F') {
+                raffles.updatePenalty('T');
+            }
             Raffles savedRaffles = rafflesRepository.save(raffles);
 
-            return RafflesResponse.RafflesResponseByGoodsDTO.from(savedRaffles);
+            return RafflesResponse.RafflesResponseByGoodsDTO.from(savedRaffles, dateTime);
         }
         else {
             Raffles raffles = RafflesRequest.RafflesRequestDTO.toEntity(members, goods, raffleAddDTO);
+            if (members.getPenaltyCnt() > 0 && raffles.getPoint() >= 100) {
+                raffles.updatePenalty('T');
+            }
+
             Raffles savedRaffles = rafflesRepository.save(raffles);
 
             return RafflesResponse.RafflesResponseByGoodsDTO.from(savedRaffles);
