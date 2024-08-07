@@ -17,6 +17,9 @@ public interface DrawsRepository extends JpaRepository<Draws, Long> {
     @Query("SELECT d FROM Draws d LEFT JOIN Raffles r ON d.raffleId.id = r.id WHERE r.memberId.id = :memberId")
     List<Draws> findByMemberId(@Param("memberId") String memberId);
 
+    @Query("SELECT d FROM Draws d LEFT JOIN Raffles r ON d.raffleId.id = r.id WHERE r.goodsId.id = :goodsId AND d.status = :status ORDER BY d.sequence ASC")
+    List<Draws> findAllByGoodsIdAndStatus(@Param("goodsId") Long goodsId, @Param("status") Status status);
+
     @Query("SELECT d FROM Draws d WHERE d.raffleId.goodsId.id = :goodsId AND d.status IN :statuses")
     List<Draws> findDrawsByGoodsIdAndStatuses(Long goodsId, List<Status> statuses);
 

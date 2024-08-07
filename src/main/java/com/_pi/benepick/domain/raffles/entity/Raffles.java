@@ -36,11 +36,4 @@ public class Raffles extends BaseJPATimeEntity {
     @Column(nullable = false)
     private char penaltyFlag = 'F';
 
-    public void updatePenalty(Character penaltyFlag) {
-        this.penaltyFlag = penaltyFlag;
-    }
-
-    public void updatePenaltyPoint(Long point) {
-        this.point = point;
-    }
 }

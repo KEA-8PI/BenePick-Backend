@@ -32,7 +32,7 @@ public class RafflesResponse {
                     .build();
         }
 
-        public static RafflesResponseByGoodsDTO from(Raffles raffles, LocalDateTime dateTime) {
+        public static RafflesResponseByGoodsDTO of(Raffles raffles, LocalDateTime dateTime) {
             return RafflesResponseByGoodsDTO.builder()
                     .id(raffles.getId())
                     .memberName(raffles.getMemberId().getName())

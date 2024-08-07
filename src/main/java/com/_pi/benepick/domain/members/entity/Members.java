@@ -63,7 +63,7 @@ public class Members extends BaseJPATimeEntity {
             this.role = Objects.nonNull( membersRequestDTO.getRole())? membersRequestDTO.getRole() : this.role;
     }
 
-    public void updatePoint(Long point) {
+    public void changePoint(Long point) {
         this.point = this.point - point;
     }
 

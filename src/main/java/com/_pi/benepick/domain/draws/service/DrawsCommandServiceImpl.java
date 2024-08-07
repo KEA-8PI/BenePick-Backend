@@ -49,11 +49,10 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         Draws draws = drawsRepository.findById(winnerId).orElseThrow(() -> new ApiException(ErrorStatus._RAFFLES_NOT_COMPLETED));
 
-        Draws newDraws = DrawsRequest.DrawsRequestDTO.updateStatus(draws, dto);
+        Draws newDraws = DrawsRequest.DrawsRequestDTO.updateStatus(draws, Status.valueOf(dto.getStatus()));
         Draws savedDraws = drawsRepository.save(newDraws);
 
-        // NO_SHOW로 변경하였을 때
-        // TODO: 패널티 히스토리 추가 및 패널티 부여.
+        // NO_SHOW로 변경하였을 때 패널티 부여.
         if (dto.getStatus().equals("NO_SHOW")) {
             PenaltyHists penaltyHists = PenaltyHists.builder()
                     .memberId(members)
@@ -64,6 +63,21 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
             members.updatePenalty(members.getPenaltyCnt() + 5);
             membersRepository.save(members);
             penaltyHistsRepository.save(penaltyHists);
+        }
+
+        if (dto.getStatus().equals("NO_SHOW") || dto.getStatus().equals("CANCEL")) {
+            List<Draws> drawsList = drawsRepository.findAllByGoodsIdAndStatus(draws.getRaffleId().getGoodsId().getId(), Status.WAITLIST);
+            if (!drawsList.isEmpty()) {
+                newDraws = DrawsRequest.DrawsRequestDTO.updateStatus(drawsList.get(0), Status.WINNER);
+                drawsList.remove(0);
+                drawsList.add(newDraws);
+
+                for (Draws value : drawsList) {
+                    value.updateSequence();
+                }
+
+                drawsRepository.saveAll(drawsList);
+            }
         }
 
         return DrawsResponse.DrawsResponseByMembersDTO.from(savedDraws);
@@ -94,7 +108,7 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
             for (Draws draws : drawsList) {
                 if (draws.getStatus().equals(Status.NON_WINNER)) {
                     Members members = draws.getRaffleId().getMemberId();
-                    members.updatePoint(-(draws.getRaffleId().getPoint() / 2));
+                    members.changePoint(-(draws.getRaffleId().getPoint() / 2));
                     membersRepository.save(members);
                 }
             }
