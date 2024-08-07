@@ -78,7 +78,7 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
             if (!(LocalDateTime.now().isAfter(goods.getRaffleEndAt()) && goods.getGoodsStatus().equals(GoodsStatus.PROGRESS))) {
                 throw new ApiException(ErrorStatus._BAD_REQUEST);
             }
-            List<Raffles> rafflesList = rafflesRepository.findAllByGoodsId(goods);
+            List<Raffles> rafflesList = rafflesRepository.findAllByGoodsIdOrderByPointAsc(goods);
 
             double seed = DrawAlgorithm.generateSeed();
             String hash = DoubleToSHA256.getSHA256Hash(seed);
@@ -127,7 +127,7 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
         }
 
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
-        List<Raffles> rafflesList = rafflesRepository.findAllByGoodsId(goods);
+        List<Raffles> rafflesList = rafflesRepository.findAllByGoodsIdOrderByPointAsc(goods);
 
         List<Draws> drawsListResult = RaffleDraw.performDraw(seed, rafflesList, goods);
         List<DrawsResponse.DrawsResponseResultDTO> drawsResponseResultDTOList = drawsListResult.stream()
