@@ -43,11 +43,6 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
 
         // historyService.addPointUsageHistory(memberId, pointsToDeduct, "Raffle Participation");
         // 패널티 가지고 있을 때
-        // TODO: 패널티에 따라 응모하는 포인트 차감하고 패널티 횟수도 감소.
-//        if (members.getPenaltyCnt() > 0) {
-//            double penaltyPoint = raffleAddDTO.getPoint() * 0.9;
-//            raffleAddDTO.setPoint(Math.round(penaltyPoint));
-//        }
 
         Optional<Raffles> optionalRaffles = rafflesRepository.findByGoodsIdAndMemberId(goods, members);
         if (optionalRaffles.isPresent()) {

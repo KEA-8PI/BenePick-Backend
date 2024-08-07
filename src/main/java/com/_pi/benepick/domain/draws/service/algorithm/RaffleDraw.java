@@ -13,6 +13,11 @@ public class RaffleDraw {
     public static List<Draws> performDraw(double seed, List<Raffles> rafflesList, Goods goods) {
         DrawAlgorithm drawAlgorithm = new DrawAlgorithm(seed);
         List<Draws> drawsList = new ArrayList<>();
+        for (Raffles raffles : rafflesList) {
+            if (raffles.getPenaltyFlag() == 'T') {
+                raffles.updatePenaltyPoint(Math.round(raffles.getPoint() * 0.9));
+            }
+        }
 
         // 당첨자 추첨.
         for (int i = 0; i < goods.getAmounts(); i++) {

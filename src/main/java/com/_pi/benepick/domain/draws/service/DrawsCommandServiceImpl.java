@@ -71,6 +71,7 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
 
     public void drawStart(LocalDateTime now) {
         List<Goods> goodsList = goodsRepository.findByRaffleEndAtBeforeAndGoodsStatus(now, GoodsStatus.PROGRESS);
+        // TODO: 패널티에 따라 응모하는 포인트 차감하고 패널티 횟수도 감소.
 
         for (Goods goods : goodsList) {
             // 현재 시각이 응모종료시간보다 이후여야하고, 상태가 PROGRESS 여야 한다.
