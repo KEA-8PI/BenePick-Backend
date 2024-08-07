@@ -35,9 +35,6 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
 
         // 히스토리 반영 부분
         // TODO: 포인트 소모 히스토리 서비스 로직 구현 필요
-
-
-
         members.changePoint(raffleAddDTO.getPoint());
         membersRepository.save(members);
 
@@ -49,26 +46,13 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
             Raffles raffles = optionalRaffles.get();
             LocalDateTime dateTime = LocalDateTime.now();
             Long point = raffleAddDTO.getPoint() + raffles.getPoint();
-            if (members.getPenaltyCnt() > 0 && raffles.getPoint() >= 100 && raffles.getPenaltyFlag() == 'F') {
-                raffles = RafflesRequest.RafflesRequestDTO.toEntity(
-                        raffles.getId(),
-                        members,
-                        goods,
-                        point,
-                        'T'
-                );
+            if (members.getPenaltyCnt() > 0 && point >= 100 && raffles.getPenaltyFlag() == 'F') {
+                raffles.updatePointAndFlag(point, 'T');
             } else {
-                raffles = RafflesRequest.RafflesRequestDTO.toEntity(
-                        raffles.getId(),
-                        members,
-                        goods,
-                        point,
-                        raffles.getPenaltyFlag()
-                );
+                raffles.updatePointAndFlag(point, 'F');
             }
-            Raffles savedRaffles = rafflesRepository.save(raffles);
 
-            return RafflesResponse.RafflesResponseByGoodsDTO.of(savedRaffles, dateTime);
+            return RafflesResponse.RafflesResponseByGoodsDTO.of(raffles, dateTime);
         }
         else {
             Raffles raffles = null;

@@ -37,7 +37,7 @@ public class RafflesResponse {
                     .id(raffles.getId())
                     .memberName(raffles.getMemberId().getName())
                     .point(raffles.getPoint())
-                    .rafflesAt(dateTime)
+                    .rafflesAt(raffles.getUpdatedAt())
                     .build();
         }
 
