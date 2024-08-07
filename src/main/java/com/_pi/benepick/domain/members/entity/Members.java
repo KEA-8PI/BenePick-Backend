@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -22,9 +23,13 @@ import org.hibernate.annotations.SQLRestriction;
 @Builder
 @SQLRestriction("is_deleted = 'F'")
 @SQLDelete(sql = "UPDATE members SET is_deleted = 'T' WHERE id = ?")
+@DynamicUpdate
 public class Members extends BaseJPATimeEntity {
     public void updatePassword(String password) {
         this.password = password;
+    }
+    public void updatePoint(Long point) {
+        this.point = point;
     }
 
     @Id

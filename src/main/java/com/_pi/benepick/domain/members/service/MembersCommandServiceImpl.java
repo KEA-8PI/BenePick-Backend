@@ -1,8 +1,6 @@
 package com._pi.benepick.domain.members.service;
 
-import com._pi.benepick.domain.goods.dto.GoodsResponse;
 import com._pi.benepick.domain.members.dto.MembersRequest.*;
-import com._pi.benepick.domain.members.dto.MembersResponse;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
@@ -22,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,11 +81,9 @@ public class MembersCommandServiceImpl implements MembersCommandService{
                 String id = row.getCell(0).getStringCellValue();
                 Long pointChange = (long)row.getCell(1).getNumericCellValue();
 
-                log.info("Processing ID: " + id + ", Point Change: " + pointChange);
-
-                membersRepository.updatePoints(id, pointChange);
-                Members updatedMember = membersRepository.findById(id).orElseThrow(() -> new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
-                updatedMembersList.add(MembersDetailResponseDTO.from(updatedMember));
+                Members member = membersRepository.findById(id).orElseThrow(() -> new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
+                member.updatePoint(member.getPoint() + pointChange);
+                updatedMembersList.add(MembersDetailResponseDTO.from(member));
             }
         } catch (IOException e) {
             throw new ApiException(ErrorStatus._FILE_INPUT_DISABLED);
