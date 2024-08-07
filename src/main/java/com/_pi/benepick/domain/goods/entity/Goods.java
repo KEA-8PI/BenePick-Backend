@@ -1,7 +1,9 @@
 package com._pi.benepick.domain.goods.entity;
 
+import com._pi.benepick.domain.goodsCategories.entity.GoodsCategories;
 import com._pi.benepick.domain.hash.entity.Hash;
 import com._pi.benepick.domain.raffles.entity.Raffles;
+import com._pi.benepick.domain.wishlists.entity.Wishlists;
 import com._pi.benepick.global.common.BaseJPATimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -55,6 +57,12 @@ public class Goods extends BaseJPATimeEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "goodsId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Raffles> raffles; // 응모자 리스트
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "goodsId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Wishlists> wishlists; // 위시리스트
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "goodsId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private GoodsCategories goodsCategories; // 상품 카테고리
+
     public void startDraw(Hash hash, GoodsStatus goodsStatus) {
         this.hash = hash;
         this.goodsStatus = goodsStatus;
@@ -63,5 +71,5 @@ public class Goods extends BaseJPATimeEntity {
     public void updateStatus(GoodsStatus newStatus) {
         this.goodsStatus = newStatus;
     }
-
+    public void updateDeleted() {this.isDeleted = 'T';}
 }

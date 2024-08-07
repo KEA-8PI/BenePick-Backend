@@ -29,4 +29,5 @@ public class Draws extends BaseJPATimeEntity {
     @Column(nullable = false)
     private Status status; // WINNER, WAITLIST, CANCLE, NOSHOW
 
+    public void updateDeleted() {this.isDeleted = 'T';}
 }

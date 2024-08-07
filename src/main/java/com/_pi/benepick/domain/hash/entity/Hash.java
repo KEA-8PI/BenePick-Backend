@@ -25,4 +25,5 @@ public class Hash extends BaseJPATimeEntity {
     @Column
     private Double seed;
 
+    public void updateDeleted() {this.isDeleted = 'T';}
 }

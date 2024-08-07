@@ -24,7 +24,7 @@ public abstract class BaseJPATimeEntity implements Serializable {
 
     // 삭제 여부 ( 'F', 'T' )
     @Column(nullable = false)
-    private char isDeleted = 'F';
+    protected char isDeleted = 'F';
 
     protected void update(){
         updatedAt = LocalDateTime.now();

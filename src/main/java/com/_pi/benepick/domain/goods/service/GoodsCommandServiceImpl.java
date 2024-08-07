@@ -10,6 +10,8 @@ import com._pi.benepick.domain.goods.dto.GoodsResponse;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goods.repository.GoodsRepository;
+import com._pi.benepick.domain.raffles.entity.Raffles;
+import com._pi.benepick.domain.wishlists.entity.Wishlists;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
@@ -93,17 +95,28 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
     @Override
     public GoodsResponse.GoodsDeleteResponseDTO deleteGoods(List<Long> deleteList) {
         List<Goods> goodsList = goodsRepository.findAllById(deleteList);
-
         if (goodsList.size() != deleteList.size()) {
             throw new ApiException(ErrorStatus._GOODS_NOT_FOUND);
         }
-        for (Long goodsId : deleteList) {
-            goodsCategoriesRepository.deleteById(goodsId);
+        for (Goods goods : goodsList) {
+            goods.updateDeleted();
+            for (Raffles raffle : goods.getRaffles()) {
+                raffle.updateDeleted();
+                if (raffle.getDraw() != null) {
+                    raffle.getDraw().updateDeleted();
+                }
+            }
+            for (Wishlists wishlist : goods.getWishlists()) {
+                wishlist.updateDeleted();
+            }
+            if (goods.getGoodsCategories() != null) {
+                goods.getGoodsCategories().updateDeleted();
+            }
+            if (goods.getHash() != null) {
+                goods.getHash().updateDeleted();
+            }
+            goodsRepository.save(goods);
         }
-        for (Long goodsId : deleteList) {
-            goodsRepository.deleteById(goodsId);
-        }
-
         return GoodsResponse.GoodsDeleteResponseDTO.from(goodsList);
     }
 }

@@ -3,13 +3,7 @@ package com._pi.benepick.domain.goodsCategories.entity;
 import com._pi.benepick.global.common.BaseJPATimeEntity;
 import com._pi.benepick.domain.categories.entity.Categories;
 import com._pi.benepick.domain.goods.entity.Goods;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,7 +26,7 @@ public class GoodsCategories extends BaseJPATimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Categories categoryId; //카테고리_id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id")
     private Goods goodsId; //상품_id
 
@@ -40,4 +34,6 @@ public class GoodsCategories extends BaseJPATimeEntity {
         this.categoryId = category;
         return this;
     }
+
+    public void updateDeleted() {this.isDeleted = 'T';}
 }
