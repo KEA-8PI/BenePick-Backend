@@ -3,6 +3,7 @@ package com._pi.benepick.domain.draws.repository;
 import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.draws.entity.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -17,6 +18,10 @@ public interface DrawsRepository extends JpaRepository<Draws, Long> {
     @Query("SELECT d FROM Draws d LEFT JOIN Raffles r ON d.raffleId.id = r.id WHERE r.memberId.id = :memberId")
     List<Draws> findByMemberId(@Param("memberId") String memberId);
 
+    @Query("delete from Draws p where p.raffleId.id =:id")
+    void deleteAllByMemberId(Long id);
+
+
     @Query("SELECT d FROM Draws d WHERE d.raffleId.goodsId.id = :goodsId AND d.status IN :statuses")
     List<Draws> findDrawsByGoodsIdAndStatuses(Long goodsId, List<Status> statuses);
 
@@ -28,4 +33,5 @@ public interface DrawsRepository extends JpaRepository<Draws, Long> {
 
     @Query("SELECT AVG(d.raffleId.point) FROM Draws d WHERE d.raffleId.goodsId.id = :goodsId AND d.status = :status")
     Double findAveragePointByGoodsIdAndStatus(Long goodsId, Status status);
+
 }

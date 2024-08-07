@@ -2,10 +2,8 @@ package com._pi.benepick.domain.members.dto;
 
 import com._pi.benepick.domain.members.entity.Members;
 
-import com._pi.benepick.domain.members.entity.Role;
-
 import lombok.*;
-import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
@@ -70,7 +68,7 @@ public class MembersResponse {
     @NoArgsConstructor
     @Setter
     public static class DeleteResponseDTO{
-        private String msg;
+        private List<String> memberid;
     }
 
     @Builder

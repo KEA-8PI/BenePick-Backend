@@ -3,9 +3,12 @@ import com._pi.benepick.domain.members.dto.MembersRequest.*;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
-import com._pi.benepick.domain.members.service.MembersCommandService;
+
 import com._pi.benepick.domain.members.service.MembersQueryService;
+
+import com._pi.benepick.domain.members.service.MembersCommandService;
 import com._pi.benepick.global.common.exception.ApiException;
+
 import com._pi.benepick.global.common.response.ApiResponse;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,6 +30,7 @@ import java.util.List;
 @RequestMapping("/member")
 @Tag(name = "Members", description = "사원 API")
 public class MembersController {
+
 
 
     private final MembersCommandService membersCommandService;
@@ -59,9 +64,10 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
 
     @Operation(summary = "사원 목록 조회 및 검색", description = "사원 목록을 조회하고 검색합니다 (관리자용)")
     @GetMapping("/list")
-    public ApiResponse<MembersDetailListResponseDTO> getMemberList(@RequestParam Integer page, @RequestParam Integer size, @RequestParam String keywordName){
+    public ApiResponse<MembersDetailListResponseDTO> getMemberList(@RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String keywordName){
 
         return ApiResponse.onSuccess(membersQueryService.getMembersList(page,size,keywordName));
+
 
     }
 
@@ -72,12 +78,10 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
         return ApiResponse.onSuccess(membersCommandService.addMembers(membersRequestDTO,members));
     }
 
-    @Operation(summary = "복지포인트 파일 업로드 - Mockup API", description = "복지 포인트 파일을 업로드합니다. (관리자용)")
+    @Operation(summary = "복지포인트 파일 업로드", description = "복지 포인트 파일을 업로드합니다. (관리자용)")
     @PostMapping(value="/point/upload",consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<MembersuccessDTO> uploadPointFile(@RequestPart("file") MultipartFile file){
-        return ApiResponse.onSuccess(MembersuccessDTO.builder()
-                .msg("수정되었습니다.")
-                .build());
+    public ApiResponse<MembersDetailListResponseDTO> uploadPointFile(@RequestPart("file") MultipartFile file) throws IOException {
+        return  ApiResponse.onSuccess(membersCommandService.uploadPointFile(file));
     }
 
     @Operation(summary = "사원 정보 수정", description = "사원 정보를 수정합니다. (관리자용)")
@@ -86,24 +90,20 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
         Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
         return ApiResponse.onSuccess(membersCommandService.updateMemberInfo(memberID,membersRequestDTO,member));
     }
-    @Operation(summary = "사원 삭제 - Mockup API",description = "사원을 삭제합니다. (관리자용)")
-    @DeleteMapping("/{memberId}")
-    public ApiResponse<DeleteResponseDTO> deleteMember(@PathVariable String memberId){
-        return ApiResponse.onSuccess(DeleteResponseDTO.builder()
-                        .msg("삭제되었습니다.")
-                .build());
+
+    @Operation(summary = "사원 삭제",description = "사원을 삭제합니다. (관리자용)")
+    @DeleteMapping("/")
+    public ApiResponse<DeleteResponseDTO> deleteMember(@RequestBody DeleteMembersRequestDTO deleteMembersRequestDTO){
+        Members members=membersRepository.findById("string").orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
+        return ApiResponse.onSuccess(membersCommandService.deleteMembers(deleteMembersRequestDTO,members));
+
+
     }
 
-    @Operation(summary = "사원 추가 파일 등록 - Mockup API", description = "복지 포인트 파일을 업로드합니다. (관리자용)")
+    @Operation(summary = "사원 추가 파일 등록", description = "복지 포인트 파일을 업로드합니다. (관리자용)")
     @PostMapping(value="/add/upload",consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<MemberIDListResponseDTO> uploadMemberFile(@RequestPart("file") MultipartFile file){
-
-        String id="123";
-        String id1="456";
-        List<String> membersList = Arrays.asList(id, id);
-        return ApiResponse.onSuccess(MemberIDListResponseDTO.builder()
-                        .id(membersList)
-                .build());
+    public ApiResponse<MembersDetailListResponseDTO> uploadMemberFile(@RequestPart("file") MultipartFile file){
+        return ApiResponse.onSuccess(membersCommandService.uploadMemberFile(file));
     }
 
 }
