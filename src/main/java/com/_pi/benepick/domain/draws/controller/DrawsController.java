@@ -72,8 +72,8 @@ public class DrawsController {
     }
 
     @Operation(summary = "추첨 검증", description = "시드값을 이용하여 추첨 로직 검증을 할 수 있습니다.")
-    @GetMapping("/verification/{goodsId}/{seed}")
-    public ApiResponse<DrawsResponse.DrawsResponseResultListDTO> verificationSeed(@PathVariable Long goodsId, @PathVariable String seed) {
+    @GetMapping("/verification/{goodsId}")
+    public ApiResponse<DrawsResponse.DrawsResponseResultListDTO> verificationSeed(@PathVariable Long goodsId, @RequestParam String seed) {
         return ApiResponse.onSuccess(drawsCommandService.verificationSeed(goodsId, seed));
     }
 
