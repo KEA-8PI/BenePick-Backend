@@ -25,13 +25,6 @@ import org.hibernate.annotations.SQLRestriction;
 @SQLDelete(sql = "UPDATE members SET is_deleted = 'T' WHERE id = ?")
 @DynamicUpdate
 public class Members extends BaseJPATimeEntity {
-    public void updatePassword(String password) {
-        this.password = password;
-    }
-    public void updatePoint(Long point) {
-        this.point = point;
-    }
-
     @Id
     private String id; //사원_id
 
@@ -54,5 +47,12 @@ public class Members extends BaseJPATimeEntity {
     private Role role; //역할
 
     private String profileImg; //프로필사진
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+    public void updatePoint(Long point) {
+        this.point = point;
+    }
 
 }
