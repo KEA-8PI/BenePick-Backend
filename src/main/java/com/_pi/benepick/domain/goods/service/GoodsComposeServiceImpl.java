@@ -46,10 +46,7 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
     // 상품 추가 ( 응모 상태 자동 수정 )
     @Override
     public GoodsResponse.GoodsAddResponseDTO addGoods(GoodsRequest.GoodsRequestDTO goodsAddDTO, Members member) {
-        //관리자 인지 확인하는 로직
-        if(membersRepository.findById(member.getId()).get().getRole()== Role.MEMBER){
-            throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        }
+        checkAdmin(member);
         // 현재시간과 비교하여 GoodsStatus를 결정
         GoodsStatus status = determineGoodsStatus(goodsAddDTO.getRaffleStartAt(), goodsAddDTO.getRaffleEndAt());
 
@@ -69,10 +66,7 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
     // 상품 수정 ( 응모 상태 자동 수정 )
     @Override
     public GoodsResponse.GoodsAddResponseDTO updateGoods(Long goodsId, GoodsRequest.GoodsRequestDTO goodsUpdateDTO, Members member) {
-        //관리자 인지 확인하는 로직
-        if(membersRepository.findById(member.getId()).get().getRole()== Role.MEMBER){
-            throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        }
+        checkAdmin(member);
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
         // 현재시간과 비교하여 GoodsStatus를 결정
         GoodsStatus status = determineGoodsStatus(goodsUpdateDTO.getRaffleStartAt(), goodsUpdateDTO.getRaffleEndAt());
@@ -99,11 +93,7 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
     // 상품 파일 추가
     @Override
     public GoodsResponse.GoodsUploadResponseDTO uploadGoodsFile(MultipartFile file, Members member) {
-        //관리자 인지 확인하는 로직
-        if(membersRepository.findById(member.getId()).get().getRole()== Role.MEMBER){
-            throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        }
-
+        checkAdmin(member);
         List<Goods> goodsList = new ArrayList<>();
         List<GoodsCategories> goodsCategoriesList = new ArrayList<>();
         List<GoodsResponse.GoodsAddResponseDTO> goodsAddResponseDTOList = new ArrayList<>();
@@ -164,10 +154,7 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
     // 상품 목록 조회 (+ 검색)
     @Override
     public GoodsResponse.GoodsListResponseDTO getGoodsList(Integer page, Integer size, String keyword, Members member) {
-        //관리자 인지 확인하는 로직
-        if(membersRepository.findById(member.getId()).get().getRole()== Role.MEMBER){
-            throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        }
+        checkAdmin(member);
 
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
         Page<Goods> goodsPage;
@@ -190,10 +177,7 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
     // 상품 삭제
     @Override
     public GoodsResponse.GoodsDeleteResponseDTO deleteGoods(List<Long> deleteList, Members member) {
-        //관리자 인지 확인하는 로직
-        if(membersRepository.findById(member.getId()).get().getRole()== Role.MEMBER){
-            throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        }
+        checkAdmin(member);
 
         List<Long> deletedList = new ArrayList<>();
 
@@ -214,6 +198,13 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
             return GoodsStatus.COMPLETED; // 현재 시간보다 종료 시간이 빠르면 완료 상태
         } else {
             return GoodsStatus.PROGRESS; // 시작 시간이 지나고 종료 시간이 아직 오지 않았으면 진행 중 상태
+        }
+    }
+
+    // 관리자 확인 로직
+    private void checkAdmin(Members member) {
+        if (membersRepository.findById(member.getId()).get().getRole() == Role.MEMBER) {
+            throw new ApiException(ErrorStatus._UNAUTHORIZED);
         }
     }
 }
