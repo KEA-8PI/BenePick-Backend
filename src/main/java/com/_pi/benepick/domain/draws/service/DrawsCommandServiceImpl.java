@@ -48,9 +48,16 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
     public DrawsResponse.DrawsResponseByMembersDTO editWinnerStatus(Members members, Long winnerId, DrawsRequest.DrawsRequestDTO dto) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         Draws draws = drawsRepository.findById(winnerId).orElseThrow(() -> new ApiException(ErrorStatus._RAFFLES_NOT_COMPLETED));
+//        if (Status.valueOf(dto.getStatus()))
+        try {
+            if (Status.valueOf(dto.getStatus()).equals(Status.CONFIRM) && !(draws.getStatus().equals(Status.WINNER))) {
+                throw new ApiException(ErrorStatus._BAD_REQUEST);
+            }
+        } catch (IllegalArgumentException e) {
+            throw new ApiException(ErrorStatus._BAD_REQUEST);
+        }
 
-        Draws newDraws = DrawsRequest.DrawsRequestDTO.updateStatus(draws, Status.valueOf(dto.getStatus()));
-        Draws savedDraws = drawsRepository.save(newDraws);
+        draws.updateStatus(Status.valueOf(dto.getStatus()));
 
         // NO_SHOW로 변경하였을 때 패널티 부여.
         if (dto.getStatus().equals("NO_SHOW")) {
@@ -68,19 +75,21 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
         if (dto.getStatus().equals("NO_SHOW") || dto.getStatus().equals("CANCEL")) {
             List<Draws> drawsList = drawsRepository.findAllByGoodsIdAndStatus(draws.getRaffleId().getGoodsId().getId(), Status.WAITLIST);
             if (!drawsList.isEmpty()) {
-                newDraws = DrawsRequest.DrawsRequestDTO.updateStatus(drawsList.get(0), Status.WINNER);
-                drawsList.remove(0);
-                drawsList.add(newDraws);
+                drawsList.get(0).updateStatus(Status.WINNER);
 
                 for (Draws value : drawsList) {
-                    value.updateSequence();
+                    value.decreaseSequence();
                 }
 
                 drawsRepository.saveAll(drawsList);
             }
         }
 
-        return DrawsResponse.DrawsResponseByMembersDTO.from(savedDraws);
+        if (dto.getStatus().equals("CONFIRM")) {
+
+        }
+
+        return DrawsResponse.DrawsResponseByMembersDTO.from(draws);
     }
 
     public void drawStart(LocalDateTime now) {
@@ -108,7 +117,7 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
             for (Draws draws : drawsList) {
                 if (draws.getStatus().equals(Status.NON_WINNER)) {
                     Members members = draws.getRaffleId().getMemberId();
-                    members.changePoint(-(draws.getRaffleId().getPoint() / 2));
+                    members.decreasePoint(-(draws.getRaffleId().getPoint() / 2));
                     membersRepository.save(members);
                 }
             }

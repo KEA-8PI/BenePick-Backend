@@ -29,8 +29,12 @@ public class Draws extends BaseJPATimeEntity {
     @Column(nullable = false)
     private Status status; // WINNER, WAITLIST, CANCLE, NOSHOW
 
-    public void updateSequence() {
+    public void decreaseSequence() {
         this.sequence = this.sequence - 1;
+    }
+
+    public void updateStatus(Status status) {
+        this.status = status;
     }
 
 }
