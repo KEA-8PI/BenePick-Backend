@@ -90,7 +90,7 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
                 drawsList = drawsRepository.findAllByGoodsIdAndStatus(draws.getRaffleId().getGoodsId().getId(), Status.WAITLIST);
                 for (Draws waitDraw : drawsList) {
                     Members waitMembers = waitDraw.getRaffleId().getMemberId();
-                    waitMembers.decreasePoint(-(Math.round(waitDraw.getRaffleId().getPoint() / 2.0)));
+                    waitMembers.increasePoint(Math.round(waitDraw.getRaffleId().getPoint() / 2.0));
                     membersRepository.save(waitMembers);
                 }
             }
