@@ -43,7 +43,8 @@ public enum ErrorStatus implements BaseErrorCode {
   
     //auth 관련
     _FILE_OUTPUT_DISABLED(HttpStatus.INTERNAL_SERVER_ERROR, "DRAWS_001", "파일 출력이 불가능합니다."),
-    _NO_SUCH_ALGORITHM(HttpStatus.INTERNAL_SERVER_ERROR, "DRAWS_002", "Hash Algorithm 을 사용할 수 없습니다.");
+    _NO_SUCH_ALGORITHM(HttpStatus.INTERNAL_SERVER_ERROR, "DRAWS_002", "Hash Algorithm 을 사용할 수 없습니다."),
+    _CONFIRM_REQUIRE_WINNER(HttpStatus.BAD_REQUEST, "DRAWS_003", "확정은 당첨자에 한해서만 변경 가능합니다.");
 
 
 

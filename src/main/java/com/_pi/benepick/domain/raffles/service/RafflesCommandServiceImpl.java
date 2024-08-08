@@ -36,7 +36,6 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
         // 히스토리 반영 부분
         // TODO: 포인트 소모 히스토리 서비스 로직 구현 필요
         members.decreasePoint(raffleAddDTO.getPoint());
-        membersRepository.save(members);
 
         // historyService.addPointUsageHistory(memberId, pointsToDeduct, "Raffle Participation");
         // 패널티 가지고 있을 때
@@ -65,9 +64,7 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
                 raffles = RafflesRequest.RafflesRequestDTO.toEntity(members, goods, raffleAddDTO, 'F');
             }
 
-            Raffles savedRaffles = rafflesRepository.save(raffles);
-
-            return RafflesResponse.RafflesResponseByGoodsDTO.from(savedRaffles);
+            return RafflesResponse.RafflesResponseByGoodsDTO.from(raffles);
         }
     }
 }

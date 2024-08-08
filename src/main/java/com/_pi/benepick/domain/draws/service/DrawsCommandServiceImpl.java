@@ -48,10 +48,9 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
     public DrawsResponse.DrawsResponseByMembersDTO editWinnerStatus(Members members, Long winnerId, DrawsRequest.DrawsRequestDTO dto) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         Draws draws = drawsRepository.findById(winnerId).orElseThrow(() -> new ApiException(ErrorStatus._RAFFLES_NOT_COMPLETED));
-//        if (Status.valueOf(dto.getStatus()))
         try {
             if (Status.valueOf(dto.getStatus()).equals(Status.CONFIRM) && !(draws.getStatus().equals(Status.WINNER))) {
-                throw new ApiException(ErrorStatus._BAD_REQUEST);
+                throw new ApiException(ErrorStatus._CONFIRM_REQUIRE_WINNER);
             }
         } catch (IllegalArgumentException e) {
             throw new ApiException(ErrorStatus._BAD_REQUEST);
@@ -86,7 +85,15 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
         }
 
         if (dto.getStatus().equals("CONFIRM")) {
-
+            List<Draws> drawsList = drawsRepository.findAllByGoodsIdAndStatus(draws.getRaffleId().getGoodsId().getId(), Status.WINNER);
+            if (drawsList.isEmpty()) {
+                drawsList = drawsRepository.findAllByGoodsIdAndStatus(draws.getRaffleId().getGoodsId().getId(), Status.WAITLIST);
+                for (Draws waitDraw : drawsList) {
+                    Members waitMembers = waitDraw.getRaffleId().getMemberId();
+                    waitMembers.decreasePoint(-(Math.round(waitDraw.getRaffleId().getPoint() / 2.0)));
+                    membersRepository.save(waitMembers);
+                }
+            }
         }
 
         return DrawsResponse.DrawsResponseByMembersDTO.from(draws);
@@ -117,7 +124,7 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
             for (Draws draws : drawsList) {
                 if (draws.getStatus().equals(Status.NON_WINNER)) {
                     Members members = draws.getRaffleId().getMemberId();
-                    members.decreasePoint(-(draws.getRaffleId().getPoint() / 2));
+                    members.decreasePoint(-(Math.round(draws.getRaffleId().getPoint() / 2.0)));
                     membersRepository.save(members);
                 }
             }
