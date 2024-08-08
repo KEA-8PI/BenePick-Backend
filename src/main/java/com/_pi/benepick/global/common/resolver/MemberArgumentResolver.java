@@ -4,6 +4,7 @@ import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.global.common.annotation.MemberObject;
 import com._pi.benepick.global.common.jwt.JwtTokenProvider;
+import com._pi.benepick.global.common.utils.CookieUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,7 @@ public class MemberArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        String token = jwtTokenProvider.resolveToken(
-            Objects.requireNonNull(webRequest.getNativeRequest(HttpServletRequest.class)));
+        String token = CookieUtils.getCookieValue(webRequest.getNativeRequest(HttpServletRequest.class), "accessToken");
 
         if(token == null)
             return null;

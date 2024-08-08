@@ -3,6 +3,7 @@ package com._pi.benepick.global.common.jwt;
 
 import com._pi.benepick.global.common.jwt.dto.JwtResponse.JwtPairDTO;
 import com._pi.benepick.global.common.jwt.entity.JwtTokens;
+import com._pi.benepick.global.common.utils.CookieUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -23,7 +24,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
         // 클라이언트의 API 요청 헤더에서 토큰 추출
-        String accessToken = jwtTokenProvider.resolveToken(request);
+        String accessToken = CookieUtils.getCookieValue(request, "accessToken");
+        String refreshToken = CookieUtils.getCookieValue(request, "refreshToken");
 
         // 유효성 검사 후 SecurityContext에 저장
         if (accessToken != null) {
@@ -31,10 +33,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 //토큰이 유효함
                 Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-            } else {
-                String refreshToken = Arrays.stream(request.getCookies()).filter(cookie -> cookie.getName().equals("refreshToken"))
-                    .findFirst().map(Cookie::getValue).orElse(null);
-
+            } else if(refreshToken != null){
                 // 리프래시토큰으로 액세스토큰 재발급
                 JwtPairDTO newToken = jwtTokenProvider.refreshAccessToken(accessToken, refreshToken);
                 if (newToken != null) {

@@ -1,7 +1,6 @@
 package com._pi.benepick.domain.auth.service;
 
 import com._pi.benepick.domain.auth.dto.AuthRequest.AuthLoginRequestDTO;
-import com._pi.benepick.domain.auth.dto.AuthRequest.AuthLogoutRequestDTO;
 import com._pi.benepick.domain.auth.dto.AuthResponse.AuthLoginResponseDTO;
 import com._pi.benepick.domain.auth.dto.AuthResponse.AuthLogoutResponseDTO;
 import com._pi.benepick.domain.members.entity.Members;
@@ -9,14 +8,13 @@ import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.jwt.JwtTokenProvider;
 import com._pi.benepick.global.common.jwt.dto.JwtResponse.JwtPairDTO;
-import com._pi.benepick.global.common.jwt.entity.JwtTokens;
-import com._pi.benepick.global.common.jwt.repository.JwtTokensRepository;
 import com._pi.benepick.global.common.jwt.service.JwtCommandService;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
+import com._pi.benepick.global.common.utils.CookieUtils;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,14 +47,13 @@ public class AuthCommandServiceImpl implements AuthCommandService {
     }
 
     @Override
-    public AuthLogoutResponseDTO logout(Members members, AuthLogoutRequestDTO requestDTO) {
-        if(!members.getId().equals(jwtTokenProvider.getUserPk(requestDTO.getAccessToken()))) {
-            throw new ApiException(ErrorStatus._FORBIDDEN);
-        }
+    public AuthLogoutResponseDTO logout(Members members, HttpServletRequest request, HttpServletResponse response) {
+        jwtCommandService.deleteJwtPair(CookieUtils.getCookieValue(request, "accessToken"));
 
-        jwtCommandService.deleteJwtPair(requestDTO.getAccessToken());
+        CookieUtils.deleteCookie(response, "accessToken");
+        CookieUtils.deleteCookie(response, "refreshToken");
         return AuthLogoutResponseDTO.builder()
-            .accessToken(requestDTO.getAccessToken())
+            .memberID(members.getId())
             .build();
     }
 }

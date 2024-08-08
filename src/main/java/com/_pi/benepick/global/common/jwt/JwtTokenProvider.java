@@ -8,6 +8,7 @@ import com._pi.benepick.global.common.jwt.repository.JwtTokensRepository;
 import com._pi.benepick.global.common.jwt.service.JwtCommandService;
 import com._pi.benepick.global.common.jwt.service.JwtQueryService;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
+import com._pi.benepick.global.common.utils.CookieUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -40,7 +41,6 @@ public class JwtTokenProvider {
     private final UserDetailsService userDetailsService;
     private final JwtQueryService jwtQueryService;
     private final JwtCommandService jwtCommandService;
-
 
     // 토큰 생성
     public String createAccessToken(String userPk) {
@@ -111,15 +111,6 @@ public class JwtTokenProvider {
         return validateToken(jwtTokens.getRefreshToken());
     }
 
-    // Request의 Header에서 token 값 가져오기
-    public String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
-
     public Authentication getAuthentication(String token) {
         String userId = this.getUserPk(token);
 
@@ -129,19 +120,12 @@ public class JwtTokenProvider {
 
     // 액세스 토큰 쿠키 생성
     public Cookie createAccessTokenCookie(String token) {
-        Cookie cookie = new Cookie("accessToken", token);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge((int) accessTokenExpiration);
-        cookie.setPath("/");
-        return cookie;
+        return CookieUtils.createCookie("accessToken", token, (int) accessTokenExpiration, "/");
     }
+
 
     // 리프레시 토큰 쿠키 생성
     public Cookie createRefreshTokenCookie(String token) {
-        Cookie cookie = new Cookie("refreshToken", token);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge((int) refreshTokenExpiration);
-        cookie.setPath("/");
-        return cookie;
+        return CookieUtils.createCookie("refreshToken", token, (int) refreshTokenExpiration, "/");
     }
 }
