@@ -16,6 +16,8 @@ import java.util.Optional;
 @Repository
 public interface RafflesRepository extends JpaRepository<Raffles, Long> {
 
+    List<Raffles> findAllByGoodsIdOrderByPointAsc(Goods goods);
+
     List<Raffles> findAllByGoodsId(Goods goods);
 
     List<Raffles> findAllByMemberId(Members members);

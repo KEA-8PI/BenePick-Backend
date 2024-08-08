@@ -1,0 +1,27 @@
+package com._pi.benepick.domain.draws.dto;
+
+import com._pi.benepick.domain.raffles.entity.Raffles;
+import lombok.*;
+
+import java.util.List;
+
+public class DrawsStart {
+
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    public static class DrawsStartDTO {
+        private Raffles raffles;
+        private Long point; // 사용포인트
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    public static class DrawsStartListDTO {
+        private List<DrawsStart.DrawsStartDTO> drawsStartDTOList;
+    }
+
+}

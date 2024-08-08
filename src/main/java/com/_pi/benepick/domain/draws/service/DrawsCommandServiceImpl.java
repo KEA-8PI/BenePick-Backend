@@ -15,6 +15,9 @@ import com._pi.benepick.domain.hash.entity.Hash;
 import com._pi.benepick.domain.hash.repository.HashsRepository;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
+import com._pi.benepick.domain.members.repository.MembersRepository;
+import com._pi.benepick.domain.penaltyHists.entity.PenaltyHists;
+import com._pi.benepick.domain.penaltyHists.repository.PenaltyHistsRepository;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import com._pi.benepick.domain.raffles.repository.RafflesRepository;
 import com._pi.benepick.global.common.exception.ApiException;
@@ -30,7 +33,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -40,29 +42,73 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
     private final DrawsRepository drawsRepository;
     private final RafflesRepository rafflesRepository;
     private final HashsRepository hashsRepository;
+    private final MembersRepository membersRepository;
+    private final PenaltyHistsRepository penaltyHistsRepository;
 
     public DrawsResponse.DrawsResponseByMembersDTO editWinnerStatus(Members members, Long winnerId, DrawsRequest.DrawsRequestDTO dto) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         Draws draws = drawsRepository.findById(winnerId).orElseThrow(() -> new ApiException(ErrorStatus._RAFFLES_NOT_COMPLETED));
+        try {
+            if (Status.valueOf(dto.getStatus()).equals(Status.CONFIRM) && !(draws.getStatus().equals(Status.WINNER))) {
+                throw new ApiException(ErrorStatus._CONFIRM_REQUIRE_WINNER);
+            }
+        } catch (IllegalArgumentException e) {
+            throw new ApiException(ErrorStatus._BAD_REQUEST);
+        }
 
-        Draws newDraws = DrawsRequest.DrawsRequestDTO.updateStatus(draws, dto);
-        Draws savedDraws = drawsRepository.save(newDraws);
+        draws.updateStatus(Status.valueOf(dto.getStatus()));
 
-        // NO_SHOW로 변경하였을 때
-        // TODO: 패널티 히스토리 추가 및 패널티 부여.
+        // NO_SHOW로 변경하였을 때 패널티 부여.
+        if (dto.getStatus().equals("NO_SHOW")) {
+            PenaltyHists penaltyHists = PenaltyHists.builder()
+                    .memberId(members)
+                    .content("NO SHOW")
+                    .totalPenalty((int) (members.getPenaltyCnt() + 5))
+                    .penaltyCount(5)
+                    .build();
+            members.updatePenalty(members.getPenaltyCnt() + 5);
+            membersRepository.save(members);
+            penaltyHistsRepository.save(penaltyHists);
+        }
 
-        return DrawsResponse.DrawsResponseByMembersDTO.from(savedDraws);
+        if (dto.getStatus().equals("NO_SHOW") || dto.getStatus().equals("CANCEL")) {
+            List<Draws> drawsList = drawsRepository.findAllByGoodsIdAndStatus(draws.getRaffleId().getGoodsId().getId(), Status.WAITLIST);
+            if (!drawsList.isEmpty()) {
+                drawsList.get(0).updateStatus(Status.WINNER);
+
+                for (Draws value : drawsList) {
+                    value.decreaseSequence();
+                }
+
+                drawsRepository.saveAll(drawsList);
+            }
+        }
+
+        if (dto.getStatus().equals("CONFIRM")) {
+            List<Draws> drawsList = drawsRepository.findAllByGoodsIdAndStatus(draws.getRaffleId().getGoodsId().getId(), Status.WINNER);
+            if (drawsList.isEmpty()) {
+                drawsList = drawsRepository.findAllByGoodsIdAndStatus(draws.getRaffleId().getGoodsId().getId(), Status.WAITLIST);
+                for (Draws waitDraw : drawsList) {
+                    Members waitMembers = waitDraw.getRaffleId().getMemberId();
+                    waitMembers.increasePoint(Math.round(waitDraw.getRaffleId().getPoint() / 2.0));
+                    membersRepository.save(waitMembers);
+                }
+            }
+        }
+
+        return DrawsResponse.DrawsResponseByMembersDTO.from(draws);
     }
 
     public void drawStart(LocalDateTime now) {
         List<Goods> goodsList = goodsRepository.findByRaffleEndAtBeforeAndGoodsStatus(now, GoodsStatus.PROGRESS);
+        // TODO: 패널티에 따라 응모하는 포인트 차감하고 패널티 횟수도 감소.
 
         for (Goods goods : goodsList) {
             // 현재 시각이 응모종료시간보다 이후여야하고, 상태가 PROGRESS 여야 한다.
             if (!(LocalDateTime.now().isAfter(goods.getRaffleEndAt()) && goods.getGoodsStatus().equals(GoodsStatus.PROGRESS))) {
                 throw new ApiException(ErrorStatus._BAD_REQUEST);
             }
-            List<Raffles> rafflesList = rafflesRepository.findAllByGoodsId(goods);
+            List<Raffles> rafflesList = rafflesRepository.findAllByGoodsIdOrderByPointAsc(goods);
 
             double seed = DrawAlgorithm.generateSeed();
             String hash = DoubleToSHA256.getSHA256Hash(seed);
@@ -75,6 +121,13 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
 
             List<Draws> drawsList = RaffleDraw.performDraw(seed, rafflesList, goods);
 
+            for (Draws draws : drawsList) {
+                if (draws.getStatus().equals(Status.NON_WINNER)) {
+                    Members members = draws.getRaffleId().getMemberId();
+                    members.increasePoint(Math.round(draws.getRaffleId().getPoint() / 2.0));
+                    membersRepository.save(members);
+                }
+            }
             drawsRepository.saveAll(drawsList);
             goodsRepository.save(goods);
         }
@@ -104,7 +157,7 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
         }
 
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
-        List<Raffles> rafflesList = rafflesRepository.findAllByGoodsId(goods);
+        List<Raffles> rafflesList = rafflesRepository.findAllByGoodsIdOrderByPointAsc(goods);
 
         List<Draws> drawsListResult = RaffleDraw.performDraw(seed, rafflesList, goods);
         List<DrawsResponse.DrawsResponseResultDTO> drawsResponseResultDTOList = drawsListResult.stream()
