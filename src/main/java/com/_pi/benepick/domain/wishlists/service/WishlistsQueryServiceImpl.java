@@ -2,6 +2,7 @@ package com._pi.benepick.domain.wishlists.service;
 
 import com._pi.benepick.domain.goods.entity.GoodsFilter;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
+import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.wishlists.dto.WishlistResponse;
 import com._pi.benepick.domain.wishlists.entity.Wishlists;
 import com._pi.benepick.domain.wishlists.repository.WishlistsRepository;
@@ -26,7 +27,7 @@ public class WishlistsQueryServiceImpl implements WishlistsQueryService{
 
     //위시리스트 응모 상태별 조회
     @Override
-    public WishlistResponse.WishlistListDTO getWishList(GoodsStatus goodsStatus, Integer page, Integer size, GoodsFilter sortBy){
+    public WishlistResponse.WishlistListDTO getWishList(GoodsStatus goodsStatus, Integer page, Integer size, GoodsFilter sortBy, Members members){
         PageRequest pageRequest=createPageRequest(page, size, sortBy);
 
         Page<Wishlists> wishlistsPage = null;

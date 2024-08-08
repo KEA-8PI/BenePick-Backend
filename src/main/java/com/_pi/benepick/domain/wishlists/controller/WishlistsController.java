@@ -2,9 +2,13 @@ package com._pi.benepick.domain.wishlists.controller;
 
 import com._pi.benepick.domain.goods.entity.GoodsFilter;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
+import com._pi.benepick.domain.members.entity.Members;
+import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.domain.wishlists.dto.WishlistResponse.*;
 import com._pi.benepick.domain.wishlists.service.WishlistsQueryService;
+import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.ApiResponse;
+import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +23,14 @@ import java.util.List;
 @RequestMapping("/wishlists")
 public class WishlistsController {
     private final WishlistsQueryService wishlistsQueryService;
+    private final MembersRepository membersRepository;
 
     @Operation(summary = "위시리스트 응모 상태별 조회",description = "사용자가 본인의 위시리스트를 조회합니다.")
     @GetMapping("/{goodsStatus}")
     public ApiResponse<WishlistListDTO> getwishList(@PathVariable GoodsStatus goodsStatus, @RequestParam Integer page, @RequestParam Integer size,@RequestParam GoodsFilter sortBy){
-
+        Members members=membersRepository.findById("string").orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
         return ApiResponse.onSuccess(
-             wishlistsQueryService.getWishList(goodsStatus,page,size,sortBy)
+             wishlistsQueryService.getWishList(goodsStatus,page,size,sortBy,members)
         );
     }
 
