@@ -21,7 +21,10 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,14 +45,14 @@ public class DrawsController {
 
     @Operation(summary = "상품별 당첨자 조회", description = "상품에 응모한 사원들 중 추첨 결과가 대기 & 낙첨이 아닌 사원들과 그 내역을 확인할 수 있습니다.(관리자 페이지)")
     @GetMapping("/winners/{goodsId}")
-    public ApiResponse<DrawsResponse.DrawsResponseByGoodsListDTO> getWinnersByGoodsId(@PathVariable Long goodsId) {
+    public ApiResponse<DrawsResponse.DrawsResponseByWinnerGoodsIdListDTO> getWinnersByGoodsId(@PathVariable Long goodsId) {
         Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
         return ApiResponse.onSuccess(drawsQueryService.getWinnersByGoodsId(member, goodsId));
     }
 
     @Operation(summary = "상품별 대기자 조회", description = "상품에 응모한 사원들 중 추첨 결과가 대기중인 사원들과 그 내역을 확인할 수 있습니다.")
     @GetMapping("/waitlist/{goodsId}")
-    public ApiResponse<DrawsResponse.DrawsResponseByGoodsListDTO> getWaitlistByGoodsId(@PathVariable Long goodsId) {
+    public ApiResponse<DrawsResponse.DrawsResponseByWaitlistGoodsIdListDTO> getWaitlistByGoodsId(@PathVariable Long goodsId) {
         Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
         return ApiResponse.onSuccess(drawsQueryService.getWaitlistByGoodsId(member, goodsId));
     }
