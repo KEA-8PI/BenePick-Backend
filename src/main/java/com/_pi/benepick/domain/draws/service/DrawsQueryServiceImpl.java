@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,27 +55,27 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
                 .build();
     }
 
-    public DrawsResponse.DrawsResponseByGoodsListDTO getWaitlistByGoodsId(Members members, Long goodsId) {
+    public DrawsResponse.DrawsResponseByWaitlistGoodsIdListDTO getWaitlistByGoodsId(Members members, Long goodsId) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        List<DrawsResponse.DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
+        List<DrawsResponse.DrawsResponseByWaitlistGoodsIdDTO> waitlistGoodsIdDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
                 .filter(draws -> draws.getStatus() == Status.WAITLIST)
-                .map(DrawsResponse.DrawsResponseByGoodsDTO::from)
-            .toList();
+                .map(DrawsResponse.DrawsResponseByWaitlistGoodsIdDTO::from)
+                .collect(Collectors.toList());
 
-        return DrawsResponse.DrawsResponseByGoodsListDTO.builder()
-                .drawsResponseByGoodsDTOList(drawsResponseByGoodsDTOS)
+        return DrawsResponse.DrawsResponseByWaitlistGoodsIdListDTO.builder()
+                .drawsResponseByWaitlistGoodsIdDTOS(waitlistGoodsIdDTOS)
                 .build();
     }
 
-    public DrawsResponse.DrawsResponseByGoodsListDTO getWinnersByGoodsId(Members members, Long goodsId) {
+    public DrawsResponse.DrawsResponseByWinnerGoodsIdListDTO getWinnersByGoodsId(Members members, Long goodsId) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        List<DrawsResponse.DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
+        List<DrawsResponse.DrawsResponseByWinnerGoodsIdDTO> winnerGoodsIdDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
                 .filter(draws -> draws.getStatus() != Status.WAITLIST && draws.getStatus() != Status.NON_WINNER)
-                .map(DrawsResponse.DrawsResponseByGoodsDTO::from)
+                .map(DrawsResponse.DrawsResponseByWinnerGoodsIdDTO::from)
             .toList();
 
-        return DrawsResponse.DrawsResponseByGoodsListDTO.builder()
-                .drawsResponseByGoodsDTOList(drawsResponseByGoodsDTOS)
+        return DrawsResponse.DrawsResponseByWinnerGoodsIdListDTO.builder()
+                .drawsResponseByWinnerGoodsIdDTOS(winnerGoodsIdDTOS)
                 .build();
     }
 
