@@ -41,7 +41,7 @@ public class Raffles extends BaseJPATimeEntity {
     }
 
     public void increasePoint(Long point) {
-        this.point = point;
+        this.point = this.point + point;
     }
 
 }

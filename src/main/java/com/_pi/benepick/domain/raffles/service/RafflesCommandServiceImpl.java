@@ -44,13 +44,10 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
         if (optionalRaffles.isPresent()) {
             Raffles raffles = optionalRaffles.get();
             LocalDateTime dateTime = LocalDateTime.now();
-            Long point = raffleAddDTO.getPoint() + raffles.getPoint();
-            if (members.getPenaltyCnt() > 0 && point >= 100 && raffles.getPenaltyFlag() == 'F') {
+            raffles.increasePoint(raffleAddDTO.getPoint());
+            if (members.getPenaltyCnt() > 0 && raffles.getPoint() >= 100 && raffles.getPenaltyFlag() == 'F') {
                 raffles.updatePenaltyFlag('T');
-                raffles.increasePoint(point);
                 members.updatePenalty(members.getPenaltyCnt() - 1);
-            } else {
-                raffles.increasePoint(point);
             }
 
             return RafflesResponse.RafflesResponseByGoodsDTO.of(raffles, dateTime);
