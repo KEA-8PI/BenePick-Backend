@@ -49,11 +49,12 @@ public class Goods extends BaseJPATimeEntity {
 
     @OneToOne(fetch = FetchType.LAZY, targetEntity = Hash.class, cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "hash_id")
-    private Hash hash; //응모_id
+    private Hash hash; //해시값
 
     @Enumerated(EnumType.STRING)
     private GoodsStatus goodsStatus; //상품응모상태 (PROGRESS,SCHEDULED,COMPLETED)
 
+    //
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "goodsId", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Raffles> raffles; // 응모자 리스트
 

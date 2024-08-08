@@ -39,28 +39,6 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
         return GoodsResponse.GoodsDetailResponseDTO.of(goods, category.getName());
     }
 
-    // 상품 목록 조회 (+ 검색)
-    @Override
-    public GoodsResponse.GoodsListResponseDTO getGoodsList(Integer page, Integer size, String keyword) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
-        Page<Goods> goodsPage;
-
-        if (keyword != null && !keyword.isEmpty()) {
-            goodsPage = goodsRepository.findByNameContainingIgnoreCase(keyword, pageRequest);
-        } else {
-            goodsPage = goodsRepository.findAll(pageRequest);
-        }
-
-        List<GoodsResponse.GoodsResponseDTO> goodsDTOList = goodsPage.getContent().stream()
-                .map(GoodsResponse.GoodsResponseDTO::from)
-                .toList();
-
-        return GoodsResponse.GoodsListResponseDTO.builder()
-                .goodsDTOList(goodsDTOList)
-                .build();
-    }
-
-
     // 시드 값 조회
     @Override
     public GoodsResponse.GoodsSeedsResponseDTO getSeeds(Long goodsId) {

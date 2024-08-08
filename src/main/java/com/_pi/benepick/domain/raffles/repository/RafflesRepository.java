@@ -6,7 +6,6 @@ import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -29,5 +28,4 @@ public interface RafflesRepository extends JpaRepository<Raffles, Long> {
 
     void deleteAllByMemberId_IdAndGoodsId_GoodsStatus(String id,GoodsStatus goodsStatus);
 
-    void deleteAllByGoodsId_Id(Long id);
 }
