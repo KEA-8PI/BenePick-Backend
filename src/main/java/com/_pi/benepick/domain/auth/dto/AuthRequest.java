@@ -17,4 +17,12 @@ public class AuthRequest {
         private String password;
     }
 
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    public static class AuthLogoutRequestDTO{
+        private String accessToken;
+    }
+
 }

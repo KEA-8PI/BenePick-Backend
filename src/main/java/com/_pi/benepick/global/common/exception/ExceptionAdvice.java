@@ -59,7 +59,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = ApiException.class)
-    public ResponseEntity onThrowException(ApiException apiException, HttpServletRequest request) {
+    public ResponseEntity<Object> onThrowException(ApiException apiException, HttpServletRequest request) {
         ErrorReasonDTO errorReasonHttpStatus = apiException.getErrorReasonHttpStatus();
         return handleExceptionInternal(apiException, errorReasonHttpStatus, null, request);
     }

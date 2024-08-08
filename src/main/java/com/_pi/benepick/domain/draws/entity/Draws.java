@@ -3,11 +3,7 @@ package com._pi.benepick.domain.draws.entity;
 import com._pi.benepick.global.common.BaseJPATimeEntity;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -32,5 +28,13 @@ public class Draws extends BaseJPATimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status; // WINNER, WAITLIST, CANCLE, NOSHOW
+
+    public void decreaseSequence() {
+        this.sequence = this.sequence - 1;
+    }
+
+    public void updateStatus(Status status) {
+        this.status = status;
+    }
 
 }
