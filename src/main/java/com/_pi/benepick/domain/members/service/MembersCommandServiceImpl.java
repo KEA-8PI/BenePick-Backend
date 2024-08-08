@@ -196,17 +196,25 @@ public class MembersCommandServiceImpl implements MembersCommandService{
 
     }
 
+    // 사원 파일 업로드
     public MembersResponse.MembersDetailListResponseDTO uploadMemberFile(MultipartFile file) {
         List<Members> membersList = new ArrayList<>();
+        List<String> existingMemberIds;
+
         try (InputStream inputStream = file.getInputStream();
              Workbook workbook = new XSSFWorkbook(inputStream)) {
-
             XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
+
+            List<Members> existingMembers = membersRepository.findAll();
+            existingMemberIds = existingMembers.stream()
+                    .map(Members::getId)
+                    .collect(Collectors.toList());
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) { continue;}
-
+                String id = row.getCell(0).getStringCellValue();
+                if (membersRepository.findById(id).isPresent()) { continue;}
                 Members members = Members.builder()
-                        .id(row.getCell(0).getStringCellValue())
+                        .id(id)
                         .name(row.getCell(1).getStringCellValue())
                         .deptName(row.getCell(2).getStringCellValue())
                         .password(row.getCell(3).getStringCellValue())
