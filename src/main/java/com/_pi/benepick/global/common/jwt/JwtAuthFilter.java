@@ -9,6 +9,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,17 +23,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
         // 클라이언트의 API 요청 헤더에서 토큰 추출
-        String token = jwtTokenProvider.resolveToken(request);
+        String accessToken = jwtTokenProvider.resolveToken(request);
 
         // 유효성 검사 후 SecurityContext에 저장
-        if (token != null) {
-            if (jwtTokenProvider.validateAccessToken(token)) {
+        if (accessToken != null) {
+            if (jwtTokenProvider.validateAccessToken(accessToken)) {
                 //토큰이 유효함
-                Authentication authentication = jwtTokenProvider.getAuthentication(token);
+                Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-            } else if (jwtTokenProvider.validateRefreshToken(token)) {
+            } else {
+                String refreshToken = Arrays.stream(request.getCookies()).filter(cookie -> cookie.getName().equals("refreshToken"))
+                    .findFirst().map(Cookie::getValue).orElse(null);
+
                 // 리프래시토큰으로 액세스토큰 재발급
-                JwtPairDTO newToken = jwtTokenProvider.refreshAccessToken(token);
+                JwtPairDTO newToken = jwtTokenProvider.refreshAccessToken(accessToken, refreshToken);
                 if (newToken != null) {
 //                   // 새로운 액세스 토큰이 발급되면 SecurityContext에 저장
                     Authentication authentication = jwtTokenProvider.getAuthentication(newToken.getAccessToken());

@@ -64,8 +64,8 @@ public class JwtTokenProvider {
     }
 
     // 액세스 토큰 재발급
-    public JwtPairDTO refreshAccessToken(String refreshToken) {
-        if (validateRefreshToken(refreshToken)) {
+    public JwtPairDTO refreshAccessToken(String accessToken, String refreshToken) {
+        if (validateRefreshToken(accessToken, refreshToken)) {
             String userPk = getUserPk(refreshToken);
 
             return jwtCommandService.createJwtPair(createAccessToken(userPk), createRefreshToken(userPk));
@@ -98,8 +98,15 @@ public class JwtTokenProvider {
     }
 
     // 리프레시 토큰 유효성 확인
-    public boolean validateRefreshToken(String accessToken) {
+    public boolean validateRefreshToken(String accessToken, String refreshToken) {
+        if (accessToken == null || refreshToken == null) {
+            throw new ApiException(ErrorStatus._INVALID_TOKEN);
+        }
+
         JwtPairDTO jwtTokens = jwtQueryService.findJwtPair(accessToken);
+        if(!refreshToken.equals(jwtTokens.getRefreshToken())) {
+            throw new ApiException(ErrorStatus._INVALID_TOKEN);
+        }
 
         return validateToken(jwtTokens.getRefreshToken());
     }
@@ -125,6 +132,7 @@ public class JwtTokenProvider {
         Cookie cookie = new Cookie("accessToken", token);
         cookie.setHttpOnly(true);
         cookie.setMaxAge((int) accessTokenExpiration);
+        cookie.setPath("/");
         return cookie;
     }
 
@@ -133,6 +141,7 @@ public class JwtTokenProvider {
         Cookie cookie = new Cookie("refreshToken", token);
         cookie.setHttpOnly(true);
         cookie.setMaxAge((int) refreshTokenExpiration);
+        cookie.setPath("/");
         return cookie;
     }
 }
