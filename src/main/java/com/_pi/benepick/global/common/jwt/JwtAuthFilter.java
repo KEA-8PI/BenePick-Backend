@@ -46,6 +46,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     Cookie accessTokenCookie = jwtTokenProvider.createAccessTokenCookie(newToken.getAccessToken());
                     Cookie refreshTokenCookie = jwtTokenProvider.createRefreshTokenCookie(newToken.getRefreshToken());
 
+                    // localhost에서도 테스트하기 위해 추가
+                    Cookie localAccessTokenCookie = jwtTokenProvider.createLocalHostAccessTokenCookie(newToken.getAccessToken());
+                    Cookie localRefreshTokenCookie = jwtTokenProvider.createLocalHostRefreshTokenCookie(newToken.getAccessToken());
+                    response.addCookie(localAccessTokenCookie);
+                    response.addCookie(localRefreshTokenCookie);
+
                     response.addCookie(accessTokenCookie);
                     response.addCookie(refreshTokenCookie);
                 }

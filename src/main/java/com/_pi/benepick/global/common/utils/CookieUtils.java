@@ -44,4 +44,13 @@ public class CookieUtils {
         cookie.setPath(path);
         return cookie;
     }
+
+    public static Cookie createLocalhostCookie(String name, String value, int maxAge, String path) {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(maxAge);
+        cookie.setPath(path);
+        cookie.setDomain("localhost"); //프론트 개발용. 배포시 제거
+        return cookie;
+    }
 }

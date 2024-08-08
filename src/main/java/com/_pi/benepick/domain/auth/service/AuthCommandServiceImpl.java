@@ -40,6 +40,14 @@ public class AuthCommandServiceImpl implements AuthCommandService {
 
         Cookie accessTokenCookie = jwtTokenProvider.createAccessTokenCookie(jwtTokens.getAccessToken());
         Cookie refreshTokenCookie = jwtTokenProvider.createRefreshTokenCookie(jwtTokens.getRefreshToken());
+
+        // localhost에서도 테스트하기 위해 추가
+        Cookie localAccessTokenCookie = jwtTokenProvider.createLocalHostAccessTokenCookie(jwtTokens.getAccessToken());
+        Cookie localRefreshTokenCookie = jwtTokenProvider.createLocalHostRefreshTokenCookie(jwtTokens.getRefreshToken());
+        response.addCookie(localAccessTokenCookie);
+        response.addCookie(localRefreshTokenCookie);
+
+
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
 
