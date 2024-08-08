@@ -44,17 +44,6 @@ public class AuthController {
         return ApiResponse.onSuccess(authCommandService.logout(members, requestDTO));
     }
 
-    @PostMapping("/refresh")
-    @Operation(summary = "엑세스 토큰 갱신 - Mockup API", description = "리프레시 토큰을 입력받아 엑세스 토큰을 갱신합니다.")
-    public ApiResponse<AuthLoginResponseDTO> refresh(){
-        // 로그인 서비스로직 구현 후 아래의 코드는 삭제할 예정입니다.
-        // 사용자 정보 검증 후 토큰 발급
-        // 발급한 토큰을 레디스와 쿠키에 등록한다.
-        Members member = membersRepository.findById("030eeb2a-c0a9-4c54-8f48-12e816a01985")
-            .orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
-        return ApiResponse.onSuccess(AuthLoginResponseDTO.from(member));
-    }
-
     @GetMapping("/test")
     public ApiResponse<String> testPostRequest(@MemberObject Members members) {
         return ApiResponse.onSuccess("Get request successful from " + members.getName());
