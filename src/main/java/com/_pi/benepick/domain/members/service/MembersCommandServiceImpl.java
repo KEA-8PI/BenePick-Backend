@@ -163,7 +163,7 @@ public class MembersCommandServiceImpl implements MembersCommandService{
                     Long pointChange = (long)row.getCell(1).getNumericCellValue();
     
                     Members member = membersRepository.findById(id).orElseThrow(() -> new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
-                    member.updatePoint(member.getPoint() + pointChange);
+                    member.increasePoint(pointChange);
                     updatedMembersList.add(MembersDetailResponseDTO.from(member));
                 }
             } catch (IOException e) {
