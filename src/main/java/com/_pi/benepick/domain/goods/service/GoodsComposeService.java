@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface GoodsComposeService {
     GoodsResponse.GoodsUploadResponseDTO uploadGoodsFile(MultipartFile file); //상품 파일 업로드
-    GoodsResponse.GoodsDeleteResponseDTO deleteGoods(List<Long> goodsDeleteRequestDTO, Members members); //상품 삭제
+    GoodsResponse.GoodsDeleteResponseDTO deleteGoods(List<Long> goodsDeleteRequestDTO); //상품 삭제
 }

@@ -111,11 +111,7 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
 
     // 상품 삭제
     @Override
-    public GoodsResponse.GoodsDeleteResponseDTO deleteGoods(List<Long> deleteList, Members members) {
-        //관리자 인지 확인하는 로직
-        if(membersRepository.findById(members.getId()).get().getRole()== Role.MEMBER){
-            throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        }
+    public GoodsResponse.GoodsDeleteResponseDTO deleteGoods(List<Long> deleteList) {
         List<Long> deletedList = new ArrayList<>();
 
         for(Long id:deleteList){
