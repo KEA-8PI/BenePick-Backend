@@ -39,7 +39,7 @@ public class WebSecurityConfig {
         "/goods/seeds/**",
         "/goods/search/**",
         "/draws/result/{goods_id}",
-        "/draws/verification/{goodsId}",
+        "/draws/verification/**",
         "/dashboard/**",
     };
     @Bean
