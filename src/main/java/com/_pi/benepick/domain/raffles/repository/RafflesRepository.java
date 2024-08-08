@@ -27,6 +27,7 @@ public interface RafflesRepository extends JpaRepository<Raffles, Long> {
 
     Optional<Raffles> findByGoodsIdAndMemberId(Goods goods, Members members);
 
-  void deleteAllByMemberId_IdAndGoodsId_GoodsStatus(String id,GoodsStatus goodsStatus);
+    void deleteAllByMemberId_IdAndGoodsId_GoodsStatus(String id,GoodsStatus goodsStatus);
 
+    void deleteAllByGoodsId_Id(Long id);
 }

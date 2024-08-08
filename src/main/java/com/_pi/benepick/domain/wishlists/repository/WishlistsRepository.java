@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.Query;
 public interface WishlistsRepository extends JpaRepository<Wishlists, Long> {
 
 void deleteAllByMemberId_Id(String id);
-
+    void deleteAllByGoodsId_Id(Long id);
 }

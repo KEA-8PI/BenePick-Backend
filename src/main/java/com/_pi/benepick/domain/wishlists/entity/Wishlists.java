@@ -36,5 +36,4 @@ public class Wishlists extends BaseJPATimeEntity {
     @JoinColumn(name = "goods_id")
     private Goods goodsId; //상품_id
 
-    public void updateDeleted() {this.isDeleted = 'T';}
 }

@@ -2,17 +2,20 @@ package com._pi.benepick.domain.goods.service;
 
 import com._pi.benepick.domain.categories.entity.Categories;
 import com._pi.benepick.domain.categories.repository.CategoriesRepository;
+import com._pi.benepick.domain.draws.repository.DrawsRepository;
 import com._pi.benepick.domain.goods.dto.GoodsResponse;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goods.repository.GoodsRepository;
 import com._pi.benepick.domain.goodsCategories.entity.GoodsCategories;
 import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
+import com._pi.benepick.domain.hash.repository.HashsRepository;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.domain.raffles.entity.Raffles;
-import com._pi.benepick.domain.wishlists.entity.Wishlists;
+import com._pi.benepick.domain.raffles.repository.RafflesRepository;
+import com._pi.benepick.domain.wishlists.repository.WishlistsRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +44,10 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
     private final CategoriesRepository categoriesRepository;
     private final GoodsCommandServiceImpl goodsCommandService;
     private final MembersRepository membersRepository;
+    private final RafflesRepository rafflesRepository;
+    private final DrawsRepository drawsRepository;
+    private final WishlistsRepository wishlistsRepository;
+    private final HashsRepository hashsRepository;
 
     // 상품 파일 추가
     @Override
@@ -109,31 +116,21 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
         if(membersRepository.findById(members.getId()).get().getRole()== Role.MEMBER){
             throw new ApiException(ErrorStatus._UNAUTHORIZED);
         }
+        List<Long> deletedList = new ArrayList<>();
 
-        List<Goods> goodsList = goodsRepository.findAllById(deleteList);
-        if (goodsList.size() != deleteList.size()) {
-            throw new ApiException(ErrorStatus._GOODS_NOT_FOUND);
+        for(Long id:deleteList){
+            Goods goods = goodsRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._GOODS_NOT_FOUND));
+            for(Raffles raffle : goods.getRaffles()){
+                drawsRepository.deleteAllByRaffleId_Id(raffle.getId());
+            }
+            rafflesRepository.deleteAllByGoodsId_Id(id);
+            wishlistsRepository.deleteAllByGoodsId_Id(id);
+            goodsCategoriesRepository.deleteAllByGoodsId_Id(id);
+            hashsRepository.deleteById(goods.getHash().getId());
+            goodsRepository.deleteById(id);
+            deletedList.add(id);
         }
-        for (Goods goods : goodsList) {
-            goods.updateDeleted();
-            for (Raffles raffle : goods.getRaffles()) {
-                raffle.updateDeleted();
-                if (raffle.getDraw() != null) {
-                    raffle.getDraw().updateDeleted();
-                }
-            }
-            for (Wishlists wishlist : goods.getWishlists()) {
-                wishlist.updateDeleted();
-            }
-            if (goods.getGoodsCategories() != null) {
-                goods.getGoodsCategories().updateDeleted();
-            }
-            if (goods.getHash() != null) {
-                goods.getHash().updateDeleted();
-            }
-            goodsRepository.save(goods);
-        }
-        return GoodsResponse.GoodsDeleteResponseDTO.from(goodsList);
+        return GoodsResponse.GoodsDeleteResponseDTO.from(deletedList);
     }
 }
 

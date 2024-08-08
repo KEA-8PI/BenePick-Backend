@@ -35,5 +35,4 @@ public class GoodsCategories extends BaseJPATimeEntity {
         return this;
     }
 
-    public void updateDeleted() {this.isDeleted = 'T';}
 }
