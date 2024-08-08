@@ -111,19 +111,13 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
 
     // 상품 삭제
     @Override
+    @Transactional
     public GoodsResponse.GoodsDeleteResponseDTO deleteGoods(List<Long> deleteList) {
         List<Long> deletedList = new ArrayList<>();
 
         for(Long id:deleteList){
             Goods goods = goodsRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._GOODS_NOT_FOUND));
-            for(Raffles raffle : goods.getRaffles()){
-                drawsRepository.deleteAllByRaffleId_Id(raffle.getId());
-            }
-            rafflesRepository.deleteAllByGoodsId_Id(id);
-            wishlistsRepository.deleteAllByGoodsId_Id(id);
-            goodsCategoriesRepository.deleteAllByGoodsId_Id(id);
-            hashsRepository.deleteById(goods.getHash().getId());
-            goodsRepository.deleteById(id);
+            goodsRepository.delete(goods);
             deletedList.add(id);
         }
         return GoodsResponse.GoodsDeleteResponseDTO.from(deletedList);

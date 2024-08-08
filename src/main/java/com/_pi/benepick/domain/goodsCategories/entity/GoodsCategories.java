@@ -18,7 +18,7 @@ import org.hibernate.annotations.SQLRestriction;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @SQLRestriction("is_deleted = 'F'")
-@SQLDelete(sql = "UPDATE goods_categories SET is_deleted = 'T' WHERE goods_id = ?")
+@SQLDelete(sql = "UPDATE goods_categories SET is_deleted = 'T' WHERE id = ?")
 public class GoodsCategories extends BaseJPATimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

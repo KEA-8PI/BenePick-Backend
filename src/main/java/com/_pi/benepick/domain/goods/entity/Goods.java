@@ -47,7 +47,7 @@ public class Goods extends BaseJPATimeEntity {
     @Column(columnDefinition = "TEXT")
     private String description; //설명
 
-    @OneToOne(fetch = FetchType.LAZY, targetEntity = Hash.class)
+    @OneToOne(fetch = FetchType.LAZY, targetEntity = Hash.class, cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "hash_id")
     private Hash hash; //응모_id
 
@@ -56,6 +56,12 @@ public class Goods extends BaseJPATimeEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "goodsId", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Raffles> raffles; // 응모자 리스트
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "goodsId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Wishlists> wishlists; // 위시리스트
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "goodsId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private GoodsCategories goodsCategories; // 상품 카테고리
 
     public void startDraw(Hash hash, GoodsStatus goodsStatus) {
         this.hash = hash;
