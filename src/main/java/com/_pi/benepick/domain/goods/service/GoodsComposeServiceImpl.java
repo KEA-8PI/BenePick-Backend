@@ -49,13 +49,17 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
             XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) { continue;}
+                String name = row.getCell(0).getStringCellValue();
+                if (name.length() > 50) {
+                    throw new ApiException(ErrorStatus._GOODS_NAME_TOO_LONG);
+                }
                 // 상품 응모 상태
                 LocalDateTime raffleStartAt = LocalDateTime.parse(row.getCell(5).getStringCellValue());
                 LocalDateTime raffleEndAt = LocalDateTime.parse(row.getCell(6).getStringCellValue());
                 GoodsStatus status = goodsCommandService.determineGoodsStatus(raffleStartAt, raffleEndAt);
                 // 상품 정보
                 Goods goods = Goods.builder()
-                        .name(row.getCell(0).getStringCellValue())
+                        .name(name)
                         .amounts((long) row.getCell(1).getNumericCellValue())
                         .description(row.getCell(2).getStringCellValue())
                         .price((long) row.getCell(3).getNumericCellValue())
