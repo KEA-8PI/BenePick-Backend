@@ -47,7 +47,7 @@ public class Goods extends BaseJPATimeEntity {
     @Column(columnDefinition = "TEXT")
     private String description; //설명
 
-    @OneToOne(fetch = FetchType.LAZY, targetEntity = Hash.class, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, targetEntity = Hash.class)
     @JoinColumn(name = "hash_id")
     private Hash hash; //해시값
 
