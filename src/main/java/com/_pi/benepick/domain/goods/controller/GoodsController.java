@@ -9,10 +9,12 @@ import com._pi.benepick.domain.goods.service.GoodsComposeService;
 import com._pi.benepick.domain.goods.service.GoodsQueryService;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
+import com._pi.benepick.global.common.annotation.MemberObject;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.ApiResponse;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -86,8 +88,7 @@ public class GoodsController {
     //상품 삭제
     @Operation(summary = "상품 삭제", description = "상품을 삭제합니다.")
     @DeleteMapping("/delete")
-    public ApiResponse<GoodsResponse.GoodsDeleteResponseDTO> deleteGoods(@RequestParam List<Long> deleteList) {
-        Members members=membersRepository.findById("string").orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
-        return ApiResponse.onSuccess(goodsComposeService.deleteGoods(deleteList,members));
+    public ApiResponse<GoodsResponse.GoodsDeleteResponseDTO> deleteGoods(@Parameter(hidden = true) @MemberObject Members member, @RequestParam List<Long> deleteList) {
+        return ApiResponse.onSuccess(goodsComposeService.deleteGoods(deleteList,member));
     }
 }
