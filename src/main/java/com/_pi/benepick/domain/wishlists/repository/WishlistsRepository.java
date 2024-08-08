@@ -8,8 +8,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface WishlistsRepository extends JpaRepository<Wishlists, Long> {
-
-    @Query("select w FROM Wishlists w left join w.goodsId.raffles r "
-    +"order by count(r) desc, w.goodsId.id asc")
+    @Query("SELECT w FROM Wishlists w " +
+            "LEFT JOIN w.goodsId.raffles r " +
+            "WHERE w.goodsId.goodsStatus = :goodsStatus " +
+            "GROUP BY w.id, w.goodsId.id " +
+            "ORDER BY COUNT(r) DESC, w.goodsId.id ASC")
     Page<Wishlists> searchWishlistsByRaffleCount(GoodsStatus goodsStatus, Pageable pageable);
+
+  //  Page<Wishlists> findAllByGoodsId_GoodsStatusAndGoodsId_Raffles(GoodsStatus goodsStatus,Pageable pageable);
 }

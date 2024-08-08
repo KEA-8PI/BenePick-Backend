@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,9 @@ public class WishlistsQueryServiceImpl implements WishlistsQueryService{
 
     private final WishlistsRepository wishlistsRepository;
 
+
     //위시리스트 응모 상태별 조회
+    @Override
     public WishlistResponse.WishlistListDTO getWishList(GoodsStatus goodsStatus, Integer page, Integer size, GoodsFilter sortBy){
         PageRequest pageRequest=createPageRequest(page, size, sortBy);
 
@@ -30,8 +33,8 @@ public class WishlistsQueryServiceImpl implements WishlistsQueryService{
         if(GoodsFilter.POPULAR.equals(sortBy)){
             wishlistsPage=wishlistsRepository.searchWishlistsByRaffleCount(goodsStatus,pageRequest);
         }
-        List<WishlistResponse.WishlistDTO> wishlistDTOS=wishlistsPage.getContent().stream()
-                .map(w-> WishlistResponse.WishlistDTO.of(w))
+        List<WishlistResponse.WishlistDTO> wishlistDTOS = (wishlistsPage != null ? wishlistsPage.getContent() : Collections.emptyList()).stream()
+                .map(w -> WishlistResponse.WishlistDTO.of((Wishlists) w))
                 .collect(Collectors.toList());
 
         return WishlistResponse.WishlistListDTO.builder()

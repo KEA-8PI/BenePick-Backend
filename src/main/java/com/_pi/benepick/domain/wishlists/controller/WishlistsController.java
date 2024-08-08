@@ -1,6 +1,9 @@
 package com._pi.benepick.domain.wishlists.controller;
 
+import com._pi.benepick.domain.goods.entity.GoodsFilter;
+import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.wishlists.dto.WishlistResponse.*;
+import com._pi.benepick.domain.wishlists.service.WishlistsQueryService;
 import com._pi.benepick.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,18 +18,14 @@ import java.util.List;
 @Tag(name = "Wishlists", description = "위시리스트 API")
 @RequestMapping("/wishlists")
 public class WishlistsController {
+    private final WishlistsQueryService wishlistsQueryService;
 
-    @Operation(summary = "위시리스트 응모 상태별 조회 - Mockup API",description = "사용자가 본인의 위시리스트를 조회합니다.")
+    @Operation(summary = "위시리스트 응모 상태별 조회",description = "사용자가 본인의 위시리스트를 조회합니다.")
     @GetMapping("/{goodsStatus}")
-    public ApiResponse<WishlistListDTO> getwishList(@PathVariable String goodsStatus){
-        WishlistDTO wishlistDTO1=new WishlistDTO((long)1,"맥북",(long)1,"123","응모중","2023-02-01 00:34:13.778134","2023-02-01 00:34:13.778134","전자기기",(long)100);
-        WishlistDTO wishlistDTO2=new WishlistDTO((long)1,"맥북",(long)1,"123","응모중","2023-02-01 00:34:13.778134","2023-02-01 00:34:13.778134","전자기기",(long)100);
-        List<WishlistDTO> wishlistDTOS= Arrays.asList(wishlistDTO1,wishlistDTO2);
+    public ApiResponse<WishlistListDTO> getwishList(@PathVariable GoodsStatus goodsStatus, @RequestParam Integer page, @RequestParam Integer size,@RequestParam GoodsFilter sortBy){
 
         return ApiResponse.onSuccess(
-                WishlistListDTO.builder()
-                        .wishlistDTOS(wishlistDTOS)
-                        .build()
+             wishlistsQueryService.getWishList(goodsStatus,page,size,sortBy)
         );
     }
 
