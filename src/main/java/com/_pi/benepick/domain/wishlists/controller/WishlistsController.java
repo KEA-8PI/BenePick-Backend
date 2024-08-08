@@ -1,22 +1,20 @@
 package com._pi.benepick.domain.wishlists.controller;
 
-<<<<<<< HEAD
 import com._pi.benepick.domain.goods.entity.GoodsFilter;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.domain.wishlists.dto.WishlistResponse.*;
 import com._pi.benepick.domain.wishlists.service.WishlistsQueryService;
-=======
-import com._pi.benepick.domain.members.entity.Members;
-import com._pi.benepick.domain.members.repository.MembersRepository;
-import com._pi.benepick.domain.wishlists.dto.WishlistResponse.*;
+
 import com._pi.benepick.domain.wishlists.service.WishlistsCommandSerivce;
->>>>>>> b5d9a95c8fafbee03c9a1a08fa826dbda28f48c8
+
+import com._pi.benepick.global.common.annotation.MemberObject;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.ApiResponse;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -31,19 +29,14 @@ import java.util.List;
 public class WishlistsController {
     private final WishlistsQueryService wishlistsQueryService;
     private final MembersRepository membersRepository;
-
-<<<<<<< HEAD
-    @Operation(summary = "위시리스트 응모 상태별 조회",description = "사용자가 본인의 위시리스트를 조회합니다.")
-=======
-    private final MembersRepository membersRepository;
     private final WishlistsCommandSerivce wishlistsCommandSerivce;
-    @Operation(summary = "위시리스트 응모 상태별 조회 - Mockup API",description = "사용자가 본인의 위시리스트를 조회합니다.")
->>>>>>> b5d9a95c8fafbee03c9a1a08fa826dbda28f48c8
+
+
+    @Operation(summary = "위시리스트 응모 상태별 조회",description = "사용자가 본인의 위시리스트를 조회합니다.")
     @GetMapping("/{goodsStatus}")
-    public ApiResponse<WishlistListDTO> getwishList(@PathVariable GoodsStatus goodsStatus, @RequestParam Integer page, @RequestParam Integer size,@RequestParam GoodsFilter sortBy){
-        Members members=membersRepository.findById("string").orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
+    public ApiResponse<WishlistListDTO> getwishList(@Parameter(hidden = true) @MemberObject Members member, @PathVariable GoodsStatus goodsStatus, @RequestParam Integer page, @RequestParam Integer size, @RequestParam GoodsFilter sortBy){
         return ApiResponse.onSuccess(
-             wishlistsQueryService.getWishList(goodsStatus,page,size,sortBy,members)
+             wishlistsQueryService.getWishList(goodsStatus,page,size,sortBy,member)
         );
     }
 

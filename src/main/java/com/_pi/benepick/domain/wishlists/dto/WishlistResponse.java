@@ -1,4 +1,5 @@
 package com._pi.benepick.domain.wishlists.dto;
+import com._pi.benepick.domain.goods.dto.GoodsResponse;
 import com._pi.benepick.domain.goods.entity.Goods;
 
 import com._pi.benepick.domain.wishlists.entity.Wishlists;
@@ -64,12 +65,12 @@ public class WishlistResponse {
     @NoArgsConstructor
     public static class WishlistAddDTO{
         Long id;
-        Goods goods;
+        GoodsResponse.GoodsResponseDTO goods;
 
         public static WishlistAddDTO from(Wishlists wishlists){
             return WishlistAddDTO.builder()
                     .id(wishlists.getId())
-                    .goods(wishlists.getGoodsId())
+                    .goods(GoodsResponse.GoodsResponseDTO.from(wishlists.getGoodsId()))
                     .build();
         }
 

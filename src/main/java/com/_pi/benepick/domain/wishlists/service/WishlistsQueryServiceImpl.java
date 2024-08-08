@@ -30,9 +30,13 @@ public class WishlistsQueryServiceImpl implements WishlistsQueryService{
     public WishlistResponse.WishlistListDTO getWishList(GoodsStatus goodsStatus, Integer page, Integer size, GoodsFilter sortBy, Members members){
         PageRequest pageRequest=createPageRequest(page, size, sortBy);
 
-        Page<Wishlists> wishlistsPage = null;
-        if(GoodsFilter.POPULAR.equals(sortBy)){
-            wishlistsPage=wishlistsRepository.searchWishlistsByRaffleCount(goodsStatus,pageRequest);
+        String memberId = members.getId();
+
+        Page<Wishlists> wishlistsPage;
+        if (GoodsFilter.POPULAR.equals(sortBy)) {
+            wishlistsPage = wishlistsRepository.searchWishlistsByRaffleCount(memberId, goodsStatus, pageRequest);
+        } else {
+            wishlistsPage = wishlistsRepository.findAllByMemberId_IdAndGoodsId_GoodsStatus(memberId, goodsStatus, pageRequest);
         }
         List<WishlistResponse.WishlistDTO> wishlistDTOS = (wishlistsPage != null ? wishlistsPage.getContent() : Collections.emptyList()).stream()
                 .map(w -> WishlistResponse.WishlistDTO.of((Wishlists) w))
@@ -48,10 +52,10 @@ public class WishlistsQueryServiceImpl implements WishlistsQueryService{
         Sort sort;
         switch (sortBy) {
             case NEWEST: // 최신순
-                sort = Sort.by(Sort.Order.desc("createdAt"), Sort.Order.asc("id"));
+                sort = Sort.by(Sort.Order.desc("goodsId.createdAt"), Sort.Order.asc("id"));
                 break;
             case END: // 종료임박순
-                sort = Sort.by(Sort.Order.asc("raffleEndAt"), Sort.Order.asc("id"));
+                sort = Sort.by(Sort.Order.asc("goodsId.raffleEndAt"), Sort.Order.asc("id"));
                 break;
             default:
                 sort = Sort.by(Sort.Order.desc("id")); // 기본
