@@ -13,4 +13,6 @@ public interface PointHistsRepository extends JpaRepository<PointHists, Long> {
     @Query("select p from PointHists p WHERE p.memberId.id=:id")
     List<PointHists> findAllByMemberId(String id);
 
+    void deleteAllByMemberId_Id(String id);
+
 }
