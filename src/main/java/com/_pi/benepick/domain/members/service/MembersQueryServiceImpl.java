@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-
+import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -31,16 +31,20 @@ public class MembersQueryServiceImpl implements MembersQueryService {
 
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<Members> membersPage;
+        int total=0;
         if(keyword !=null && !keyword.isEmpty()){
             membersPage=membersRepository.findByNameContainingIgnoreCase(keyword, pageRequest);
+            total=membersRepository.countAllByName(keyword).size();
         }
         else {
             membersPage=membersRepository.findAll(pageRequest);
+            total= (int)membersRepository.count();
         }
         List<MembersDetailResponseDTO> membersDetailResponseDTOList=membersPage.getContent().stream().map(MembersDetailResponseDTO::from).toList();
 
         return MembersDetailListResponseDTO.builder()
                 .membersDetailResponseDTOList(membersDetailResponseDTOList)
+                .totalCnt(total)
                 .build();
 
     }
@@ -57,13 +61,22 @@ public class MembersQueryServiceImpl implements MembersQueryService {
 
     //복지 포인트 내역 조회
     @Override
-    public PointHistListDTO getPointHist(Members member) {
-        List<PointHists> pointHists = pointHistsRepository.findAllByMemberId(member.getId());
-        List<PointHistDTO> pointHistDTOS=pointHists.stream()
-                .map(PointHistDTO::from)
-                .toList();
+    public PointHistListDTO getPointHist(Integer page,Integer size,Members member) {
+        Members members=membersRepository.findById(member.getId()).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
+        PageRequest pageRequest=PageRequest.of(page,size);
+        Page<PointHists> pointHistsPage;
+        int total=pointHistsRepository.countAllByMemberId_Id(members.getId());
+        pointHistsPage= pointHistsRepository.findAllByMemberId(pageRequest,members.getId());
+        List<PointHistDTO> result = pointHistsPage.stream()
+                .map(p -> PointHistDTO.builder()
+                        .pointChange(p.getPointChange())
+                        .totalPoint(p.getTotalPoint())
+                        .content(p.getContent())
+                        .build())
+                .collect(Collectors.toList());
         return PointHistListDTO.builder()
-                .pointHistDTOS(pointHistDTOS)
+                .pointHistDTOS(result)
+                .totalCnt(total)
                 .build();
     }
 

@@ -50,9 +50,7 @@ public class MembersResponse {
     @NoArgsConstructor
     public static class MembersDetailListResponseDTO{
         private List<MembersDetailResponseDTO> membersDetailResponseDTOList;
-
-        public <T> MembersDetailListResponseDTO(List<T> list, int i) {
-        }
+        private int totalCnt;
     }
 
     @Builder
