@@ -53,6 +53,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -70,7 +76,7 @@ public class MembersCommandServiceImpl implements MembersCommandService{
     private final DrawsRepository drawsRepository;
 
     @Override
-    public MembersuccessDTO updateMemberInfo(String memberid, MembersRequest.MembersRequestDTO membersRequestDTO,Members member){
+    public updateMemberResponseDTO updateMemberInfo(String memberid, MembersRequest.MembersRequestDTO membersRequestDTO,Members member){
         Members members=membersRepository.findById(memberid).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
         if(membersRepository.findById(member.getId()).get().getRole()== Role.MEMBER){
             new ApiException(ErrorStatus._UNAUTHORIZED);
@@ -80,8 +86,12 @@ public class MembersCommandServiceImpl implements MembersCommandService{
 
         members.updateInfo(membersRequestDTO);
 
-        return MembersuccessDTO.builder()
-                .msg("수정되었습니다.")
+        return updateMemberResponseDTO.builder()
+                .deptName(membersRequestDTO.getDeptName())
+                .name(membersRequestDTO.getName())
+                .point(membersRequestDTO.getPoint())
+                .penaltyCnt(membersRequestDTO.getPenaltyCnt())
+                .role(membersRequestDTO.getRole())
                 .build();
     }
 
@@ -174,14 +184,14 @@ public class MembersCommandServiceImpl implements MembersCommandService{
         }
 
     @Override
-    public DeleteResponseDTO deleteMembers(DeleteMembersRequestDTO deleteMembersRequestDTO, Members members){
+    public DeleteResponseDTO deleteMembers(List<String> memberIdList, Members members){
         //관리자 인지 확인하는 로직
         if(membersRepository.findById(members.getId()).get().getRole()== Role.MEMBER){
             throw new ApiException(ErrorStatus._UNAUTHORIZED);
         }
         List<String> deletedId = new ArrayList<>();
 
-        for(String id:deleteMembersRequestDTO.getId()){
+        for(String id:memberIdList){
             Members member = membersRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
             penaltyHistsRepository.deleteAllByMemberId_Id(id);
             pointHistsRepository.deleteAllByMemberId_Id(id);

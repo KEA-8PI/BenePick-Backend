@@ -28,25 +28,24 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
     private final GoodsRepository goodsRepository;
     private final MembersRepository membersRepository;
 
-    public RafflesResponse.ApplyRafflesResponseByGoodsId applyRaffle(String memberId, Long goodsId, RafflesRequest.RafflesRequestDTO raffleAddDTO) {
+    public RafflesResponse.RafflesResponseByGoodsDTO applyRaffle(Members member, Long goodsId, RafflesRequest.RafflesRequestDTO raffleAddDTO) {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
-        Members members = membersRepository.findById(memberId).orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
-        if (!(members.getRole().equals(Role.MEMBER))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
+        if (!(member.getRole().equals(Role.MEMBER))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
 
         // 히스토리 반영 부분
         // TODO: 포인트 소모 히스토리 서비스 로직 구현 필요
-        members.decreasePoint(raffleAddDTO.getPoint());
+        member.decreasePoint(raffleAddDTO.getPoint());
 
         // historyService.addPointUsageHistory(memberId, pointsToDeduct, "Raffle Participation");
         // 패널티 가지고 있을 때
 
-        Optional<Raffles> optionalRaffles = rafflesRepository.findByGoodsIdAndMemberId(goods, members);
+        Optional<Raffles> optionalRaffles = rafflesRepository.findByGoodsIdAndMemberId(goods, member);
         if (optionalRaffles.isPresent()) {
             Raffles raffles = optionalRaffles.get();
             raffles.increasePoint(raffleAddDTO.getPoint());
-            if (members.getPenaltyCnt() > 0 && raffles.getPoint() >= 100 && raffles.getPenaltyFlag() == 'F') {
+            if (member.getPenaltyCnt() > 0 && raffles.getPoint() >= 100 && raffles.getPenaltyFlag() == 'F') {
                 raffles.updatePenaltyFlag('T');
-                members.updatePenalty(members.getPenaltyCnt() - 1);
+                member.updatePenalty(member.getPenaltyCnt() - 1);
             }
 
             return RafflesResponse.ApplyRafflesResponseByGoodsId.builder()
@@ -59,11 +58,11 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
         }
         else {
             Raffles raffles = null;
-            if (members.getPenaltyCnt() > 0 && raffleAddDTO.getPoint() >= 100) {
-                raffles = RafflesRequest.RafflesRequestDTO.toEntity(members, goods, raffleAddDTO, 'T');
-                members.updatePenalty(members.getPenaltyCnt() - 1);
+            if (member.getPenaltyCnt() > 0 && raffleAddDTO.getPoint() >= 100) {
+                raffles = RafflesRequest.RafflesRequestDTO.toEntity(member, goods, raffleAddDTO, 'T');
+                member.updatePenalty(member.getPenaltyCnt() - 1);
             } else {
-                raffles = RafflesRequest.RafflesRequestDTO.toEntity(members, goods, raffleAddDTO, 'F');
+                raffles = RafflesRequest.RafflesRequestDTO.toEntity(member, goods, raffleAddDTO, 'F');
             }
             rafflesRepository.save(raffles);
 
