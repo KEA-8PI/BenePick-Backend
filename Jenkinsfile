@@ -37,7 +37,7 @@ pipeline {
         stage('Deploy to Remote Server') {
             steps {
                 script {
-                    sshagent(['${SSH_CREDENTIALS_ID}']) {
+                    sshagent(["${SSH_CREDENTIALS_ID}"]) {
                         withCredentials([usernamePassword(credentialsId: REGISTRY_CREDENTIALS_ID, passwordVariable: 'DOCKER_REGISTRY_PASSWORD', usernameVariable: 'DOCKER_REGISTRY_USERNAME')]) {
                             sh """
                             ssh ${REMOTE_SERVER} << EOF
