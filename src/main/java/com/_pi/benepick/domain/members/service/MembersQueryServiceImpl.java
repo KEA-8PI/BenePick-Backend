@@ -31,16 +31,20 @@ public class MembersQueryServiceImpl implements MembersQueryService {
 
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<Members> membersPage;
+        int total=0;
         if(keyword !=null && !keyword.isEmpty()){
             membersPage=membersRepository.findByNameContainingIgnoreCase(keyword, pageRequest);
+            total=membersRepository.countAllByName(keyword).size();
         }
         else {
             membersPage=membersRepository.findAll(pageRequest);
+            total= (int)membersRepository.count();
         }
         List<MembersDetailResponseDTO> membersDetailResponseDTOList=membersPage.getContent().stream().map(MembersDetailResponseDTO::from).toList();
 
         return MembersDetailListResponseDTO.builder()
                 .membersDetailResponseDTOList(membersDetailResponseDTOList)
+                .totalCnt(total)
                 .build();
 
     }
