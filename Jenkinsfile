@@ -37,7 +37,7 @@ pipeline {
         stage('Deploy to Remote Server') {
             steps {
                 script {
-                    sshagent(['${SSH_CREDENTIALS_ID}']) {
+                    sshagent(["${SSH_CREDENTIALS_ID}"]) {
                         sh """
                         ssh ${REMOTE_SERVER} << EOF
                             echo "${DOCKER_REGISTRY_PASSWORD}" | docker login -u "${DOCKER_REGISTRY_USERNAME}" --password-stdin ${DOCKER_REGISTRY}
