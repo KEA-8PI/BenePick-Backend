@@ -2,6 +2,7 @@ package com._pi.benepick.domain.members.dto;
 
 import com._pi.benepick.domain.members.entity.Members;
 
+import com._pi.benepick.domain.members.entity.Role;
 import lombok.*;
 
 
@@ -31,6 +32,17 @@ public class MembersResponse {
         }
     }
 
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    public static class updateMemberResponseDTO{
+        private String deptName;
+        private String name;
+        private Long point;
+        private Long penaltyCnt;
+        private Role role;
+    }
 
     @Builder
     @Getter

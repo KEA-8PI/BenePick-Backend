@@ -83,7 +83,7 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
 
     @Operation(summary = "사원 정보 수정", description = "사원 정보를 수정합니다. (관리자용)")
     @PatchMapping("/info/{memberID}")
-    public ApiResponse<MembersuccessDTO> updateMemberInfo(@Parameter(hidden = true) @MemberObject Members member,@PathVariable String memberID, @RequestBody MembersRequestDTO membersRequestDTO){
+    public ApiResponse<updateMemberResponseDTO> updateMemberInfo(@Parameter(hidden = true) @MemberObject Members member,@PathVariable String memberID, @RequestBody MembersRequestDTO membersRequestDTO){
         return ApiResponse.onSuccess(membersCommandService.updateMemberInfo(memberID,membersRequestDTO,member));
     }
 
