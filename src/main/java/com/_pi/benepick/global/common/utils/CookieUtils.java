@@ -54,7 +54,7 @@ public class CookieUtils {
             .maxAge(maxAge)
             .httpOnly(true)
             .secure(true) //프론트 개발용. 배포시 제거
-            .domain("localhost") //프론트 개발용. 배포시 제거
+            .domain("benepick.kro.kr") //프론트 개발용. 배포시 제거
             .sameSite("None") //프론트 개발용. 배포시 제거
             .build();
 
