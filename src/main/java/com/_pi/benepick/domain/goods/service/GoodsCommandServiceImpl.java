@@ -30,6 +30,10 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
     // 상품 추가 ( 응모 상태 자동 수정 )
     @Override
     public GoodsResponse.GoodsAddResponseDTO addGoods(GoodsRequest.GoodsRequestDTO goodsAddDTO) {
+        String name = goodsAddDTO.getName();
+        if (name.length() > 50) {
+            throw new ApiException(ErrorStatus._GOODS_NAME_TOO_LONG);
+        }
         // 현재시간과 비교하여 GoodsStatus를 결정
         GoodsStatus status = determineGoodsStatus(goodsAddDTO.getRaffleStartAt(), goodsAddDTO.getRaffleEndAt());
 
@@ -49,6 +53,10 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
     // 상품 수정 ( 응모 상태 자동 수정 )
     @Override
     public GoodsResponse.GoodsAddResponseDTO updateGoods(Long goodsId, GoodsRequest.GoodsRequestDTO goodsUpdateDTO) {
+        String name = goodsUpdateDTO.getName();
+        if (name.length() > 50) {
+            throw new ApiException(ErrorStatus._GOODS_NAME_TOO_LONG);
+        }
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
 
         // 현재시간과 비교하여 GoodsStatus를 결정
