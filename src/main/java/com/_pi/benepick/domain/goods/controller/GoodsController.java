@@ -64,7 +64,7 @@ public class GoodsController {
     @Operation(summary = "상품 추가", description = "상품을 추가합니다.")
     @PostMapping("/add")
     public ApiResponse<GoodsResponse.GoodsAddResponseDTO> addGoods(@Parameter(hidden = true) @MemberObject Members member, @RequestBody GoodsRequest.GoodsRequestDTO goodsAddDTO) {
-        return ApiResponse.onSuccess(goodsCommandService.addGoods(goodsAddDTO, member));
+        return ApiResponse.onSuccess(goodsComposeService.addGoods(goodsAddDTO, member));
     }
 
     //상품 파일 업로드 (관리자)
@@ -85,6 +85,6 @@ public class GoodsController {
     @Operation(summary = "상품 삭제", description = "상품을 삭제합니다.")
     @DeleteMapping("/delete")
     public ApiResponse<GoodsResponse.GoodsDeleteResponseDTO> deleteGoods(@Parameter(hidden = true) @MemberObject Members member, @RequestParam List<Long> deleteList) {
-        return ApiResponse.onSuccess(goodsComposeService.deleteGoods(deleteList, member));
+        return ApiResponse.onSuccess(goodsCommandService.deleteGoods(deleteList, member));
     }
 }

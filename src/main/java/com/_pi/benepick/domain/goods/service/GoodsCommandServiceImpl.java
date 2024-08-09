@@ -13,6 +13,8 @@ import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,22 +33,15 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
 
     // 상품 추가 ( 응모 상태 자동 수정 )
     @Override
-    public GoodsResponse.GoodsAddResponseDTO addGoods(GoodsRequest.GoodsRequestDTO goodsAddDTO, Members member) {
+    public Goods addGoods(GoodsRequest.GoodsRequestDTO goodsAddDTO, Members member) {
         checkAdmin(member);
         // 현재시간과 비교하여 GoodsStatus를 결정
         GoodsStatus status = determineGoodsStatus(goodsAddDTO.getRaffleStartAt(), goodsAddDTO.getRaffleEndAt());
 
         Goods goods = goodsAddDTO.toEntity(status);
-        Goods savedGoods = goodsRepository.save(goods);
-        Categories category = categoriesRepository.findByName(goodsAddDTO.getCategory()).orElseThrow(() -> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
+        goodsRepository.save(goods);
 
-        GoodsCategories goodsCategories = GoodsCategories.builder()
-                .goodsId(savedGoods)
-                .categoryId(category)
-                .build();
-        goodsCategoriesRepository.save(goodsCategories);
-
-        return GoodsResponse.GoodsAddResponseDTO.of(savedGoods, category.getName());
+        return goods;
     }
 
     // 상품 수정 ( 응모 상태 자동 수정 )
@@ -86,6 +81,21 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
         } else {
             return GoodsStatus.PROGRESS; // 시작 시간이 지나고 종료 시간이 아직 오지 않았으면 진행 중 상태
         }
+    }
+
+    // 상품 삭제
+    @Override
+    public GoodsResponse.GoodsDeleteResponseDTO deleteGoods(List<Long> deleteList, Members member) {
+        checkAdmin(member);
+
+        List<Long> deletedList = new ArrayList<>();
+
+        for(Long id:deleteList){
+            Goods goods = goodsRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._GOODS_NOT_FOUND));
+            goodsRepository.delete(goods);
+            deletedList.add(id);
+        }
+        return GoodsResponse.GoodsDeleteResponseDTO.from(deletedList);
     }
 
     // 관리자 확인 로직
