@@ -3,6 +3,7 @@ package com._pi.benepick.global.common.utils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -42,19 +43,21 @@ public class CookieUtils {
         cookie.setHttpOnly(true);
         cookie.setMaxAge(maxAge);
         cookie.setPath(path);
-        cookie.setSecure(false);
+        cookie.setSecure(true);
         cookie.setAttribute("SameSite", "None"); //프론트 개발용. 배포시 제거
         return cookie;
     }
 
-    public static Cookie createLocalhostCookie(String name, String value, int maxAge, String path) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(maxAge);
-        cookie.setPath(path);
-        cookie.setSecure(false); //프론트 개발용. 배포시 제거
-        cookie.setDomain("localhost"); //프론트 개발용. 배포시 제거
-        cookie.setAttribute("SameSite", "None"); //프론트 개발용. 배포시 제거
+    public static ResponseCookie createLocalhostCookie(String name, String value, int maxAge, String path) {
+        ResponseCookie cookie = ResponseCookie.from(name, value)
+            .path(path)
+            .maxAge(maxAge)
+            .httpOnly(true)
+            .secure(true) //프론트 개발용. 배포시 제거
+            .domain("localhost") //프론트 개발용. 배포시 제거
+            .sameSite("None") //프론트 개발용. 배포시 제거
+            .build();
+
         return cookie;
     }
 }

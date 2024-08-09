@@ -15,6 +15,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,11 +43,10 @@ public class AuthCommandServiceImpl implements AuthCommandService {
         Cookie refreshTokenCookie = jwtTokenProvider.createRefreshTokenCookie(jwtTokens.getRefreshToken());
 
         // localhost에서도 테스트하기 위해 추가
-        Cookie localAccessTokenCookie = jwtTokenProvider.createLocalHostAccessTokenCookie(jwtTokens.getAccessToken());
-        Cookie localRefreshTokenCookie = jwtTokenProvider.createLocalHostRefreshTokenCookie(jwtTokens.getRefreshToken());
-        response.addCookie(localAccessTokenCookie);
-        response.addCookie(localRefreshTokenCookie);
-
+        ResponseCookie localAccessTokenCookie = jwtTokenProvider.createLocalHostAccessTokenCookie(jwtTokens.getAccessToken());
+        ResponseCookie localRefreshTokenCookie = jwtTokenProvider.createLocalHostRefreshTokenCookie(jwtTokens.getRefreshToken());
+        response.addHeader("Set-Cookie", localAccessTokenCookie.toString());
+        response.addHeader("Set-Cookie", localRefreshTokenCookie.toString());
 
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);

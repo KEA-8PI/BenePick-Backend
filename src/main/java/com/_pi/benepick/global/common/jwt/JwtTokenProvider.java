@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -131,10 +132,10 @@ public class JwtTokenProvider {
 
 
     // localhost에서도 테스트하기 위해 추가
-    public Cookie createLocalHostAccessTokenCookie(String token) {
+    public ResponseCookie createLocalHostAccessTokenCookie(String token) {
         return CookieUtils.createLocalhostCookie("accessToken", token, (int) accessTokenExpiration, "/");
     }
-    public Cookie createLocalHostRefreshTokenCookie(String token) {
+    public ResponseCookie createLocalHostRefreshTokenCookie(String token) {
         return CookieUtils.createLocalhostCookie("refreshToken", token, (int) refreshTokenExpiration, "/");
     }
 }
