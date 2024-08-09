@@ -28,7 +28,7 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
     private final GoodsRepository goodsRepository;
     private final MembersRepository membersRepository;
 
-    public RafflesResponse.RafflesResponseByGoodsDTO applyRaffle(String memberId, Long goodsId, RafflesRequest.RafflesRequestDTO raffleAddDTO) {
+    public RafflesResponse.ApplyRafflesResponseByGoodsId applyRaffle(String memberId, Long goodsId, RafflesRequest.RafflesRequestDTO raffleAddDTO) {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
         Members members = membersRepository.findById(memberId).orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
         if (!(members.getRole().equals(Role.MEMBER))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
@@ -49,7 +49,13 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
                 members.updatePenalty(members.getPenaltyCnt() - 1);
             }
 
-            return RafflesResponse.RafflesResponseByGoodsDTO.from(raffles);
+            return RafflesResponse.ApplyRafflesResponseByGoodsId.builder()
+                    .id(raffles.getId())
+                    .point(raffles.getPoint())
+                    .penaltyFlag(raffles.getPenaltyFlag())
+                    .memberId(raffles.getMemberId().getId())
+                    .goodsId(raffles.getGoodsId().getId())
+                    .build();
         }
         else {
             Raffles raffles = null;
@@ -59,8 +65,15 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
             } else {
                 raffles = RafflesRequest.RafflesRequestDTO.toEntity(members, goods, raffleAddDTO, 'F');
             }
+            rafflesRepository.save(raffles);
 
-            return RafflesResponse.RafflesResponseByGoodsDTO.from(raffles);
+            return RafflesResponse.ApplyRafflesResponseByGoodsId.builder()
+                    .id(raffles.getId())
+                    .point(raffles.getPoint())
+                    .penaltyFlag(raffles.getPenaltyFlag())
+                    .memberId(raffles.getMemberId().getId())
+                    .goodsId(raffles.getGoodsId().getId())
+                    .build();
         }
     }
 }

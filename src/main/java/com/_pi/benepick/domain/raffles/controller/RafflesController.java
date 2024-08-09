@@ -4,6 +4,7 @@ import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.domain.raffles.dto.RafflesRequest;
 import com._pi.benepick.domain.raffles.dto.RafflesResponse;
+import com._pi.benepick.domain.raffles.entity.Raffles;
 import com._pi.benepick.domain.raffles.service.RafflesCommandService;
 import com._pi.benepick.domain.raffles.service.RafflesQueryService;
 import com._pi.benepick.global.common.exception.ApiException;
@@ -16,6 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,7 +35,7 @@ public class RafflesController {
     // 인증인가 구현되고 token 받게 되면 수정 예정
     @Operation(summary = "응모하기", description = "물품 아이디, 포인트를 사용하여 응모합니다.")
     @PostMapping("/apply/{goodsId}/{memberId}")
-    public ApiResponse<RafflesResponse.RafflesResponseByGoodsDTO> getApplyRaffleByGoodsId(@PathVariable String memberId, @PathVariable Long goodsId, @RequestBody RafflesRequest.RafflesRequestDTO raffleAddDTO) {
+    public ApiResponse<RafflesResponse.ApplyRafflesResponseByGoodsId> getApplyRaffleByGoodsId(@PathVariable String memberId, @PathVariable Long goodsId, @RequestBody RafflesRequest.RafflesRequestDTO raffleAddDTO) {
         return ApiResponse.onSuccess(rafflesCommandService.applyRaffle(memberId, goodsId, raffleAddDTO));
     }
 

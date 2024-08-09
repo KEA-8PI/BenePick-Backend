@@ -1,6 +1,7 @@
 package com._pi.benepick.domain.draws.controller;
 
 import com._pi.benepick.domain.draws.dto.DrawsRequest;
+import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.draws.service.DrawsCommandService;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
@@ -66,19 +67,19 @@ public class DrawsController {
 
     @Operation(summary = "당첨자 상태 관리", description = "당첨자들의 상태를 관리할 수 있습니다.")
     @PatchMapping("/winners/edit/{winnersId}")
-    public ApiResponse<DrawsResponse.DrawsResponseByMembersDTO> editWinnerStatus(@PathVariable Long winnersId, @RequestBody DrawsRequest.DrawsRequestDTO dto) {
+    public ApiResponse<DrawsResponse.EditWinnerStatus> editWinnerStatus(@PathVariable Long winnersId, @RequestBody DrawsRequest.DrawsRequestDTO dto) {
         Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
         return ApiResponse.onSuccess(drawsCommandService.editWinnerStatus(member, winnersId, dto));
     }
 
-    @Operation(summary = "추첨 결과 다운로드 - Mockup API", description = "추첨 결과가 정리된 엑셀 파일을 다운로드 할 수 있습니다.")
+    @Operation(summary = "추첨 결과 다운로드", description = "추첨 결과가 정리된 엑셀 파일을 다운로드 할 수 있습니다.")
     @GetMapping("/download/{goodsId}")
     public void downloadExcel(@PathVariable Long goodsId, HttpServletResponse response) {
         Members member = membersRepository.findById("string").orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
         drawsQueryService.downloadExcel(member, goodsId, response);
     }
 
-    @Operation(summary = "추첨 검증 - Mockup API", description = "시드값을 이용하여 추첨 로직 검증을 할 수 있습니다.")
+    @Operation(summary = "추첨 검증", description = "시드값을 이용하여 추첨 로직 검증을 할 수 있습니다.")
     @GetMapping("/verification/{goodsId}/{seed}")
     public ApiResponse<DrawsResponse.DrawsResponseResultListDTO> verificationSeed(@PathVariable Long goodsId, @PathVariable String seed) {
         return ApiResponse.onSuccess(drawsCommandService.verificationSeed(goodsId, seed));
