@@ -35,6 +35,7 @@ public class WishlistsQueryServiceImpl implements WishlistsQueryService{
         Page<Wishlists> wishlistsPage;
         if (GoodsFilter.POPULAR.equals(sortBy)) {
             wishlistsPage = wishlistsRepository.searchWishlistsByRaffleCount(memberId, goodsStatus, pageRequest);
+
         } else {
             wishlistsPage = wishlistsRepository.findAllByMemberId_IdAndGoodsId_GoodsStatus(memberId, goodsStatus, pageRequest);
         }

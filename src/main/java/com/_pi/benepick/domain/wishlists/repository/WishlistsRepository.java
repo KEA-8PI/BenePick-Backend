@@ -10,18 +10,14 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface WishlistsRepository extends JpaRepository<Wishlists, Long> {
     @Query("SELECT w FROM Wishlists w " +
-            "LEFT JOIN w.goodsId.raffles r " +
-            "WHERE w.goodsId.goodsStatus = :goodsStatus AND w.memberId.id = :memberId " +
+            "LEFT JOIN Raffles r ON w.goodsId.id = r.goodsId.id " +
+            "WHERE w.memberId.id = :memberId AND w.goodsId.goodsStatus = :goodsStatus " +
             "GROUP BY w.id, w.goodsId.id " +
-            "ORDER BY COUNT(r) DESC, w.goodsId.id ASC")
+            "ORDER BY COUNT(r.id) DESC, w.goodsId.id ASC")
     Page<Wishlists> searchWishlistsByRaffleCount(String memberId,
                                                   GoodsStatus goodsStatus,
                                                  Pageable pageable);
-
     Page<Wishlists> findAllByMemberId_IdAndGoodsId_GoodsStatus(String memberId, GoodsStatus goodsStatus, Pageable pageable);
-
-  //  Page<Wishlists> findByMemberIdAndGoodsStatus(String memberId, GoodsStatus goodsStatus, Pageable pageable);
-   // Page<Wishlists> findByMemberIdAndGoodsStatusOrderByRaffleCountDesc(String memberId, GoodsStatus goodsStatus, Pageable pageable);
 
 void deleteAllByMemberId_Id(String id);
 
