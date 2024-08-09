@@ -7,6 +7,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
@@ -24,10 +29,6 @@ import java.util.Objects;
 @SQLRestriction("is_deleted = 'F'")
 @SQLDelete(sql = "UPDATE members SET is_deleted = 'T' WHERE id = ?")
 public class Members extends BaseJPATimeEntity {
-    public void updatePassword(String password) {
-        this.password = password;
-    }
-
     @Id
     private String id; //사원_id
 
@@ -45,15 +46,15 @@ public class Members extends BaseJPATimeEntity {
     private Long penaltyCnt; //잔여 패널티
     @Column(nullable = false)
     private Long point; //복지포인트
-        @Enumerated(EnumType.STRING)
-        @Column(nullable = false)
-        private Role role; //역할
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role; //역할
 
-        private String profileImg; //프로필사진
+    private String profileImg; //프로필사진
 
-        public void updateId(String id) {
-            this.id = id;
-        }
+    public void updateId(String id) {
+        this.id = id;
+    }
 
     public void updateInfo(MembersRequest.MembersRequestDTO membersRequestDTO){
             this.point = Objects.nonNull( membersRequestDTO.getPoint())? membersRequestDTO.getPoint() : this.point;
@@ -61,6 +62,21 @@ public class Members extends BaseJPATimeEntity {
             this.deptName = Objects.nonNull( membersRequestDTO.getDeptName())? membersRequestDTO.getDeptName() : this.deptName;
             this.penaltyCnt = Objects.nonNull( membersRequestDTO.getPenaltyCnt())? membersRequestDTO.getPenaltyCnt() : this.penaltyCnt;
             this.role = Objects.nonNull( membersRequestDTO.getRole())? membersRequestDTO.getRole() : this.role;
+    }
+
+    public void decreasePoint(Long point) {
+        this.point = this.point - point;
+    }
+
+    public void increasePoint(Long point) {
+        this.point = this.point + point;
+    }
+
+    public void updatePenalty(Long penaltyCnt) {
+        this.penaltyCnt = penaltyCnt;
+    }
+    public void updatePassword(String password) {
+        this.password = password;
     }
 
 }

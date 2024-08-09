@@ -30,6 +30,7 @@ import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import com._pi.benepick.domain.members.entity.Role;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -55,6 +56,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class MembersCommandServiceImpl implements MembersCommandService{
 
 
@@ -145,6 +147,31 @@ public class MembersCommandServiceImpl implements MembersCommandService{
         return MembersDetailResponseDTO.from(members);
 
     }
+
+    // 복지포인트 파일 업로드
+    @Override
+    public MembersDetailListResponseDTO uploadPointFile(MultipartFile file) {
+        List<MembersDetailResponseDTO> updatedMembersList = new ArrayList<>();
+        try (InputStream inputStream = file.getInputStream();
+             Workbook workbook = new XSSFWorkbook(inputStream)) {
+
+                XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
+                for (Row row : sheet) {
+                    if (row.getRowNum() == 0) { continue;}
+
+                    String id = row.getCell(0).getStringCellValue();
+                    Long pointChange = (long)row.getCell(1).getNumericCellValue();
+    
+                    Members member = membersRepository.findById(id).orElseThrow(() -> new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
+                    member.increasePoint(pointChange);
+                    updatedMembersList.add(MembersDetailResponseDTO.from(member));
+                }
+            } catch (IOException e) {
+                throw new ApiException(ErrorStatus._FILE_INPUT_DISABLED);
+            }
+            return MembersDetailListResponseDTO.builder()
+                    .membersDetailResponseDTOList(updatedMembersList).build();
+        }
 
     @Override
     public DeleteResponseDTO deleteMembers(DeleteMembersRequestDTO deleteMembersRequestDTO, Members members){

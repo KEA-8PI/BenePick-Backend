@@ -8,6 +8,7 @@ import com._pi.benepick.global.common.jwt.repository.JwtTokensRepository;
 import com._pi.benepick.global.common.jwt.service.JwtCommandService;
 import com._pi.benepick.global.common.jwt.service.JwtQueryService;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
+import com._pi.benepick.global.common.utils.CookieUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -41,7 +42,6 @@ public class JwtTokenProvider {
     private final JwtQueryService jwtQueryService;
     private final JwtCommandService jwtCommandService;
 
-
     // 토큰 생성
     public String createAccessToken(String userPk) {
         Claims claims = Jwts.claims().setSubject(userPk); // JWT payload 에 저장되는 정보단위
@@ -64,8 +64,8 @@ public class JwtTokenProvider {
     }
 
     // 액세스 토큰 재발급
-    public JwtPairDTO refreshAccessToken(String refreshToken) {
-        if (validateRefreshToken(refreshToken)) {
+    public JwtPairDTO refreshAccessToken(String accessToken, String refreshToken) {
+        if (validateRefreshToken(accessToken, refreshToken)) {
             String userPk = getUserPk(refreshToken);
 
             return jwtCommandService.createJwtPair(createAccessToken(userPk), createRefreshToken(userPk));
@@ -98,19 +98,17 @@ public class JwtTokenProvider {
     }
 
     // 리프레시 토큰 유효성 확인
-    public boolean validateRefreshToken(String accessToken) {
+    public boolean validateRefreshToken(String accessToken, String refreshToken) {
+        if (accessToken == null || refreshToken == null) {
+            throw new ApiException(ErrorStatus._INVALID_TOKEN);
+        }
+
         JwtPairDTO jwtTokens = jwtQueryService.findJwtPair(accessToken);
+        if(!refreshToken.equals(jwtTokens.getRefreshToken())) {
+            throw new ApiException(ErrorStatus._INVALID_TOKEN);
+        }
 
         return validateToken(jwtTokens.getRefreshToken());
-    }
-
-    // Request의 Header에서 token 값 가져오기
-    public String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
     }
 
     public Authentication getAuthentication(String token) {
@@ -122,17 +120,21 @@ public class JwtTokenProvider {
 
     // 액세스 토큰 쿠키 생성
     public Cookie createAccessTokenCookie(String token) {
-        Cookie cookie = new Cookie("accessToken", token);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge((int) accessTokenExpiration);
-        return cookie;
+        return CookieUtils.createCookie("accessToken", token, (int) accessTokenExpiration, "/");
     }
+
 
     // 리프레시 토큰 쿠키 생성
     public Cookie createRefreshTokenCookie(String token) {
-        Cookie cookie = new Cookie("refreshToken", token);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge((int) refreshTokenExpiration);
-        return cookie;
+        return CookieUtils.createCookie("refreshToken", token, (int) refreshTokenExpiration, "/");
+    }
+
+
+    // localhost에서도 테스트하기 위해 추가
+    public Cookie createLocalHostAccessTokenCookie(String token) {
+        return CookieUtils.createLocalhostCookie("accessToken", token, (int) accessTokenExpiration, "/");
+    }
+    public Cookie createLocalHostRefreshTokenCookie(String token) {
+        return CookieUtils.createLocalhostCookie("refreshToken", token, (int) refreshTokenExpiration, "/");
     }
 }

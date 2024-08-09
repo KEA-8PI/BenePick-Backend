@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -33,26 +34,32 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
 
         // 히스토리 반영 부분
         // TODO: 포인트 소모 히스토리 서비스 로직 구현 필요
+        member.decreasePoint(raffleAddDTO.getPoint());
+
         // historyService.addPointUsageHistory(memberId, pointsToDeduct, "Raffle Participation");
+        // 패널티 가지고 있을 때
+
         Optional<Raffles> optionalRaffles = rafflesRepository.findByGoodsIdAndMemberId(goods, member);
         if (optionalRaffles.isPresent()) {
             Raffles raffles = optionalRaffles.get();
-            Long point = raffleAddDTO.getPoint() + raffles.getPoint();
-            raffles = RafflesRequest.RafflesRequestDTO.toEntity(
-                    raffles.getId(),
-                    member,
-                    goods,
-                    point
-            );
-            Raffles savedRaffles = rafflesRepository.save(raffles);
+            raffles.increasePoint(raffleAddDTO.getPoint());
+            if (member.getPenaltyCnt() > 0 && raffles.getPoint() >= 100 && raffles.getPenaltyFlag() == 'F') {
+                raffles.updatePenaltyFlag('T');
+                member.updatePenalty(member.getPenaltyCnt() - 1);
+            }
 
-            return RafflesResponse.RafflesResponseByGoodsDTO.from(savedRaffles);
+            return RafflesResponse.RafflesResponseByGoodsDTO.from(raffles);
         }
         else {
-            Raffles raffles = RafflesRequest.RafflesRequestDTO.toEntity(member, goods, raffleAddDTO);
-            Raffles savedRaffles = rafflesRepository.save(raffles);
+            Raffles raffles = null;
+            if (member.getPenaltyCnt() > 0 && raffleAddDTO.getPoint() >= 100) {
+                raffles = RafflesRequest.RafflesRequestDTO.toEntity(member, goods, raffleAddDTO, 'T');
+                member.updatePenalty(member.getPenaltyCnt() - 1);
+            } else {
+                raffles = RafflesRequest.RafflesRequestDTO.toEntity(member, goods, raffleAddDTO, 'F');
+            }
 
-            return RafflesResponse.RafflesResponseByGoodsDTO.from(savedRaffles);
+            return RafflesResponse.RafflesResponseByGoodsDTO.from(raffles);
         }
     }
 }

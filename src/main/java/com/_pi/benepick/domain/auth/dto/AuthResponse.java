@@ -29,7 +29,7 @@ public class AuthResponse {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor
     public static class AuthLogoutResponseDTO{
-        private String accessToken;
+        private String memberID;
     }
 
 }
