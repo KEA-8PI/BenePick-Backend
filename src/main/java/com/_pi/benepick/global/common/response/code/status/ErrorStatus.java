@@ -35,6 +35,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _MEMBER_PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "MEMBER_003", "비밀번호가 일치하지 않습니다."),
     _PASSWORD_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,"MEMBERS_004","기존 비밀번호와 동일합니다."),
     _PASSWORD_DISABLED(HttpStatus.BAD_REQUEST,"MEMBERS_005","비밀번호 유효성 검사 실패"),
+    _ACCESS_DENIED_FOR_MEMBER(HttpStatus.BAD_REQUEST,"MEMBERS_006","사원이 접근할 수 없는 요청입니다."),
 
     //wishlist 관련
     _WISHLIST_NOT_FOUND(HttpStatus.NOT_FOUND,"WISHLIST_001","존재하지 않는 위시리스트입니다."),

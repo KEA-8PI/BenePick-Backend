@@ -4,6 +4,7 @@ import com._pi.benepick.domain.goods.dto.GoodsRequest;
 import com._pi.benepick.domain.goods.dto.GoodsResponse;
 import com._pi.benepick.domain.goods.entity.GoodsFilter;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
+import com._pi.benepick.domain.goods.service.GoodsCommandService;
 import com._pi.benepick.domain.goods.service.GoodsComposeService;
 import com._pi.benepick.domain.goods.service.GoodsQueryService;
 import com._pi.benepick.domain.members.entity.Members;
@@ -28,13 +29,14 @@ import java.util.List;
 public class GoodsController {
 
     private final GoodsQueryService goodsQueryService;
+    private final GoodsCommandService goodsCommandService;
     private final GoodsComposeService goodsComposeService;
 
     //상품 목록 조회 (관리자)
     @Operation(summary = "상품 목록 조회 (관리자용)", description = "검색어에 따른 상품의 모든 목록을 조회합니다. (진행:PROGRESS,예정:SCHEDULED,종료:COMPLETED)")
     @GetMapping("/list")
     public ApiResponse<GoodsResponse.GoodsListResponseDTO> getGoodsList(@Parameter(hidden = true) @MemberObject Members member, @RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String keyword) {
-        return ApiResponse.onSuccess(goodsComposeService.getGoodsList(page, size, keyword, member));
+        return ApiResponse.onSuccess(goodsQueryService.getGoodsList(page, size, keyword, member));
     }
 
     //상품 상세 조회
@@ -62,7 +64,7 @@ public class GoodsController {
     @Operation(summary = "상품 추가", description = "상품을 추가합니다.")
     @PostMapping("/add")
     public ApiResponse<GoodsResponse.GoodsAddResponseDTO> addGoods(@Parameter(hidden = true) @MemberObject Members member, @RequestBody GoodsRequest.GoodsRequestDTO goodsAddDTO) {
-        return ApiResponse.onSuccess(goodsComposeService.addGoods(goodsAddDTO, member));
+        return ApiResponse.onSuccess(goodsCommandService.addGoods(goodsAddDTO, member));
     }
 
     //상품 파일 업로드 (관리자)
@@ -76,7 +78,7 @@ public class GoodsController {
     @Operation(summary = "상품 수정", description = "상품 상세 정보를 수정합니다.")
     @PostMapping("/update/{goodsId}")
     public ApiResponse<GoodsResponse.GoodsAddResponseDTO> updateGoods(@Parameter(hidden = true) @MemberObject Members member, @PathVariable Long goodsId, @RequestBody GoodsRequest.GoodsRequestDTO goodsUpdateDTO) {
-        return ApiResponse.onSuccess(goodsComposeService.updateGoods(goodsId, goodsUpdateDTO, member));
+        return ApiResponse.onSuccess(goodsCommandService.updateGoods(goodsId, goodsUpdateDTO, member));
     }
 
     //상품 삭제 (관리자)

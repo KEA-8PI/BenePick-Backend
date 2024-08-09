@@ -9,6 +9,8 @@ import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.categories.repository.CategoriesRepository;
 import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
 import com._pi.benepick.domain.goods.repository.GoodsRepository;
+import com._pi.benepick.domain.members.entity.Members;
+import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,30 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
     private final GoodsRepository goodsRepository;
     private final GoodsCategoriesRepository goodsCategoriesRepository;
     private final CategoriesRepository categoriesRepository;
+
+    // 상품 목록 조회 (+ 검색)
+    @Override
+    public GoodsResponse.GoodsListResponseDTO getGoodsList(Integer page, Integer size, String keyword, Members member) {
+        if (member.getRole() == Role.MEMBER) {
+            throw new ApiException(ErrorStatus._ACCESS_DENIED_FOR_MEMBER);
+        }
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+        Page<Goods> goodsPage;
+
+        if (keyword != null && !keyword.isEmpty()) {
+            goodsPage = goodsRepository.findByNameContainingIgnoreCase(keyword, pageRequest);
+        } else {
+            goodsPage = goodsRepository.findAll(pageRequest);
+        }
+
+        List<GoodsResponse.GoodsResponseDTO> goodsDTOList = goodsPage.getContent().stream()
+                .map(GoodsResponse.GoodsResponseDTO::from)
+                .toList();
+
+        return GoodsResponse.GoodsListResponseDTO.builder()
+                .goodsDTOList(goodsDTOList)
+                .build();
+    }
 
     // 상품 상세 조회
     @Override
