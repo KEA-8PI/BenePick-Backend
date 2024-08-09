@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,14 +18,14 @@ public class RafflesResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class RafflesResponseByGoodsDTO {
-        private Long id; // 응모_id
+        private String id; // 사원_id
         private String memberName; // 멤버_이름
         private Long point; // 사용포인트
         private LocalDateTime rafflesAt;
 
         public static RafflesResponseByGoodsDTO from(Raffles raffles) {
             return RafflesResponseByGoodsDTO.builder()
-                    .id(raffles.getId())
+                    .id(raffles.getMemberId().getId())
                     .memberName(raffles.getMemberId().getName())
                     .point(raffles.getPoint())
                     .rafflesAt(raffles.getUpdatedAt())

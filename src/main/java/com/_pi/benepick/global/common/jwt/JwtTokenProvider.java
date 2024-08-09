@@ -1,15 +1,20 @@
 package com._pi.benepick.global.common.jwt;
 
 
-import com._pi.benepick.global.common.jwt.dto.JwtParameters.JwtPair;
+import com._pi.benepick.global.common.exception.ApiException;
+import com._pi.benepick.global.common.jwt.dto.JwtResponse.JwtPairDTO;
+import com._pi.benepick.global.common.jwt.entity.JwtTokens;
+import com._pi.benepick.global.common.jwt.repository.JwtTokensRepository;
+import com._pi.benepick.global.common.jwt.service.JwtCommandService;
+import com._pi.benepick.global.common.jwt.service.JwtQueryService;
+import com._pi.benepick.global.common.response.code.status.ErrorStatus;
+import com._pi.benepick.global.common.utils.CookieUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.Base64;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +39,8 @@ public class JwtTokenProvider {
     private long refreshTokenExpiration;
 
     private final UserDetailsService userDetailsService;
-
+    private final JwtQueryService jwtQueryService;
+    private final JwtCommandService jwtCommandService;
 
     // 토큰 생성
     public String createAccessToken(String userPk) {
@@ -50,30 +56,24 @@ public class JwtTokenProvider {
     public String createRefreshToken(String userPk) {
         Claims claims = Jwts.claims().setSubject(userPk);
 
-        String refreshToken = Jwts.builder()
+        return Jwts.builder()
             .setClaims(claims)
             .setExpiration(new Date(System.currentTimeMillis()+ (refreshTokenExpiration))) // 리프레시 토큰 유효시각 설정 (1주일)
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .compact();
-
-        // TODO: redis에 저장
-
-        return refreshToken;
     }
 
     // 액세스 토큰 재발급
-    public JwtPair refreshAccessToken(String refreshToken) {
-        if (validateRefreshToken(refreshToken)) {
+    public JwtPairDTO refreshAccessToken(String accessToken, String refreshToken) {
+        if (validateRefreshToken(accessToken, refreshToken)) {
             String userPk = getUserPk(refreshToken);
-            return JwtPair.builder()
-                .accessToken(createAccessToken(userPk))
-                .refreshToken(createRefreshToken(userPk))
-                .build();
+
+            return jwtCommandService.createJwtPair(createAccessToken(userPk), createRefreshToken(userPk));
         }
         return null;
     }
-    public void deleteRefreshToken(String userPk) {
-        // TODO: redis에 저장된 refresh token 삭제
+    public void deleteRefreshToken(String accessToken) {
+        jwtCommandService.deleteJwtPair(accessToken);
     }
 
     // 토큰에서 회원 정보 추출
@@ -91,20 +91,24 @@ public class JwtTokenProvider {
         }
     }
 
-    // 리프레시 토큰 유효성 확인
-    public boolean validateRefreshToken(String accessToken) {
-        // TODO: redis에 저장된 refresh token 가져오기
-        String refreshToken = accessToken;
-        return validateToken(refreshToken);
+    public boolean validateAccessToken(String accessToken) {
+        JwtPairDTO jwtTokens = jwtQueryService.findJwtPair(accessToken);
+
+        return validateToken(jwtTokens.getAccessToken());
     }
 
-    // Request의 Header에서 token 값 가져오기
-    public String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+    // 리프레시 토큰 유효성 확인
+    public boolean validateRefreshToken(String accessToken, String refreshToken) {
+        if (accessToken == null || refreshToken == null) {
+            throw new ApiException(ErrorStatus._INVALID_TOKEN);
         }
-        return null;
+
+        JwtPairDTO jwtTokens = jwtQueryService.findJwtPair(accessToken);
+        if(!refreshToken.equals(jwtTokens.getRefreshToken())) {
+            throw new ApiException(ErrorStatus._INVALID_TOKEN);
+        }
+
+        return validateToken(jwtTokens.getRefreshToken());
     }
 
     public Authentication getAuthentication(String token) {
@@ -116,17 +120,21 @@ public class JwtTokenProvider {
 
     // 액세스 토큰 쿠키 생성
     public Cookie createAccessTokenCookie(String token) {
-        Cookie cookie = new Cookie("accessToken", token);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge((int) accessTokenExpiration);
-        return cookie;
+        return CookieUtils.createCookie("accessToken", token, (int) accessTokenExpiration, "/");
     }
+
 
     // 리프레시 토큰 쿠키 생성
     public Cookie createRefreshTokenCookie(String token) {
-        Cookie cookie = new Cookie("refreshToken", token);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge((int) refreshTokenExpiration);
-        return cookie;
+        return CookieUtils.createCookie("refreshToken", token, (int) refreshTokenExpiration, "/");
+    }
+
+
+    // localhost에서도 테스트하기 위해 추가
+    public Cookie createLocalHostAccessTokenCookie(String token) {
+        return CookieUtils.createLocalhostCookie("accessToken", token, (int) accessTokenExpiration, "/");
+    }
+    public Cookie createLocalHostRefreshTokenCookie(String token) {
+        return CookieUtils.createLocalhostCookie("refreshToken", token, (int) refreshTokenExpiration, "/");
     }
 }

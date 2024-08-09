@@ -17,22 +17,27 @@ public class RafflesRequest {
     public static class RafflesRequestDTO {
         private Long point; // 응모 포인트
 
-        public static Raffles toEntity(Members memberId, Goods goodsId, RafflesRequestDTO dto) {
+        // 생성
+        public static Raffles toEntity(Members memberId, Goods goodsId, RafflesRequestDTO dto, char penaltyFlag) {
             return Raffles.builder()
                     .memberId(memberId)
                     .goodsId(goodsId)
                     .point(dto.point)
+                    .penaltyFlag(penaltyFlag)
                     .build();
         }
 
-        public static Raffles toEntity(Long id, Members memberId, Goods goodsId, Long point) {
+        // 변경
+        public static Raffles toEntity(Long id, Members memberId, Goods goodsId, Long point, char penaltyFlag) {
             return Raffles.builder()
                     .id(id)
                     .memberId(memberId)
                     .goodsId(goodsId)
                     .point(point)
+                    .penaltyFlag(penaltyFlag)
                     .build();
         }
+
     }
 
 }

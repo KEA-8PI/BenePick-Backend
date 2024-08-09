@@ -24,4 +24,12 @@ public class AuthResponse {
         }
     }
 
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    public static class AuthLogoutResponseDTO{
+        private String memberID;
+    }
+
 }

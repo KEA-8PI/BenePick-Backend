@@ -3,9 +3,8 @@ package com._pi.benepick.domain.members.dto;
 import com._pi.benepick.domain.members.entity.Members;
 
 import com._pi.benepick.domain.members.entity.Role;
-
 import lombok.*;
-import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
@@ -33,6 +32,17 @@ public class MembersResponse {
         }
     }
 
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    public static class updateMemberResponseDTO{
+        private String deptName;
+        private String name;
+        private Long point;
+        private Long penaltyCnt;
+        private Role role;
+    }
 
     @Builder
     @Getter
@@ -40,9 +50,7 @@ public class MembersResponse {
     @NoArgsConstructor
     public static class MembersDetailListResponseDTO{
         private List<MembersDetailResponseDTO> membersDetailResponseDTOList;
-
-        public <T> MembersDetailListResponseDTO(List<T> list, int i) {
-        }
+        private int totalCnt;
     }
 
     @Builder

@@ -39,6 +39,7 @@ public class PointResponse {
     @NoArgsConstructor
     public static class PointHistListDTO{
         private List<PointHistDTO> pointHistDTOS;
+        private int totalCnt;
     }
 
 }

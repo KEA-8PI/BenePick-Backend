@@ -1,5 +1,6 @@
 package com._pi.benepick.domain.draws.service.algorithm;
 
+import com._pi.benepick.domain.draws.dto.DrawsStart;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import lombok.Getter;
 
@@ -24,9 +25,9 @@ public class DrawAlgorithm {
         return secureRandom.nextDouble();
     }
 
-    private Long total(List<Raffles> rafflesList) {
+    private Long total(List<DrawsStart.DrawsStartDTO> rafflesList) {
         long totalPoints = 0L;
-        for (Raffles raffle : rafflesList) {
+        for (DrawsStart.DrawsStartDTO raffle : rafflesList) {
             totalPoints += raffle.getPoint();
         }
         return totalPoints;
@@ -44,14 +45,13 @@ public class DrawAlgorithm {
         return randomValue;
     }
 
-    public Raffles drawAlgorithm(List<Raffles> rafflesList) {
+    public DrawsStart.DrawsStartDTO drawAlgorithm(List<DrawsStart.DrawsStartDTO> rafflesList) {
         long totalPoints = total(rafflesList);
-
         double cumulativePercentage = 0.0;
         double randomValue = random();
-        Raffles winner = null;
+        DrawsStart.DrawsStartDTO winner = null;
 
-        for (Raffles raffle : rafflesList) {
+        for (DrawsStart.DrawsStartDTO raffle : rafflesList) {
             double percentage = percent(raffle.getPoint(), totalPoints);
             cumulativePercentage += percentage;
 
