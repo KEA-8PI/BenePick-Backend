@@ -89,9 +89,9 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
 
     @Operation(summary = "사원 삭제",description = "사원을 삭제합니다. (관리자용)")
     @DeleteMapping("/")
-    public ApiResponse<DeleteResponseDTO> deleteMember(@RequestBody DeleteMembersRequestDTO deleteMembersRequestDTO){
+    public ApiResponse<DeleteResponseDTO> deleteMember(@RequestParam List<String> deleteList){
         Members members=membersRepository.findById("string").orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
-        return ApiResponse.onSuccess(membersCommandService.deleteMembers(deleteMembersRequestDTO,members));
+        return ApiResponse.onSuccess(membersCommandService.deleteMembers(deleteList,members));
 
 
     }
