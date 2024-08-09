@@ -19,4 +19,6 @@ public interface PointHistsRepository extends JpaRepository<PointHists, Long> {
     void deleteAllByMemberId_Id(String id);
     int countAllByMemberId_Id(String id);
 
+    void deleteAllByMemberId_Id(String id);
+
 }

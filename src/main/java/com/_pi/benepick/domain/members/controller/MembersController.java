@@ -92,7 +92,6 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
     public ApiResponse<DeleteResponseDTO> deleteMember(@Parameter(hidden = true) @MemberObject Members member,@RequestBody DeleteMembersRequestDTO deleteMembersRequestDTO){
         return ApiResponse.onSuccess(membersCommandService.deleteMembers(deleteMembersRequestDTO,member));
 
-
     }
 
     @Operation(summary = "사원 추가 파일 등록", description = "복지 포인트 파일을 업로드합니다. (관리자용)")

@@ -30,6 +30,7 @@ public class PenaltyHistsQueryServiceImpl implements PenaltyHistsQueryService
     @Override
     public PenaltyListResponseDTO getPenaltyHists(Integer page, Integer size,Members member){
         Members members=membersRepository.findById(member.getId()).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
+
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<PenaltyHists> penaltyHistsPage;
         int total=penaltyHistsRepository.countAllByMemberId_Id(members.getId());
@@ -42,6 +43,7 @@ public class PenaltyHistsQueryServiceImpl implements PenaltyHistsQueryService
                         .content(p.getContent())
                         .build())
                 .collect(Collectors.toList());
+
        return PenaltyListResponseDTO.builder()
                .penaltyResponseDTOList(result)
                .totalCnt(total)
