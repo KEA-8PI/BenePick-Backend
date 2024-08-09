@@ -38,9 +38,9 @@ pipeline {
             steps {
                 script {
                     sshagent(["${SSH_CREDENTIALS_ID}"]) {
-                        withCredentials([usernamePassword(credentialsId: REGISTRY_CREDENTIALS_ID, passwordVariable: 'DOCKER_REGISTRY_PASSWORD', usernameVariable: 'DOCKER_REGISTRY_USERNAME')]) {
+                        withCredentials([usernamePassword(credentialsId: REGISTRY_CREDENTIALS_ID, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                             sh """
-                            ssh ${REMOTE_SERVER} << EOF
+                            ssh -o StrictHostKeyChecking=no -t ${REMOTE_SERVER} << EOF
                                 echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin ${DOCKER_REGISTRY}
                                 docker pull ${DOCKER_IMAGE}
                                 docker stop ${IMAGE_NAME} || true
