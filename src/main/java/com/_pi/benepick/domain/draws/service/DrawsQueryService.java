@@ -11,6 +11,6 @@ public interface DrawsQueryService {
     DrawsResponse.DrawsResponseByGoodsListDTO getResultByGoodsId(Long goodsId);
     DrawsResponse.DrawsResponseByWaitlistGoodsIdListDTO getWaitlistByGoodsId(Members members, Long goodsId);
     DrawsResponse.DrawsResponseByWinnerGoodsIdListDTO getWinnersByGoodsId(Members members, Long goodsId);
-    DrawsResponse.DrawsResponseByMembersListDTO getCompleteRafflesByMemberId(String memberId);
+    DrawsResponse.DrawsResponseByMembersListDTO getCompleteRafflesByMemberId(Members member);
     void downloadExcel(Members members, Long goodsId, HttpServletResponse response);
 }

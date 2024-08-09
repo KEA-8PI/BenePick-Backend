@@ -9,6 +9,7 @@ import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.global.common.annotation.MemberObject;
 import com._pi.benepick.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,12 +36,12 @@ public class AuthController {
 
     @PostMapping("/logout")
     @Operation(summary = "로그아웃", description = "사용자 아이디를 입력받아 로그아웃 요청을 수행합니다.")
-    public ApiResponse<AuthLogoutResponseDTO> logout(@MemberObject Members members, HttpServletRequest request, HttpServletResponse response){
+    public ApiResponse<AuthLogoutResponseDTO> logout(@Parameter(hidden = true) @MemberObject Members members, HttpServletRequest request, HttpServletResponse response){
         return ApiResponse.onSuccess(authCommandService.logout(members, request, response));
     }
 
     @GetMapping("/test")
-    public ApiResponse<String> testPostRequest(@MemberObject Members members) {
+    public ApiResponse<String> testPostRequest(@Parameter(hidden = true) @MemberObject Members members) {
         return ApiResponse.onSuccess("Get request successful from " + members.getName());
     }
 
