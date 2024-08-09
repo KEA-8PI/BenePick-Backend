@@ -35,6 +35,7 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
     @Override
     public Goods addGoods(GoodsRequest.GoodsRequestDTO goodsAddDTO, Members member) {
         checkAdmin(member);
+        goodsAddDTO.restrictName();
         // 현재시간과 비교하여 GoodsStatus를 결정
         GoodsStatus status = determineGoodsStatus(goodsAddDTO.getRaffleStartAt(), goodsAddDTO.getRaffleEndAt());
 
@@ -48,6 +49,8 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
     @Override
     public GoodsResponse.GoodsAddResponseDTO updateGoods(Long goodsId, GoodsRequest.GoodsRequestDTO goodsUpdateDTO, Members member) {
         checkAdmin(member);
+        goodsUpdateDTO.restrictName();
+
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
         // 현재시간과 비교하여 GoodsStatus를 결정
         GoodsStatus status = determineGoodsStatus(goodsUpdateDTO.getRaffleStartAt(), goodsUpdateDTO.getRaffleEndAt());

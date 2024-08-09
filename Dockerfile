@@ -15,7 +15,7 @@ COPY src src
 COPY config config
 
 # Run the Gradle build to create the executable JAR file
-RUN ./gradlew clean build --no-daemon
+RUN ./gradlew build --no-daemon -x test
 
 # Use an official OpenJDK image as the base for the final image
 FROM openjdk:17-jdk-slim

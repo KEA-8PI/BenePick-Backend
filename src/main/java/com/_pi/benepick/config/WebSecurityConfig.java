@@ -33,6 +33,15 @@ public class WebSecurityConfig {
         "/v3/api-docs/**",
         "/swagger-ui/**",
     };
+
+    private static final String[] EXCLUDE_URL_ARRAY = {
+        "/goods/{goods_id}",
+        "/goods/seeds/**",
+        "/goods/search/**",
+        "/draws/result/{goods_id}",
+        "/draws/verification/**",
+        "/dashboard/**",
+    };
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -44,6 +53,7 @@ public class WebSecurityConfig {
                 // 회원가입, 로그인 관련 API는 Jwt 인증 없이 접근 가능
                 .authorizeHttpRequests(requests ->
                         requests.requestMatchers("/auth/login").permitAll()
+                            .requestMatchers(EXCLUDE_URL_ARRAY).permitAll()
                         //Swagger 관련 권한 설정
                         .requestMatchers(SWAGGER_PERMIT_URL_ARRAY).permitAll()
                         // USER 권한이 있어야 요청할 수 있음

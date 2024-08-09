@@ -1,15 +1,12 @@
 package com._pi.benepick.domain.raffles.entity;
 
 import com._pi.benepick.domain.draws.entity.Draws;
+import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.global.common.BaseJPATimeEntity;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.members.entity.Members;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -39,5 +36,15 @@ public class Raffles extends BaseJPATimeEntity {
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "raffleId", cascade = CascadeType.ALL, orphanRemoval = true)
     private Draws draw; // 추첨
+    @Column(nullable = false)
+    private char penaltyFlag = 'F';
+
+    public void updatePenaltyFlag(char penaltyFlag) {
+        this.penaltyFlag = penaltyFlag;
+    }
+
+    public void increasePoint(Long point) {
+        this.point = this.point + point;
+    }
 
 }

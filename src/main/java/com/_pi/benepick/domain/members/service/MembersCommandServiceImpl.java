@@ -53,6 +53,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -70,7 +76,7 @@ public class MembersCommandServiceImpl implements MembersCommandService{
     private final DrawsRepository drawsRepository;
 
     @Override
-    public MembersuccessDTO updateMemberInfo(String memberid, MembersRequest.MembersRequestDTO membersRequestDTO,Members member){
+    public updateMemberResponseDTO updateMemberInfo(String memberid, MembersRequest.MembersRequestDTO membersRequestDTO,Members member){
         Members members=membersRepository.findById(memberid).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
         if(membersRepository.findById(member.getId()).get().getRole()== Role.MEMBER){
             new ApiException(ErrorStatus._UNAUTHORIZED);
@@ -80,8 +86,12 @@ public class MembersCommandServiceImpl implements MembersCommandService{
 
         members.updateInfo(membersRequestDTO);
 
-        return MembersuccessDTO.builder()
-                .msg("수정되었습니다.")
+        return updateMemberResponseDTO.builder()
+                .deptName(membersRequestDTO.getDeptName())
+                .name(membersRequestDTO.getName())
+                .point(membersRequestDTO.getPoint())
+                .penaltyCnt(membersRequestDTO.getPenaltyCnt())
+                .role(membersRequestDTO.getRole())
                 .build();
     }
 
@@ -163,7 +173,7 @@ public class MembersCommandServiceImpl implements MembersCommandService{
                     Long pointChange = (long)row.getCell(1).getNumericCellValue();
     
                     Members member = membersRepository.findById(id).orElseThrow(() -> new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
-                    member.updatePoint(member.getPoint() + pointChange);
+                    member.increasePoint(pointChange);
                     updatedMembersList.add(MembersDetailResponseDTO.from(member));
                 }
             } catch (IOException e) {

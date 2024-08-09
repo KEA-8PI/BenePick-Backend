@@ -61,6 +61,12 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
             XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) { continue;}
+
+                String name = row.getCell(0).getStringCellValue();
+                if (name.length() > 50) {
+                    name = name.substring(0, 50);
+                }
+
                 // 상품 정보
                 Goods goods = goodsCommandService.addGoods(GoodsRequestDTO.builder()
                     .name(row.getCell(0).getStringCellValue())
