@@ -57,6 +57,8 @@ dependencies {
 
 }
 
+println "Current environment: ${project.hasProperty('env') ? project.env : 'not set'}"
+
 processResources.dependsOn('copyGitSubmodule')
 tasks.register('copyGitSubmodule', Copy) {
 	doFirst {
