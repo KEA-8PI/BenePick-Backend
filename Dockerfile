@@ -18,7 +18,7 @@ COPY src src
 COPY config config
 
 # Copy all files from config/benepick to src/main/resources
-COPY config/benepick/* src/main/resources/
+COPY config/benepick/keystore.p12 src/main/resources/keystore.p12
 
 COPY config/benepick/application-prod.yml src/main/resources/application.yml
 
