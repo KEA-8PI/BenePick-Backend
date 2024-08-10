@@ -38,7 +38,6 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
     public RafflesResponse.RafflesResponseByGoodsDTO applyRaffle(String memberId, Long goodsId, RafflesRequest.RafflesRequestDTO raffleAddDTO) {
         if (raffleAddDTO.getPoint() < 0) throw new ApiException(ErrorStatus._RAFFLES_POINT_TOO_LESS);
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
-        Members members = membersRepository.findById(memberId).orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
         if (!(members.getRole().equals(Role.MEMBER))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         if (!(goods.getGoodsStatus().equals(GoodsStatus.PROGRESS))) throw new ApiException(ErrorStatus._RAFFLES_CANNOT_APPLY);
 
@@ -59,11 +58,11 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
         // historyService.addPointUsageHistory(memberId, pointsToDeduct, "Raffle Participation");
         // 패널티 가지고 있을 때
 
-        Optional<Raffles> optionalRaffles = rafflesRepository.findByGoodsIdAndMemberId(goods, members);
+        Optional<Raffles> optionalRaffles = rafflesRepository.findByGoodsIdAndMemberId(goods, member);
         if (optionalRaffles.isPresent()) {
             Raffles raffles = optionalRaffles.get();
             raffles.increasePoint(raffleAddDTO.getPoint());
-            if (members.getPenaltyCnt() > 0 && raffles.getPoint() >= 100 && raffles.getPenaltyFlag() == 'F') {
+            if (member.getPenaltyCnt() > 0 && raffles.getPoint() >= 100 && raffles.getPenaltyFlag() == 'F') {
                 raffles.updatePenaltyFlag('T');
                 PenaltyHists penaltyHists = PenaltyHists.builder()
                         .memberId(members)
@@ -90,7 +89,7 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
                 members.updatePenalty(members.getPenaltyCnt() - 1);
                 penaltyHistsRepository.save(penaltyHists);
             } else {
-                raffles = RafflesRequest.RafflesRequestDTO.toEntity(members, goods, raffleAddDTO, 'F');
+                raffles = RafflesRequest.RafflesRequestDTO.toEntity(member, goods, raffleAddDTO, 'F');
             }
 
             return RafflesResponse.RafflesResponseByGoodsDTO.from(raffles);

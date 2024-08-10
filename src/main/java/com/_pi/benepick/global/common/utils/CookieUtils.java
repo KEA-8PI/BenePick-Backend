@@ -42,6 +42,7 @@ public class CookieUtils {
         cookie.setHttpOnly(true);
         cookie.setMaxAge(maxAge);
         cookie.setPath(path);
+        cookie.setSecure(true);
         return cookie;
     }
 
@@ -50,7 +51,9 @@ public class CookieUtils {
         cookie.setHttpOnly(true);
         cookie.setMaxAge(maxAge);
         cookie.setPath(path);
+        cookie.setSecure(true); //프론트 개발용. 배포시 제거
         cookie.setDomain("localhost"); //프론트 개발용. 배포시 제거
+        cookie.setAttribute("SameSite", "None"); //프론트 개발용. 배포시 제거
         return cookie;
     }
 }

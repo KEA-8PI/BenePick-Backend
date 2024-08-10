@@ -30,29 +30,25 @@ public class RafflesQueryServiceImpl implements RafflesQueryService {
     private final MembersRepository membersRepository;
     private final GoodsCategoriesRepository goodsCategoriesRepository;
 
-    public RafflesResponse.RafflesResponseByMembersListDTO getProgressRafflesByMemberId(String memberId) {
-        Optional<Members> membersOptional = membersRepository.findById(memberId);
+    public RafflesResponse.RafflesResponseByMembersListDTO getProgressRafflesByMemberId(Members member) {
+        if(member.getRole().equals(Role.ADMIN)) throw new ApiException(ErrorStatus._UNAUTHORIZED);
 
-        if (membersOptional.isPresent()) {
-            Members members = membersOptional.get();
-            List<Raffles> rafflesList = rafflesRepository.findAllByMemberId(members);
+        List<Raffles> rafflesList = rafflesRepository.findAllByMemberId(member);
 
-            List<RafflesResponse.RafflesResponseByMembersDTO> rafflesResponseByMembersDTOS = rafflesList.stream()
-                    .filter(raffles -> raffles.getGoodsId().getGoodsStatus() == GoodsStatus.PROGRESS)
-                    .map(raffles -> {
-                        String categoryName = (goodsCategoriesRepository.findByGoodsId(raffles.getGoodsId()))
-                                .map(goodsCategories -> goodsCategories.getCategoryId().getName()).orElse("NONE");
+        List<RafflesResponse.RafflesResponseByMembersDTO> rafflesResponseByMembersDTOS = rafflesList.stream()
+            .filter(raffles -> raffles.getGoodsId().getGoodsStatus() == GoodsStatus.PROGRESS)
+            .map(raffles -> {
+                String categoryName = (goodsCategoriesRepository.findByGoodsId(raffles.getGoodsId()))
+                    .map(goodsCategories -> goodsCategories.getCategoryId().getName()).orElse("NONE");
 
-                        return RafflesResponse.RafflesResponseByMembersDTO.of(raffles, categoryName);
-                    })
-                    .toList();
+                return RafflesResponse.RafflesResponseByMembersDTO.of(raffles, categoryName);
+            })
+            .toList();
 
-            return RafflesResponse.RafflesResponseByMembersListDTO.builder()
-                    .rafflesResponseByMembersList(rafflesResponseByMembersDTOS)
-                    .build();
-        } else {
-            throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        }
+        return RafflesResponse.RafflesResponseByMembersListDTO.builder()
+            .rafflesResponseByMembersList(rafflesResponseByMembersDTOS)
+            .build();
+
     }
 
     public RafflesResponse.RafflesResponseByGoodsListDTO getAllRafflesByGoodsId(Members members, Long goodsId) {
