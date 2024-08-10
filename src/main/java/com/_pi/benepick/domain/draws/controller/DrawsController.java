@@ -65,7 +65,7 @@ public class DrawsController {
 
     @Operation(summary = "당첨자 상태 관리", description = "당첨자들의 상태를 관리할 수 있습니다.")
     @PatchMapping("/winners/edit/{winnersId}")
-    public ApiResponse<DrawsResponse.DrawsResponseByMembersDTO> editWinnerStatus(@Parameter(hidden = true) @MemberObject Members member,@PathVariable Long winnersId, @RequestBody DrawsRequest.DrawsRequestDTO dto) {
+    public ApiResponse<DrawsResponse.EditWinnerStatus> editWinnerStatus(@Parameter(hidden = true) @MemberObject Members member,@PathVariable Long winnersId, @RequestBody DrawsRequest.DrawsRequestDTO dto) {
         return ApiResponse.onSuccess(drawsCommandService.editWinnerStatus(member, winnersId, dto));
     }
 
