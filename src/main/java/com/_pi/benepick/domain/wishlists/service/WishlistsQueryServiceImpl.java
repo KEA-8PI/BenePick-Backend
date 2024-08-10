@@ -40,7 +40,7 @@ public class WishlistsQueryServiceImpl implements WishlistsQueryService{
             wishlistsPage = wishlistsRepository.findAllByMemberId_IdAndGoodsId_GoodsStatus(memberId, goodsStatus, pageRequest);
         }
         List<WishlistResponse.WishlistDTO> wishlistDTOS = (wishlistsPage != null ? wishlistsPage.getContent() : Collections.emptyList()).stream()
-                .map(w -> WishlistResponse.WishlistDTO.of((Wishlists) w))
+                .map(w -> WishlistResponse.WishlistDTO.from((Wishlists) w))
                 .collect(Collectors.toList());
 
         return WishlistResponse.WishlistListDTO.builder()

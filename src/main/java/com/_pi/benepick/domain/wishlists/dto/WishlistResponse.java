@@ -26,7 +26,7 @@ public class WishlistResponse {
         private String category;
         private Long count;
 
-        public static WishlistDTO of(Wishlists wishlists){
+        public static WishlistDTO from(Wishlists wishlists){
             return WishlistDTO.builder()
                     .id(wishlists.getId())
                     .name(wishlists.getGoodsId().getName())
