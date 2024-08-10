@@ -29,6 +29,9 @@ public enum ErrorStatus implements BaseErrorCode {
     //raffle 관련
     _RAFFLES_NOT_FOUND(HttpStatus.NOT_FOUND, "RAFFLES_001", "존재하지 않는 응모입니다."),
     _RAFFLES_NOT_COMPLETED(HttpStatus.BAD_GATEWAY, "RAFFLES_002", "종료되지 않은 응모입니다."),
+    _RAFFLES_POINT_TOO_MUCH(HttpStatus.BAD_REQUEST, "RAFFLES_003", "응모하기에 포인트가 너무 많습니다."),
+    _RAFFLES_POINT_TOO_LESS(HttpStatus.BAD_REQUEST, "RAFFLES_004", "포인트는 음수가 될 수 없습니다."),
+    _RAFFLES_CANNOT_APPLY(HttpStatus.BAD_REQUEST, "RAFFLES_005", "응모 가능한 상태가 아닙니다."),
 
     //member 관련
     _MEMBERS_NOT_FOUND(HttpStatus.NOT_FOUND,"MEMBERS_001","존재하지 않는 사원입니다."),

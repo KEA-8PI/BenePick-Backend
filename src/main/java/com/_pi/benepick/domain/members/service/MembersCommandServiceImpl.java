@@ -184,14 +184,14 @@ public class MembersCommandServiceImpl implements MembersCommandService{
         }
 
     @Override
-    public DeleteResponseDTO deleteMembers(DeleteMembersRequestDTO deleteMembersRequestDTO, Members members){
+    public DeleteResponseDTO deleteMembers(List<String> memberIdList, Members members){
         //관리자 인지 확인하는 로직
         if(membersRepository.findById(members.getId()).get().getRole()== Role.MEMBER){
             throw new ApiException(ErrorStatus._UNAUTHORIZED);
         }
         List<String> deletedId = new ArrayList<>();
 
-        for(String id:deleteMembersRequestDTO.getId()){
+        for(String id:memberIdList){
             Members member = membersRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
             penaltyHistsRepository.deleteAllByMemberId_Id(id);
             pointHistsRepository.deleteAllByMemberId_Id(id);

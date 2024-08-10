@@ -89,8 +89,8 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
 
     @Operation(summary = "사원 삭제",description = "사원을 삭제합니다. (관리자용)")
     @DeleteMapping("/")
-    public ApiResponse<DeleteResponseDTO> deleteMember(@Parameter(hidden = true) @MemberObject Members member,@RequestBody DeleteMembersRequestDTO deleteMembersRequestDTO){
-        return ApiResponse.onSuccess(membersCommandService.deleteMembers(deleteMembersRequestDTO,member));
+    public ApiResponse<DeleteResponseDTO> deleteMember(@Parameter(hidden = true) @MemberObject Members member,@RequestParam List<String> memberList){
+        return ApiResponse.onSuccess(membersCommandService.deleteMembers(memberList,member));
 
     }
 
