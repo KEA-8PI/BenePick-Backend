@@ -15,7 +15,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', credentialsId: GITHUB_CREDENTIALS_ID, url: 'https://github.com/KEA-8PI/BenePick-Backend.git'
+                git branch: 'API-338--HTTPS-SSL', credentialsId: GITHUB_CREDENTIALS_ID, url: 'https://github.com/KEA-8PI/BenePick-Backend.git'
             }
         }
         stage('Build Docker Image') {
