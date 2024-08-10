@@ -1,3 +1,6 @@
+# Set the environment variable for production
+ARG BUILD_ENV=prod
+
 # Use an official Gradle image to build the application
 FROM gradle:7.6.0-jdk17 AS builder
 
@@ -14,8 +17,11 @@ COPY gradle gradle
 COPY src src
 COPY config config
 
+# Copy all files from config/benepick to src/main/resources
+COPY config/benepick/* src/main/resources/
+
 # Run the Gradle build to create the executable JAR file
-RUN ./gradlew build --no-daemon -x test
+RUN ./gradlew build --no-daemon -x test -Penv=$BUILD_ENV
 
 # Use an official OpenJDK image as the base for the final image
 FROM openjdk:17-jdk-slim
