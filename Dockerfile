@@ -1,5 +1,6 @@
 # Set the environment variable for production
 ARG BUILD_ENV=prod
+ENV BUILD_ENV=${BUILD_ENV}
 
 # Use an official Gradle image to build the application
 FROM gradle:7.6.0-jdk17 AS builder
@@ -23,7 +24,7 @@ COPY config/benepick/keystore.p12 src/main/resources/keystore.p12
 COPY config/benepick/application-prod.yml src/main/resources/application.yml
 
 # Run the Gradle build to create the executable JAR file
-RUN ./gradlew build --no-daemon -x test -Penv=$BUILD_ENV
+RUN ./gradlew build --no-daemon -x test -Penv=${BUILD_ENV}
 
 # Use an official OpenJDK image as the base for the final image
 FROM openjdk:17-jdk-slim
