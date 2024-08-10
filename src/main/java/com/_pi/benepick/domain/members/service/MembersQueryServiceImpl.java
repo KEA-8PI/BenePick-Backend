@@ -34,7 +34,7 @@ public class MembersQueryServiceImpl implements MembersQueryService {
         int total=0;
         if(keyword !=null && !keyword.isEmpty()){
             membersPage=membersRepository.findByNameContainingIgnoreCase(keyword, pageRequest);
-            total=membersRepository.countAllByName(keyword).size();
+           total=(int)membersPage.getTotalElements();
         }
         else {
             membersPage=membersRepository.findAll(pageRequest);
