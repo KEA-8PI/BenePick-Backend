@@ -65,7 +65,7 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
         if (dto.getStatus().equals("NO_SHOW")) {
             PenaltyHists penaltyHists = PenaltyHists.builder()
                     .memberId(members)
-                    .content("NO SHOW")
+                    .content("노쑈 패널티 부여")
                     .totalPenalty((int) (members.getPenaltyCnt() + 5))
                     .penaltyCount(5)
                     .build();
@@ -96,7 +96,7 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
                     waitMembers.increasePoint(Math.round(waitDraw.getRaffleId().getPoint() / 2.0));
                     PointHists pointHists = PointHists.builder()
                             .memberId(waitMembers)
-                            .content("Refund non-winner")
+                            .content("낙첨 포인트 반환")
                             .pointChange(Math.round(waitDraw.getRaffleId().getPoint() / 2.0))
                             .totalPoint(waitMembers.getPoint())
                             .build();
@@ -137,7 +137,7 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
                     members.increasePoint(Math.round(draws.getRaffleId().getPoint() / 2.0));
                     PointHists pointHists = PointHists.builder()
                             .memberId(members)
-                            .content("Refund non-winner")
+                            .content("낙첨 포인트 반환")
                             .pointChange(Math.round(draws.getRaffleId().getPoint() / 2.0))
                             .totalPoint(members.getPoint())
                             .build();

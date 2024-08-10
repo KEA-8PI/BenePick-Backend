@@ -50,7 +50,7 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
         }
         PointHists pointHists = PointHists.builder()
                 .memberId(members)
-                .content("Apply Raffle")
+                .content("응모 신청")
                 .pointChange(raffleAddDTO.getPoint())
                 .totalPoint(members.getPoint())
                 .build();
@@ -67,7 +67,7 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
                 raffles.updatePenaltyFlag('T');
                 PenaltyHists penaltyHists = PenaltyHists.builder()
                         .memberId(members)
-                        .content("Apply Raffle")
+                        .content("응모 신청")
                         .totalPenalty((int) (members.getPenaltyCnt() - 1))
                         .penaltyCount(-1)
                         .build();
@@ -83,7 +83,7 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
                 raffles = RafflesRequest.RafflesRequestDTO.toEntity(members, goods, raffleAddDTO, 'T');
                 PenaltyHists penaltyHists = PenaltyHists.builder()
                         .memberId(members)
-                        .content("Apply Raffle")
+                        .content("응모 신청")
                         .totalPenalty((int) (members.getPenaltyCnt() - 1))
                         .penaltyCount(-1)
                         .build();
