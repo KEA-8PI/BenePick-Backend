@@ -4,6 +4,7 @@ import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.domain.raffles.dto.RafflesRequest;
 import com._pi.benepick.domain.raffles.dto.RafflesResponse;
+import com._pi.benepick.domain.raffles.entity.Raffles;
 import com._pi.benepick.domain.raffles.service.RafflesCommandService;
 import com._pi.benepick.domain.raffles.service.RafflesQueryService;
 import com._pi.benepick.global.common.annotation.MemberObject;
@@ -18,6 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor

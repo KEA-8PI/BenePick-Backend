@@ -74,7 +74,13 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
                 penaltyHistsRepository.save(penaltyHists);
             }
 
-            return RafflesResponse.RafflesResponseByGoodsDTO.from(raffles);
+            return RafflesResponse.ApplyRafflesResponseByGoodsId.builder()
+                    .id(raffles.getId())
+                    .point(raffles.getPoint())
+                    .penaltyFlag(raffles.getPenaltyFlag())
+                    .memberId(raffles.getMemberId().getId())
+                    .goodsId(raffles.getGoodsId().getId())
+                    .build();
         }
         else {
             Raffles raffles = null;
@@ -91,8 +97,15 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
             } else {
                 raffles = RafflesRequest.RafflesRequestDTO.toEntity(member, goods, raffleAddDTO, 'F');
             }
+            rafflesRepository.save(raffles);
 
-            return RafflesResponse.RafflesResponseByGoodsDTO.from(raffles);
+            return RafflesResponse.ApplyRafflesResponseByGoodsId.builder()
+                    .id(raffles.getId())
+                    .point(raffles.getPoint())
+                    .penaltyFlag(raffles.getPenaltyFlag())
+                    .memberId(raffles.getMemberId().getId())
+                    .goodsId(raffles.getGoodsId().getId())
+                    .build();
         }
     }
 }

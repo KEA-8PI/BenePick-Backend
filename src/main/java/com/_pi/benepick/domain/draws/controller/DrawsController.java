@@ -1,6 +1,7 @@
 package com._pi.benepick.domain.draws.controller;
 
 import com._pi.benepick.domain.draws.dto.DrawsRequest;
+import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.draws.service.DrawsCommandService;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;

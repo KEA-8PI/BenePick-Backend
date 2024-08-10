@@ -48,7 +48,7 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
     private final PenaltyHistsRepository penaltyHistsRepository;
     private final PointHistsRepository pointHistsRepository;
 
-    public DrawsResponse.DrawsResponseByMembersDTO editWinnerStatus(Members members, Long winnerId, DrawsRequest.DrawsRequestDTO dto) {
+    public DrawsResponse.EditWinnerStatus editWinnerStatus(Members members, Long winnerId, DrawsRequest.DrawsRequestDTO dto) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         Draws draws = drawsRepository.findById(winnerId).orElseThrow(() -> new ApiException(ErrorStatus._RAFFLES_NOT_COMPLETED));
         try {
@@ -62,7 +62,7 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
         draws.updateStatus(Status.valueOf(dto.getStatus()));
 
         // NO_SHOW로 변경하였을 때 패널티 부여.
-        if (dto.getStatus().equals("NO_SHOW")) {
+        if (Status.valueOf(dto.getStatus()).equals(Status.NO_SHOW)) {
             PenaltyHists penaltyHists = PenaltyHists.builder()
                     .memberId(members)
                     .content("노쑈 패널티 부여")
@@ -74,8 +74,9 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
             penaltyHistsRepository.save(penaltyHists);
         }
 
-        if (dto.getStatus().equals("NO_SHOW") || dto.getStatus().equals("CANCEL")) {
+        if (Status.valueOf(dto.getStatus()).equals(Status.NO_SHOW) || Status.valueOf(dto.getStatus()).equals(Status.CANCEL)) {
             List<Draws> drawsList = drawsRepository.findAllByGoodsIdAndStatus(draws.getRaffleId().getGoodsId().getId(), Status.WAITLIST);
+            System.out.println("drawList Size : " + draws.getRaffleId().getGoodsId().getId());
             if (!drawsList.isEmpty()) {
                 drawsList.get(0).updateStatus(Status.WINNER);
 
@@ -106,7 +107,12 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
             }
         }
 
-        return DrawsResponse.DrawsResponseByMembersDTO.from(draws);
+        return DrawsResponse.EditWinnerStatus.builder()
+                .id(draws.getId())
+                .raffleId(draws.getRaffleId().getId())
+                .status(draws.getStatus())
+                .sequence(draws.getSequence())
+                .build();
     }
 
     public void drawStart(LocalDateTime now) {
