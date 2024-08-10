@@ -1,9 +1,9 @@
+# Use an official Gradle image to build the application
+FROM gradle:7.6.0-jdk17 AS builder
+
 # Set the environment variable for production
 ARG BUILD_ENV=prod
 ENV BUILD_ENV=${BUILD_ENV}
-
-# Use an official Gradle image to build the application
-FROM gradle:7.6.0-jdk17 AS builder
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -18,7 +18,6 @@ COPY gradle gradle
 COPY src src
 COPY config config
 
-# Copy all files from config/benepick to src/main/resources
 COPY config/benepick/keystore.p12 src/main/resources/keystore.p12
 
 COPY config/benepick/application-prod.yml src/main/resources/application.yml
