@@ -9,6 +9,8 @@ import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.categories.repository.CategoriesRepository;
 import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
 import com._pi.benepick.domain.goods.repository.GoodsRepository;
+import com._pi.benepick.domain.members.entity.Members;
+import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
@@ -30,18 +32,12 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
     private final GoodsCategoriesRepository goodsCategoriesRepository;
     private final CategoriesRepository categoriesRepository;
 
-    // 상품 상세 조회
-    @Override
-    public GoodsResponse.GoodsDetailResponseDTO getGoodsInfo(Long goodsId) {
-        Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
-        GoodsCategories goodsCategories = goodsCategoriesRepository.findByGoodsId(goods).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_CATEGORY_NOT_FOUND));
-        Categories category = categoriesRepository.findById(goodsCategories.getCategoryId().getId()).orElseThrow(() -> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
-        return GoodsResponse.GoodsDetailResponseDTO.of(goods, category.getName());
-    }
-
     // 상품 목록 조회 (+ 검색)
     @Override
-    public GoodsResponse.GoodsListResponseDTO getGoodsList(Integer page, Integer size, String keyword) {
+    public GoodsResponse.GoodsListResponseDTO getGoodsList(Integer page, Integer size, String keyword, Members member) {
+        if (member.getRole() == Role.MEMBER) {
+            throw new ApiException(ErrorStatus._ACCESS_DENIED_FOR_MEMBER);
+        }
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
         Page<Goods> goodsPage;
 
@@ -60,6 +56,14 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
                 .build();
     }
 
+    // 상품 상세 조회
+    @Override
+    public GoodsResponse.GoodsDetailResponseDTO getGoodsInfo(Long goodsId) {
+        Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
+        GoodsCategories goodsCategories = goodsCategoriesRepository.findByGoodsId(goods).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_CATEGORY_NOT_FOUND));
+        Categories category = categoriesRepository.findById(goodsCategories.getCategoryId().getId()).orElseThrow(() -> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
+        return GoodsResponse.GoodsDetailResponseDTO.of(goods, category.getName());
+    }
 
     // 시드 값 조회
     @Override
