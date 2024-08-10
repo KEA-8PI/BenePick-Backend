@@ -20,8 +20,7 @@ COPY config config
 # Copy all files from config/benepick to src/main/resources
 COPY config/benepick/* src/main/resources/
 
-# Replace application.yml with application-prod.yml
-RUN cp src/main/resources/application-prod.yml src/main/resources/application.yml
+COPY config/benepick/application-prod.yml src/main/resources/application.yml
 
 # Run the Gradle build to create the executable JAR file
 RUN ./gradlew build --no-daemon -x test -Penv=$BUILD_ENV
