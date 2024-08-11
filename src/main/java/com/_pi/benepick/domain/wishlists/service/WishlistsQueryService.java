@@ -12,5 +12,5 @@ public interface WishlistsQueryService {
 
     Wishlists getWishlistsById(Long id);
 
-    Wishlists getWishlistsByMemberIdAndId(Members members, Long id);
+    boolean getWishlistsByMemberIdAndId(Members members, Long id);
 }

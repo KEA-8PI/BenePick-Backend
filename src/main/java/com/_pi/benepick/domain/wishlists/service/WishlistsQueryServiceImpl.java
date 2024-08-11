@@ -72,7 +72,7 @@ public class WishlistsQueryServiceImpl implements WishlistsQueryService{
     }
 
     @Override
-    public Wishlists getWishlistsByMemberIdAndId(Members members, Long id){
-        return wishlistsRepository.findByIdAndMemberId(id,members).orElseThrow(()->new ApiException(ErrorStatus._WISHLIST_ALREADY_EXISTS));
+    public boolean getWishlistsByMemberIdAndId(Members members, Long id){
+        return wishlistsRepository.findWishlistsByGoodsId_IdAndMemberId(id,members).isEmpty();
     }
 }
