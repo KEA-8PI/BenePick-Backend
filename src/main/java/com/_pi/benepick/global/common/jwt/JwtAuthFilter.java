@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -45,12 +46,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     // redis에 기존 refresh token 삭제 및 새로운 refresh token 저장
                     Cookie accessTokenCookie = jwtTokenProvider.createAccessTokenCookie(newToken.getAccessToken());
                     Cookie refreshTokenCookie = jwtTokenProvider.createRefreshTokenCookie(newToken.getRefreshToken());
-
-                    // localhost에서도 테스트하기 위해 추가
-                    Cookie localAccessTokenCookie = jwtTokenProvider.createLocalHostAccessTokenCookie(newToken.getAccessToken());
-                    Cookie localRefreshTokenCookie = jwtTokenProvider.createLocalHostRefreshTokenCookie(newToken.getAccessToken());
-                    response.addCookie(localAccessTokenCookie);
-                    response.addCookie(localRefreshTokenCookie);
 
                     response.addCookie(accessTokenCookie);
                     response.addCookie(refreshTokenCookie);
