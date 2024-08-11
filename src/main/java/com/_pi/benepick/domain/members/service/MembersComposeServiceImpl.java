@@ -34,6 +34,7 @@ public class MembersComposeServiceImpl implements MembersComposeService{
     private final PointHistsRepository pointHistsRepository;
     private final WishlistsRepository wishlistsRepository;
     private final RafflesRepository rafflesRepository;
+
     @Override
     public UpdateMemberResponseDTO updateMemberInfo(String memberid, MembersRequest.MembersRequestDTO membersRequestDTO, Members member){
         Members members=membersQueryService.getMemberById(memberid);
@@ -46,6 +47,7 @@ public class MembersComposeServiceImpl implements MembersComposeService{
         pointHistsCommandService.changePointHist(membersRequestDTO.getPoint(),"",totalPoint,members);
         penaltyHistsCommandService.changePenaltyHist(membersRequestDTO.getPenaltyCnt(),memberid,"",member,totalPenalty);
         members.updateInfo(membersRequestDTO);
+
         return UpdateMemberResponseDTO.builder()
                 .deptName(membersRequestDTO.getDeptName())
                 .name(membersRequestDTO.getName())
@@ -72,6 +74,7 @@ public class MembersComposeServiceImpl implements MembersComposeService{
             membersRepository.deleteById(id);
             deletedId.add(id);
         }
+
         return DeleteResponseDTO.builder()
                 .memberid(deletedId)
                 .build();

@@ -61,14 +61,15 @@ public class MembersCommandServiceImpl implements MembersCommandService{
 
         Members members=membersRequestDTO.toEntity(membersRequestDTO);
         membersRepository.save(members);
-        return MembersDetailResponseDTO.from(members);
 
+        return MembersDetailResponseDTO.from(members);
     }
 
     // 복지포인트 파일 업로드
     @Override
     public MembersDetailListResponseDTO uploadPointFile(MultipartFile file) {
         List<MembersDetailResponseDTO> updatedMembersList = new ArrayList<>();
+
         try (InputStream inputStream = file.getInputStream();
              Workbook workbook = new XSSFWorkbook(inputStream)) {
 
@@ -92,6 +93,7 @@ public class MembersCommandServiceImpl implements MembersCommandService{
 
     public MembersResponse.MembersDetailListResponseDTO uploadMemberFile(MultipartFile file) {
         List<Members> membersList = new ArrayList<>();
+
         try (InputStream inputStream = file.getInputStream();
              Workbook workbook = new XSSFWorkbook(inputStream)) {
 

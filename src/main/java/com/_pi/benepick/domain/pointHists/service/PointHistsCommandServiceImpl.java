@@ -22,6 +22,7 @@ public class PointHistsCommandServiceImpl implements PointHistsCommandService{
                 .totalPoint(result)
                 .memberId(member)
                 .build();
+
         pointHistsRepository.save(pointHists);
     }
 }
