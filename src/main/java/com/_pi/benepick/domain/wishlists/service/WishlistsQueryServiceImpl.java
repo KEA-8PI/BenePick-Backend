@@ -6,6 +6,8 @@ import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.wishlists.dto.WishlistResponse;
 import com._pi.benepick.domain.wishlists.entity.Wishlists;
 import com._pi.benepick.domain.wishlists.repository.WishlistsRepository;
+import com._pi.benepick.global.common.exception.ApiException;
+import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -63,4 +65,10 @@ public class WishlistsQueryServiceImpl implements WishlistsQueryService{
         }
         return PageRequest.of(page, size, sort);
     }
+
+    @Override
+    public Wishlists getWishlistsById(Long id){
+        return wishlistsRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._WISHLIST_NOT_FOUND));
+    }
+
 }

@@ -115,4 +115,9 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
         }
         return PageRequest.of(page, size, sort);
     }
+
+    @Override
+    public Goods getGoodsById(Long id){
+        return goodsRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._GOODS_NOT_FOUND));
+    }
 }
