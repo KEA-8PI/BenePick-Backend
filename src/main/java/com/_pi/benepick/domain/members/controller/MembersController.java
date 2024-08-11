@@ -3,17 +3,11 @@ import com._pi.benepick.domain.members.dto.MembersRequest.*;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
-
 import com._pi.benepick.domain.members.service.MembersQueryService;
-
 import com._pi.benepick.domain.members.service.MembersCommandService;
 import com._pi.benepick.global.common.annotation.MemberObject;
-import com._pi.benepick.global.common.exception.ApiException;
-
 import com._pi.benepick.global.common.response.ApiResponse;
-import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import io.swagger.v3.oas.annotations.Operation;
-
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.*;
@@ -21,25 +15,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@Slf4j
 @RequestMapping("/member")
 @Tag(name = "Members", description = "사원 API")
 public class MembersController {
 
-
-
     private final MembersCommandService membersCommandService;
     private final MembersQueryService membersQueryService;
-    private final MembersRepository membersRepository;
-
-
 
     @Operation(summary = "복지포인트 조회 ", description = "사용자가 복지포인트를 조회합니다.")
     @GetMapping("/point")
@@ -66,9 +52,7 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
     public ApiResponse<MembersDetailListResponseDTO> getMemberList(@RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String keywordName){
         return ApiResponse.onSuccess(membersQueryService.getMembersList(page,size,keywordName));
 
-
     }
-
     @Operation(summary = "사원 등록", description = "사원을 등록합니다 (관리자용)")
     @PostMapping("/add")
     public ApiResponse<MembersDetailResponseDTO> addMember(@Parameter(hidden = true) @MemberObject Members member,@RequestBody AdminMemberRequestDTO membersRequestDTO){

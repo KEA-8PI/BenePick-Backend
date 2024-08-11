@@ -1,11 +1,7 @@
 package com._pi.benepick.domain.members.dto;
-
 import com._pi.benepick.domain.members.entity.Members;
-
 import com._pi.benepick.domain.members.entity.Role;
 import lombok.*;
-
-
 import java.util.List;
 
 public class MembersResponse {

@@ -38,42 +38,24 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-
-
-
-import java.util.ArrayList;
-import java.util.List;
-
-
-
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Service
 @RequiredArgsConstructor
 @Transactional
-@Slf4j
 public class MembersCommandServiceImpl implements MembersCommandService{
 
-
-
     private final MembersRepository membersRepository;
-
     private final PenaltyHistsRepository penaltyHistsRepository;
     private final PointHistsRepository pointHistsRepository;
     private final WishlistsRepository wishlistsRepository;
     private final RafflesRepository rafflesRepository;
-    private final DrawsRepository drawsRepository;
+
 
     @Override
     public updateMemberResponseDTO updateMemberInfo(String memberid, MembersRequest.MembersRequestDTO membersRequestDTO,Members member){
