@@ -14,6 +14,7 @@ import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -74,7 +75,7 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
 
     // 상품 검색
     @Override
-    public GoodsResponse.GoodsListSearchResponseDTO searchGoods(GoodsStatus goodsStatus, Integer page, Integer size, String keyword, GoodsFilter sortBy, String category) {
+    public GoodsResponse.GoodsListSearchResponseDTO searchGoods(GoodsStatus goodsStatus, Integer page, Integer size, String keyword, GoodsFilter sortBy, String category, Members member) {
         PageRequest pageRequest = createPageRequest(page, size, sortBy); // 종료임박순, 최신순 처리
         // 카테고리 ID를 조회
         Long categoryId = null;
@@ -94,7 +95,7 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
         int total=(int)goodsPage.getTotalElements();
 
         List<GoodsResponse.GoodsSearchResponseDTO> goodsSearchDTOList = goodsPage.getContent().stream()
-                .map(g -> GoodsResponse.GoodsSearchResponseDTO.of(g, category))
+                .map(g -> GoodsResponse.GoodsSearchResponseDTO.of(g, category, member))
                 .toList();
         return GoodsResponse.GoodsListSearchResponseDTO.builder()
                 .goodsSearchDTOList(goodsSearchDTOList)

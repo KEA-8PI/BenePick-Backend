@@ -2,6 +2,8 @@ package com._pi.benepick.domain.goods.dto;
 
 import com._pi.benepick.domain.goods.entity.Goods;
 import java.util.List;
+
+import com._pi.benepick.domain.members.entity.Members;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -111,8 +113,9 @@ public class GoodsResponse {
         private LocalDateTime raffleEndAt; //응모 종료일
         private String category; //카테고리
         private Long count; //응모자 수
+        private boolean isWishlist; //위시리스트 등록 여부
 
-        public static GoodsSearchResponseDTO of(Goods goods, String category) {
+        public static GoodsSearchResponseDTO of(Goods goods, String category, Members member) {
             return GoodsSearchResponseDTO.builder()
                     .id(goods.getId())
                     .name(goods.getName())
@@ -123,6 +126,7 @@ public class GoodsResponse {
                     .raffleEndAt(goods.getRaffleEndAt())
                     .category(category)
                     .count((long) goods.getRaffles().size())
+                    .isWishlist(goods.isWishlistForMember(member.getId()))
                     .build();
         }
     }
