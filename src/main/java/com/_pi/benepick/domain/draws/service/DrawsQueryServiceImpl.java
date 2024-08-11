@@ -39,8 +39,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class DrawsQueryServiceImpl implements DrawsQueryService {
-
-    private final MembersRepository membersRepository;
     private final DrawsRepository drawsRepository;
     private final GoodsCategoriesRepository goodsCategoriesRepository;
 
@@ -79,10 +77,9 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
                 .build();
     }
 
-    public DrawsResponse.DrawsResponseByMembersListDTO getCompleteRafflesByMemberId(String memberId) {
-        Members members = membersRepository.findById(memberId).orElseThrow(() -> new ApiException(ErrorStatus._UNAUTHORIZED));
-        if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        List<DrawsResponse.DrawsResponseByMembersDTO> drawsResponseByMembersDTOS = (drawsRepository.findByMemberId(memberId)).stream()
+    public DrawsResponse.DrawsResponseByMembersListDTO getCompleteRafflesByMemberId(Members member) {
+        if (!(member.getRole().equals(Role.MEMBER))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
+        List<DrawsResponse.DrawsResponseByMembersDTO> drawsResponseByMembersDTOS = (drawsRepository.findByMemberId(member.getId())).stream()
                 .filter(draws -> draws.getRaffleId().getGoodsId().getGoodsStatus() == GoodsStatus.COMPLETED)
                 .map(draws -> {
                     String categoryName = (goodsCategoriesRepository.findByGoodsId(draws.getRaffleId().getGoodsId())).map(goodsCategories -> goodsCategories.getCategoryId().getName()).orElse("NONE");

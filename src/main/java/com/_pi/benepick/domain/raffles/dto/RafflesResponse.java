@@ -1,6 +1,12 @@
 package com._pi.benepick.domain.raffles.dto;
 
+import com._pi.benepick.domain.goods.entity.Goods;
+import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.raffles.entity.Raffles;
+import jakarta.persistence.Column;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -53,6 +59,18 @@ public class RafflesResponse {
                     .categoryName(categoryName)
                     .build();
         }
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ApplyRafflesResponseByGoodsId {
+        private Long id; //응모_id
+        private String memberId; //멤버_id
+        private Long goodsId; //상품_id
+        private Long point; //사용포인트
+        private char penaltyFlag;
     }
 
     @Builder

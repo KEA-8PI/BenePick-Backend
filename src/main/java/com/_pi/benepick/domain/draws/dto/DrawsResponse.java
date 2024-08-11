@@ -4,6 +4,7 @@ import com._pi.benepick.domain.draws.entity.Status;
 import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.raffles.entity.Raffles;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -83,6 +84,17 @@ public class DrawsResponse {
                     .build();
         }
 
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class EditWinnerStatus {
+        private Long id; //추첨_id
+        private Long raffleId; //응모_id
+        private int sequence; // 순서
+        private Status status; // WINNER, WAITLIST, CANCLE, NOSHOW
     }
 
     @Builder

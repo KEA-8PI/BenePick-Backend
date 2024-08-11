@@ -39,7 +39,7 @@ public class WishlistsCommandServiceImpl implements WishlistsCommandSerivce{
     @Override
     public WishlistAddDTO addWishlist(Members members, Long id){
        Goods goods=goodsRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._GOODS_NOT_FOUND));
-        Wishlists wishlists= Wishlists.builder()
+       Wishlists wishlists= Wishlists.builder()
                 .goodsId(goods)
                 .memberId(members)
                 .build();
