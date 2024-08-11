@@ -2,6 +2,7 @@ package com._pi.benepick.domain.members.controller;
 import com._pi.benepick.domain.members.dto.MembersRequest.*;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
 import com._pi.benepick.domain.members.entity.Members;
+import com._pi.benepick.domain.members.service.MembersComposeService;
 import com._pi.benepick.domain.members.service.MembersQueryService;
 import com._pi.benepick.domain.members.service.MembersCommandService;
 import com._pi.benepick.global.common.annotation.MemberObject;
@@ -24,6 +25,7 @@ public class MembersController {
 
     private final MembersCommandService membersCommandService;
     private final MembersQueryService membersQueryService;
+    private final MembersComposeService membersComposeService;
 
     @Operation(summary = "복지포인트 조회 ", description = "사용자가 복지포인트를 조회합니다.")
     @GetMapping("/point")
@@ -65,14 +67,14 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
 
     @Operation(summary = "사원 정보 수정", description = "사원 정보를 수정합니다. (관리자용)")
     @PatchMapping("/info/{memberID}")
-    public ApiResponse<updateMemberResponseDTO> updateMemberInfo(@Parameter(hidden = true) @MemberObject Members member,@PathVariable String memberID, @RequestBody MembersRequestDTO membersRequestDTO){
-        return ApiResponse.onSuccess(membersCommandService.updateMemberInfo(memberID,membersRequestDTO,member));
+    public ApiResponse<UpdateMemberResponseDTO> updateMemberInfo(@Parameter(hidden = true) @MemberObject Members member,@PathVariable String memberID, @RequestBody MembersRequestDTO membersRequestDTO){
+        return ApiResponse.onSuccess(membersComposeService.updateMemberInfo(memberID,membersRequestDTO,member));
     }
 
     @Operation(summary = "사원 삭제",description = "사원을 삭제합니다. (관리자용)")
     @DeleteMapping("/")
     public ApiResponse<DeleteResponseDTO> deleteMember(@Parameter(hidden = true) @MemberObject Members member,@RequestParam List<String> memberList){
-        return ApiResponse.onSuccess(membersCommandService.deleteMembers(memberList,member));
+        return ApiResponse.onSuccess(membersComposeService.deleteMembers(memberList,member));
 
     }
 

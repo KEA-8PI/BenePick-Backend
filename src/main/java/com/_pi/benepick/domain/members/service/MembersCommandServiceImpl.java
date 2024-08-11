@@ -1,6 +1,5 @@
 package com._pi.benepick.domain.members.service;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
-import com._pi.benepick.domain.members.dto.MembersRequest;
 import com._pi.benepick.domain.members.dto.MembersRequest.*;
 import com._pi.benepick.domain.members.dto.MembersResponse;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
@@ -10,8 +9,6 @@ import com._pi.benepick.domain.penaltyHists.repository.PenaltyHistsRepository;
 import com._pi.benepick.domain.pointHists.repository.PointHistsRepository;
 import com._pi.benepick.domain.raffles.repository.RafflesRepository;
 import com._pi.benepick.domain.wishlists.repository.WishlistsRepository;
-import com._pi.benepick.domain.penaltyHists.entity.PenaltyHists;
-import com._pi.benepick.domain.pointHists.entity.PointHists;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import com._pi.benepick.domain.members.entity.Role;
@@ -35,58 +32,6 @@ import java.util.stream.Collectors;
 public class MembersCommandServiceImpl implements MembersCommandService{
 
     private final MembersRepository membersRepository;
-    private final PenaltyHistsRepository penaltyHistsRepository;
-    private final PointHistsRepository pointHistsRepository;
-    private final WishlistsRepository wishlistsRepository;
-    private final RafflesRepository rafflesRepository;
-
-
-    @Override
-    public UpdateMemberResponseDTO updateMemberInfo(String memberid, MembersRequest.MembersRequestDTO membersRequestDTO,Members member){
-        Members members=membersRepository.findById(memberid).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
-        if(membersRepository.findById(member.getId()).get().getRole()== Role.MEMBER){
-            throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        }
-        changePointHist(membersRequestDTO.getPoint(),memberid,"",members);
-        changePenaltyHist(membersRequestDTO.getPenaltyCnt(),memberid," ",members);
-
-        members.updateInfo(membersRequestDTO);
-
-        return UpdateMemberResponseDTO.builder()
-                .deptName(membersRequestDTO.getDeptName())
-                .name(membersRequestDTO.getName())
-                .point(membersRequestDTO.getPoint())
-                .penaltyCnt(membersRequestDTO.getPenaltyCnt())
-                .role(membersRequestDTO.getRole())
-                .build();
-    }
-
-    private void changePointHist(Long point,String members,String content,Members member){
-        Long totalPoint=membersRepository.findById(members).get().getPoint();
-
-        Long result=totalPoint+point;
-
-        PointHists pointHists=PointHists.builder()
-                .pointChange(point)
-                .content(content)
-                .totalPoint(result)
-                .memberId(member)
-                .build();
-        pointHistsRepository.save(pointHists);
-    }
-
-    private void changePenaltyHist(Long penaltycnt,String members,String content,Members member){
-        Long totalPenalty=membersRepository.findById(members).get().getPenaltyCnt();
-        Long result=totalPenalty+penaltycnt;
-        PenaltyHists penaltyHists=PenaltyHists.builder()
-                .content(content)
-                .memberId(member)
-                .penaltyCount(penaltycnt.intValue())
-                .totalPenalty(result.intValue())
-                .build();
-       penaltyHistsRepository.save(penaltyHists);
-    }
-
 
     @Override
     public MembersuccessDTO changePassword(MemberPasswordDTO memberPasswordDTO, Members members){
@@ -149,29 +94,6 @@ public class MembersCommandServiceImpl implements MembersCommandService{
             return MembersDetailListResponseDTO.builder()
                     .membersDetailResponseDTOList(updatedMembersList).build();
         }
-
-    @Override
-    public DeleteResponseDTO deleteMembers(List<String> memberIdList, Members members){
-        //관리자 인지 확인하는 로직
-        if(membersRepository.findById(members.getId()).get().getRole()== Role.MEMBER){
-            throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        }
-        List<String> deletedId = new ArrayList<>();
-
-        for(String id:memberIdList){
-            membersRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
-            penaltyHistsRepository.deleteAllByMemberId_Id(id);
-            pointHistsRepository.deleteAllByMemberId_Id(id);
-            wishlistsRepository.deleteAllByMemberId_Id(id);
-          rafflesRepository.deleteAllByMemberId_IdAndGoodsId_GoodsStatus(id,GoodsStatus.PROGRESS);
-            membersRepository.deleteById(id);
-            deletedId.add(id);
-        }
-        return DeleteResponseDTO.builder()
-                .memberid(deletedId)
-                .build();
-
-    }
 
     public MembersResponse.MembersDetailListResponseDTO uploadMemberFile(MultipartFile file) {
         List<Members> membersList = new ArrayList<>();
