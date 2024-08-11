@@ -1,7 +1,6 @@
 package com._pi.benepick.domain.pointHists.controller;
 
 import com._pi.benepick.domain.members.entity.Members;
-import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.domain.members.service.MembersQueryService;
 import com._pi.benepick.domain.pointHists.dto.PointResponse;
 import com._pi.benepick.global.common.annotation.MemberObject;

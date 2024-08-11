@@ -10,9 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PenaltyHistsRepository extends JpaRepository<PenaltyHists, Long> {
 
-    @Query("select p from PenaltyHists p where p.memberId.id =:id")
-    PenaltyHists findAllByMemberId(String id);
-
     Page<PenaltyHists> findAllByMemberId_Id(Pageable pageable, String id);
     void deleteAllByMemberId_Id(String id);
 
