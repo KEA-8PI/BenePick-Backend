@@ -24,7 +24,9 @@ private final PointHistsQueryService pointHistsQueryService;
         Members members=membersQueryService.getMemberById(member.getId());
         PageRequest pageRequest=PageRequest.of(page,size);
         Page<PointHists> pointHistsPage;
+
         int total=pointHistsQueryService.getMemberPointListCnt(members.getId());
+
         pointHistsPage=pointHistsQueryService.getMemberPointHists(pageRequest, members.getId());
         List<PointHistDTO> result = pointHistsPage.stream()
                 .map(p -> PointHistDTO.builder()
@@ -33,6 +35,7 @@ private final PointHistsQueryService pointHistsQueryService;
                         .content(p.getContent())
                         .build())
                 .collect(Collectors.toList());
+
         return PointHistListDTO.builder()
                 .pointHistDTOS(result)
                 .totalCnt(total)

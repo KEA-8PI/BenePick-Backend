@@ -26,14 +26,15 @@ import java.util.List;
 @Transactional
 public class MembersComposeServiceImpl implements MembersComposeService{
 
-private final MembersQueryService membersQueryService;
-private final PenaltyHistsCommandService penaltyHistsCommandService;
-private final PointHistsCommandService pointHistsCommandService;
+    private final MembersQueryService membersQueryService;
+    private final PenaltyHistsCommandService penaltyHistsCommandService;
+    private final PointHistsCommandService pointHistsCommandService;
     private final MembersRepository membersRepository;
     private final PenaltyHistsRepository penaltyHistsRepository;
     private final PointHistsRepository pointHistsRepository;
     private final WishlistsRepository wishlistsRepository;
     private final RafflesRepository rafflesRepository;
+
     @Override
     public UpdateMemberResponseDTO updateMemberInfo(String memberid, MembersRequest.MembersRequestDTO membersRequestDTO, Members member){
         Members members=membersQueryService.getMemberById(memberid);
@@ -46,6 +47,7 @@ private final PointHistsCommandService pointHistsCommandService;
         pointHistsCommandService.changePointHist(membersRequestDTO.getPoint(),"",totalPoint,members);
         penaltyHistsCommandService.changePenaltyHist(membersRequestDTO.getPenaltyCnt(),memberid,"",member,totalPenalty);
         members.updateInfo(membersRequestDTO);
+
         return UpdateMemberResponseDTO.builder()
                 .deptName(membersRequestDTO.getDeptName())
                 .name(membersRequestDTO.getName())
@@ -72,6 +74,7 @@ private final PointHistsCommandService pointHistsCommandService;
             membersRepository.deleteById(id);
             deletedId.add(id);
         }
+
         return DeleteResponseDTO.builder()
                 .memberid(deletedId)
                 .build();

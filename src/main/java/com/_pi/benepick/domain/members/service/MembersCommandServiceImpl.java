@@ -1,14 +1,9 @@
 package com._pi.benepick.domain.members.service;
-import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.members.dto.MembersRequest.*;
 import com._pi.benepick.domain.members.dto.MembersResponse;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
-import com._pi.benepick.domain.penaltyHists.repository.PenaltyHistsRepository;
-import com._pi.benepick.domain.pointHists.repository.PointHistsRepository;
-import com._pi.benepick.domain.raffles.repository.RafflesRepository;
-import com._pi.benepick.domain.wishlists.repository.WishlistsRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import com._pi.benepick.domain.members.entity.Role;
@@ -66,14 +61,15 @@ public class MembersCommandServiceImpl implements MembersCommandService{
 
         Members members=membersRequestDTO.toEntity(membersRequestDTO);
         membersRepository.save(members);
-        return MembersDetailResponseDTO.from(members);
 
+        return MembersDetailResponseDTO.from(members);
     }
 
     // 복지포인트 파일 업로드
     @Override
     public MembersDetailListResponseDTO uploadPointFile(MultipartFile file) {
         List<MembersDetailResponseDTO> updatedMembersList = new ArrayList<>();
+
         try (InputStream inputStream = file.getInputStream();
              Workbook workbook = new XSSFWorkbook(inputStream)) {
 
@@ -97,6 +93,7 @@ public class MembersCommandServiceImpl implements MembersCommandService{
 
     public MembersResponse.MembersDetailListResponseDTO uploadMemberFile(MultipartFile file) {
         List<Members> membersList = new ArrayList<>();
+
         try (InputStream inputStream = file.getInputStream();
              Workbook workbook = new XSSFWorkbook(inputStream)) {
 
