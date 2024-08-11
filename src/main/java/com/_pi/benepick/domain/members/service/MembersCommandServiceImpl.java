@@ -207,8 +207,8 @@ public class MembersCommandServiceImpl implements MembersCommandService{
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) { continue;}
                 String id = row.getCell(0).getStringCellValue();
-                if (!membersRepository.existsById(id)) {
-                    log.info("pass");
+                Optional<Members> existingMember = membersRepository.findByIdAndIsDeleted(id);
+                if (existingMember.isEmpty()) {
                     Members members = Members.builder()
                             .id(id)
                             .name(row.getCell(1).getStringCellValue())

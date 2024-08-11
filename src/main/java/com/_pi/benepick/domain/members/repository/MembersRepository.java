@@ -9,6 +9,8 @@ import java.util.Optional;
 
 public interface MembersRepository extends JpaRepository<Members, String> {
 
+    @Query("SELECT m FROM Members m WHERE m.id = :id and m.isDeleted = 'T'")
+    Optional<Members> findByIdAndIsDeleted(String id);
 
     @Query("select m from Members m where m.name= :name ")
     Optional<Members> findAllByName(String name);
