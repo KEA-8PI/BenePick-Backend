@@ -71,4 +71,8 @@ public class WishlistsQueryServiceImpl implements WishlistsQueryService{
         return wishlistsRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._WISHLIST_NOT_FOUND));
     }
 
+    @Override
+    public Wishlists getWishlistsByMemberIdAndId(Members members, Long id){
+        return wishlistsRepository.findByIdAndMemberId(id,members).orElseThrow(()->new ApiException(ErrorStatus._WISHLIST_ALREADY_EXISTS));
+    }
 }

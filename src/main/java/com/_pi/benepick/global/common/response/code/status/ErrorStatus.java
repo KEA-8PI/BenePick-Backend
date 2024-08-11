@@ -48,6 +48,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //wishlist 관련
     _WISHLIST_NOT_FOUND(HttpStatus.NOT_FOUND,"WISHLIST_001","존재하지 않는 위시리스트입니다."),
+    _WISHLIST_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,"WISHLIST_002","이미 존재하는 위시리스트입니다."),
 
     //auth 관련
     _INVALID_TOKEN(HttpStatus.BAD_REQUEST, "AUTH_001", "유효하지 않은 토큰입니다.");

@@ -35,6 +35,7 @@ public class WishlistsComposeServiceImpl implements WishlistsComposeService{
     @Override
     public WishlistResponse.WishlistAddDTO addWishlist(Members members, Long id){
         Goods goods=goodsQueryService.getGoodsById(id);
+        wishlistsQueryService.getWishlistsByMemberIdAndId(members,id);
         Wishlists wishlists= Wishlists.builder()
                 .goodsId(goods)
                 .memberId(members)

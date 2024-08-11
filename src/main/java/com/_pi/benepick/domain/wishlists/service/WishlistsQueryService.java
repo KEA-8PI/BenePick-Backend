@@ -11,4 +11,6 @@ public interface WishlistsQueryService {
     WishlistResponse.WishlistListDTO getWishList(GoodsStatus goodsStatus, Integer page, Integer size, GoodsFilter sortBy, Members members);
 
     Wishlists getWishlistsById(Long id);
+
+    Wishlists getWishlistsByMemberIdAndId(Members members, Long id);
 }
