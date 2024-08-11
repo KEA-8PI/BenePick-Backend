@@ -129,13 +129,4 @@ public class JwtTokenProvider {
     public Cookie createRefreshTokenCookie(String token) {
         return CookieUtils.createCookie("refreshToken", token, (int) refreshTokenExpiration, "/");
     }
-
-
-    // localhost에서도 테스트하기 위해 추가
-    public ResponseCookie createLocalHostAccessTokenCookie(String token) {
-        return CookieUtils.createLocalhostCookie("accessToken", token, (int) accessTokenExpiration, "/");
-    }
-    public ResponseCookie createLocalHostRefreshTokenCookie(String token) {
-        return CookieUtils.createLocalhostCookie("refreshToken", token, (int) refreshTokenExpiration, "/");
-    }
 }
