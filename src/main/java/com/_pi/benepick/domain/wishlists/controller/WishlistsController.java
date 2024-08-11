@@ -4,7 +4,7 @@ import com._pi.benepick.domain.goods.entity.GoodsFilter;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.wishlists.dto.WishlistResponse.*;
-import com._pi.benepick.domain.wishlists.service.WishlistsCommandSerivce;
+import com._pi.benepick.domain.wishlists.service.WishlistsCommandService;
 import com._pi.benepick.domain.wishlists.service.WishlistsComposeService;
 import com._pi.benepick.domain.wishlists.service.WishlistsQueryService;
 import com._pi.benepick.global.common.annotation.MemberObject;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class WishlistsController {
     private final WishlistsQueryService wishlistsQueryService;
     private final WishlistsComposeService wishlistsComposeService;
-    private final WishlistsCommandSerivce wishlistsCommandSerivce;
+    private final WishlistsCommandService wishlistsCommandSerivce;
 
 
     @Operation(summary = "위시리스트 응모 상태별 조회",description = "사용자가 본인의 위시리스트를 조회합니다.")

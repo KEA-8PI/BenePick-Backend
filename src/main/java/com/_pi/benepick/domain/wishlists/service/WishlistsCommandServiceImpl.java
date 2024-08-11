@@ -1,5 +1,6 @@
 package com._pi.benepick.domain.wishlists.service;
 
+import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.wishlists.dto.WishlistResponse;
 import com._pi.benepick.domain.wishlists.entity.Wishlists;
@@ -13,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class WishlistsCommandServiceImpl implements WishlistsCommandSerivce{
+public class WishlistsCommandServiceImpl implements WishlistsCommandService {
 
     private final WishlistsRepository wishlistsRepository;
     @Override
@@ -29,6 +30,14 @@ public class WishlistsCommandServiceImpl implements WishlistsCommandSerivce{
 
     }
 
-
+    @Override
+    public Wishlists saveWishlists(Goods goods, Members members){
+        Wishlists wishlists = Wishlists.builder()
+                .goodsId(goods)
+                .memberId(members)
+                .build();
+        wishlistsRepository.save(wishlists);
+        return wishlists;
+    }
 
 }
