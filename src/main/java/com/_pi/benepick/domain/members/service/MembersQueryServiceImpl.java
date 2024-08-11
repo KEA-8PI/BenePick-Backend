@@ -10,6 +10,8 @@ import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.lang.reflect.Member;
 import java.util.List;
 
 @Service
@@ -40,8 +42,8 @@ public class MembersQueryServiceImpl implements MembersQueryService {
     }
 
     @Override
-        public MembersDetailResponseDTO getMemberinfo(String id) {
-            Members members = membersRepository.findById(id).orElseThrow(() -> new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
+        public MembersDetailResponseDTO getMemberinfo(Members member) {
+            Members members = membersRepository.findById(member.getId()).orElseThrow(() -> new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
             return MembersDetailResponseDTO.from(members);
         }
 
@@ -65,12 +67,12 @@ public class MembersQueryServiceImpl implements MembersQueryService {
     }
 
     @Override
-    public Long getMemberPoint(String members){
-        return membersRepository.findById(members).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND)).getPoint();
+    public Long getMembertotalPoint(Members members){
+        return membersRepository.findById(members.getId()).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND)).getPoint();
     }
 
     @Override
-    public Long getMemberPenaltyCnt(String members){
-        return membersRepository.findById(members).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND)).getPenaltyCnt();
+    public Long getMemberPenaltyCnt(Members members){
+        return membersRepository.findById(members.getId()).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND)).getPenaltyCnt();
     }
 }

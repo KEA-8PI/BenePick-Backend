@@ -6,8 +6,10 @@ import com._pi.benepick.domain.members.dto.MembersResponse.*;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.domain.members.repository.MembersRepository;
+import com._pi.benepick.domain.penaltyHists.dto.PenaltyRequest;
 import com._pi.benepick.domain.penaltyHists.repository.PenaltyHistsRepository;
 import com._pi.benepick.domain.penaltyHists.service.PenaltyHistsCommandService;
+import com._pi.benepick.domain.pointHists.dto.PointHistsRequest;
 import com._pi.benepick.domain.pointHists.repository.PointHistsRepository;
 import com._pi.benepick.domain.pointHists.service.PointHistsCommandService;
 import com._pi.benepick.domain.raffles.repository.RafflesRepository;
@@ -38,14 +40,23 @@ public class MembersComposeServiceImpl implements MembersComposeService{
     @Override
     public UpdateMemberResponseDTO updateMemberInfo(String memberid, MembersRequest.MembersRequestDTO membersRequestDTO, Members member){
         Members members=membersQueryService.getMemberById(memberid);
-        if(membersQueryService.getMemberRoleByid(member.getId())== Role.MEMBER){
+        if(members.getRole()== Role.MEMBER){
             throw new ApiException(ErrorStatus._UNAUTHORIZED);
         }
-        Long totalPoint=membersQueryService.getMemberPoint(memberid);
-        Long totalPenalty=membersQueryService.getMemberPenaltyCnt(memberid);
 
-        pointHistsCommandService.changePointHist(membersRequestDTO.getPoint(),"",totalPoint,members);
-        penaltyHistsCommandService.changePenaltyHist(membersRequestDTO.getPenaltyCnt(),memberid,"",member,totalPenalty);
+        Long totalPoint=membersQueryService.getMembertotalPoint(members);
+        Long totalPenalty=membersQueryService.getMemberPenaltyCnt(members);
+
+        PointHistsRequest.changePointHistDTO changePointRequestDTO = new PointHistsRequest.changePointHistDTO(
+                membersRequestDTO.getPoint(), "관리자가 변경", totalPoint, members
+        );
+
+        PenaltyRequest.changePenaltyHistDTO changePenaltyHistDTO= new PenaltyRequest.changePenaltyHistDTO(
+                membersRequestDTO.getPenaltyCnt(),memberid,"관리자가 변경",member,totalPenalty
+        );
+
+        pointHistsCommandService.changePointHist(changePointRequestDTO);
+        penaltyHistsCommandService.changePenaltyHist(changePenaltyHistDTO);
         members.updateInfo(membersRequestDTO);
 
         return UpdateMemberResponseDTO.builder()

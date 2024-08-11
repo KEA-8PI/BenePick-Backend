@@ -20,7 +20,7 @@ public class PointHistsQueryServiceImpl implements PointHistsQueryService{
     }
 
     @Override
-    public int getMemberPointListCnt(String id){
+    public int getMemberPointHistCnt(String id){
         return pointHistsRepository.countAllByMemberId_Id(id);
     }
 

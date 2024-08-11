@@ -1,6 +1,6 @@
 package com._pi.benepick.domain.pointHists.service;
 
-import com._pi.benepick.domain.members.entity.Members;
+import com._pi.benepick.domain.pointHists.dto.PointHistsRequest;
 import com._pi.benepick.domain.pointHists.entity.PointHists;
 import com._pi.benepick.domain.pointHists.repository.PointHistsRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +14,13 @@ public class PointHistsCommandServiceImpl implements PointHistsCommandService{
 
     private final PointHistsRepository pointHistsRepository;
     @Override
-    public void changePointHist(Long point, String content, Long totalPoint, Members member) {
-        Long result = totalPoint + point;
+    public void changePointHist(PointHistsRequest.changePointHistDTO changePointHistDTO) {
+        Long result = changePointHistDTO.getTotalPoint() + changePointHistDTO.getPoint();
         PointHists pointHists = PointHists.builder()
-                .pointChange(point)
-                .content(content)
+                .pointChange(changePointHistDTO.getPoint())
+                .content(changePointHistDTO.getContent())
                 .totalPoint(result)
-                .memberId(member)
+                .memberId(changePointHistDTO.getMembers())
                 .build();
 
         pointHistsRepository.save(pointHists);

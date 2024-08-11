@@ -1,8 +1,9 @@
 package com._pi.benepick.domain.pointHists.service;
 
 import com._pi.benepick.domain.members.entity.Members;
+import com._pi.benepick.domain.pointHists.dto.PointHistsRequest;
 
 public interface PointHistsCommandService {
 
-    void changePointHist(Long point, String content, Long totalPoint, Members member);
+    void changePointHist(PointHistsRequest.changePointHistDTO changePointHistDTO);
 }

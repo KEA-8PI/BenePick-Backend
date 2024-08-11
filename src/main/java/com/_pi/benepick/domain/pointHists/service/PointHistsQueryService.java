@@ -7,5 +7,5 @@ import org.springframework.data.domain.Pageable;
 public interface PointHistsQueryService {
     Page<PointHists> getMemberPointHists(Pageable pageable, String id);
 
-    int getMemberPointListCnt(String id);
+    int getMemberPointHistCnt(String id);
 }

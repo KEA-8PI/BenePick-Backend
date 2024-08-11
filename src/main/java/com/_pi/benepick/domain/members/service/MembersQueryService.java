@@ -5,7 +5,7 @@ import com._pi.benepick.domain.members.entity.Role;
 
 public interface MembersQueryService {
 
-    MembersResponse.MembersDetailResponseDTO getMemberinfo(String id);
+    MembersResponse.MembersDetailResponseDTO getMemberinfo(Members members);
     MembersResponse.MembersDetailListResponseDTO getMembersList(Integer page, Integer size, String keyword);
 
     MembersResponse.MemberPointDTO getMemberPoint(Members members);
@@ -14,8 +14,8 @@ public interface MembersQueryService {
 
     Role getMemberRoleByid(String id);
 
-    Long getMemberPoint(String members);
+    Long getMembertotalPoint(Members members);
 
-    Long getMemberPenaltyCnt(String members);
+    Long getMemberPenaltyCnt(Members members);
 }
 

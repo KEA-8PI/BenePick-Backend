@@ -37,7 +37,7 @@ public class MembersController {
     @Operation(summary = "내 정보 조회", description = "사용자가 본인 정보를 조회합니다.")
     @GetMapping("/info")
     public ApiResponse<MembersDetailResponseDTO> getMemberInfo(@Parameter(hidden = true) @MemberObject Members member){
-        return ApiResponse.onSuccess(membersQueryService.getMemberinfo(member.getId()));
+        return ApiResponse.onSuccess(membersQueryService.getMemberinfo(member));
 
     }
 
