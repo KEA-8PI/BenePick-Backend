@@ -5,8 +5,6 @@ import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.wishlists.dto.WishlistResponse;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.repository.GoodsRepository;
-import com._pi.benepick.domain.members.entity.Members;
-import com._pi.benepick.domain.wishlists.dto.WishlistRequest;
 import com._pi.benepick.domain.wishlists.dto.WishlistResponse.*;
 import com._pi.benepick.domain.wishlists.entity.Wishlists;
 import com._pi.benepick.domain.wishlists.repository.WishlistsRepository;
