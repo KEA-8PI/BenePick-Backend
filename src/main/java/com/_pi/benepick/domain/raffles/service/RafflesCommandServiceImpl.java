@@ -39,7 +39,7 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
             throw new ApiException(ErrorStatus._RAFFLES_POINT_TOO_MUCH);
         }
         String comment = "응모 신청";
-        pointHistsCommandService.savePointHists(members, comment, raffleAddDTO.getPoint());
+        pointHistsCommandService.savePointHists(members, comment, -raffleAddDTO.getPoint());
 
         Raffles raffles = rafflesRepository.findByGoodsIdAndMemberId(goods, members).orElse(RafflesRequest.RafflesRequestDTO
                 .toEntity(members, goods, 'F'));
