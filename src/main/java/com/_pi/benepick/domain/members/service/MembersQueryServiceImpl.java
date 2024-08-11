@@ -78,9 +78,7 @@ public class MembersQueryServiceImpl implements MembersQueryService {
 
     @Override
     public MemberPointDTO getMemberPoint(Members members){
-
     Long point =  members.getPoint();
-
         return MemberPointDTO.builder()
                 .point(point)
                 .id(members.getId())

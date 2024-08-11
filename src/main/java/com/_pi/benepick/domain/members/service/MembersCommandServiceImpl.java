@@ -12,7 +12,6 @@ import com._pi.benepick.domain.raffles.repository.RafflesRepository;
 import com._pi.benepick.domain.wishlists.repository.WishlistsRepository;
 import com._pi.benepick.domain.penaltyHists.entity.PenaltyHists;
 import com._pi.benepick.domain.pointHists.entity.PointHists;
-
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import com._pi.benepick.domain.members.entity.Role;
@@ -29,7 +28,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 @Service
 @RequiredArgsConstructor
