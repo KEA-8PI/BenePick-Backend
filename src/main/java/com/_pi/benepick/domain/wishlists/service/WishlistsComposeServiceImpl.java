@@ -22,23 +22,11 @@ public class WishlistsComposeServiceImpl implements WishlistsComposeService {
     private final WishlistsRepository wishlistsRepository;
     private final GoodsQueryService goodsQueryService;
 
-    @Override
-    public WishlistResponse.WishlistSuccessDTO deleteWishlist(Long wishlistId, Members members) {
-        Wishlists wishlists = wishlistsQueryService.getWishlistsById(wishlistId);
-        if (!wishlists.getMemberId().getId().equals(members.getId())) {
-            throw new ApiException(ErrorStatus._FORBIDDEN);
-        }
-        wishlistsRepository.deleteById(wishlistId);
-        return WishlistResponse.WishlistSuccessDTO.builder()
-                .id(wishlists.getId())
-                .build();
-
-    }
 
     @Override
     public WishlistResponse.WishlistAddDTO addWishlist(Members members, Long id) {
         Goods goods = goodsQueryService.getGoodsById(id);
-        if( wishlistsQueryService.getWishlistsByMemberIdAndId(members, id)){
+        if( wishlistsQueryService.isWishlistsEmpty(members, id)){
             Wishlists wishlists = Wishlists.builder()
                     .goodsId(goods)
                     .memberId(members)

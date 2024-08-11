@@ -72,7 +72,7 @@ public class WishlistsQueryServiceImpl implements WishlistsQueryService{
     }
 
     @Override
-    public boolean getWishlistsByMemberIdAndId(Members members, Long id){
+    public boolean isWishlistsEmpty(Members members, Long id){
         return wishlistsRepository.findWishlistsByGoodsId_IdAndMemberId(id,members).isEmpty();
     }
 }
