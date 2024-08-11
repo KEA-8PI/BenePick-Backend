@@ -11,6 +11,10 @@ import java.util.List;
 
 public class RaffleDraw {
 
+    private RaffleDraw() {
+        throw new IllegalStateException("Utility Class.");
+    }
+
     public static List<Draws> performDraw(double seed, List<Raffles> rafflesList, Goods goods) {
         DrawAlgorithm drawAlgorithm = new DrawAlgorithm(seed);
         List<Draws> drawsList = new ArrayList<>();

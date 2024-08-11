@@ -56,14 +56,7 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
             raffles.increasePoint(raffleAddDTO.getPoint());
             if (members.getPenaltyCnt() > 0 && raffles.getPoint() >= 100 && raffles.getPenaltyFlag() == 'F') {
                 raffles.updatePenaltyFlag('T');
-                PenaltyHists penaltyHists = PenaltyHists.builder()
-                        .memberId(members)
-                        .content("응모 신청")
-                        .totalPenalty((int) (members.getPenaltyCnt() - 1))
-                        .penaltyCount(-1)
-                        .build();
-                members.updatePenalty(members.getPenaltyCnt() - 1);
-                penaltyHistsRepository.save(penaltyHists);
+                updatePenaltyHists(members);
             }
 
             return RafflesResponse.RafflesResponseByGoodsDTO.from(raffles);
@@ -72,14 +65,7 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
             Raffles raffles;
             if (members.getPenaltyCnt() > 0 && raffleAddDTO.getPoint() >= 100) {
                 raffles = RafflesRequest.RafflesRequestDTO.toEntity(members, goods, raffleAddDTO, 'T');
-                PenaltyHists penaltyHists = PenaltyHists.builder()
-                        .memberId(members)
-                        .content("응모 신청")
-                        .totalPenalty((int) (members.getPenaltyCnt() - 1))
-                        .penaltyCount(-1)
-                        .build();
-                members.updatePenalty(members.getPenaltyCnt() - 1);
-                penaltyHistsRepository.save(penaltyHists);
+                updatePenaltyHists(members);
             } else {
                 raffles = RafflesRequest.RafflesRequestDTO.toEntity(members, goods, raffleAddDTO, 'F');
             }
@@ -87,5 +73,16 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
 
             return RafflesResponse.RafflesResponseByGoodsDTO.from(raffles);
         }
+    }
+
+    private void updatePenaltyHists(Members members) {
+        PenaltyHists penaltyHists = PenaltyHists.builder()
+                .memberId(members)
+                .content("응모 신청")
+                .totalPenalty((int) (members.getPenaltyCnt() - 1))
+                .penaltyCount(-1)
+                .build();
+        members.updatePenalty(members.getPenaltyCnt() - 1);
+        penaltyHistsRepository.save(penaltyHists);
     }
 }

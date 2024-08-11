@@ -7,6 +7,10 @@ import lombok.*;
 
 public class RafflesRequest {
 
+    private RafflesRequest() {
+        throw new IllegalStateException("Utility Class.");
+    }
+
     @Builder
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)

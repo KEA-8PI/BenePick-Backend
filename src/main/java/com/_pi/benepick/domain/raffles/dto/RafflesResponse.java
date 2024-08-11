@@ -11,6 +11,10 @@ import java.util.List;
 
 public class RafflesResponse {
 
+    private RafflesResponse() {
+        throw new IllegalStateException("Utility Class.");
+    }
+
     // 상품별 응모 조회 반환 값에 사용되는 format
     @Builder
     @Getter

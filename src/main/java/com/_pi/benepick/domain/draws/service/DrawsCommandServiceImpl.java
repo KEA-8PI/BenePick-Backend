@@ -31,7 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -57,52 +56,24 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
             throw new ApiException(ErrorStatus._BAD_REQUEST);
         }
 
-        draws.updateStatus(Status.valueOf(dto.getStatus()));
+        Status newStatus = Status.valueOf(dto.getStatus());
+        draws.updateStatus(newStatus);
+        switch (newStatus) {
+            case CONFIRM:
+                changeConfirmRaffleEnd(draws);
+                break;
 
-        // NO_SHOW로 변경하였을 때 패널티 부여.
-        if (Status.valueOf(dto.getStatus()).equals(Status.NO_SHOW)) {
-            PenaltyHists penaltyHists = PenaltyHists.builder()
-                    .memberId(members)
-                    .content("노쑈 패널티 부여")
-                    .totalPenalty((int) (members.getPenaltyCnt() + 5))
-                    .penaltyCount(5)
-                    .build();
-            members.updatePenalty(members.getPenaltyCnt() + 5);
-            membersRepository.save(members);
-            penaltyHistsRepository.save(penaltyHists);
-        }
+            case NO_SHOW:
+                waitlistUpdate(draws);
+                noshowPenalty(draws.getRaffleId().getMemberId());
+                break;
 
-        if (Status.valueOf(dto.getStatus()).equals(Status.NO_SHOW) || Status.valueOf(dto.getStatus()).equals(Status.CANCEL)) {
-            List<Draws> drawsList = drawsRepository.findAllByGoodsIdAndStatus(draws.getRaffleId().getGoodsId().getId(), Status.WAITLIST);
-            System.out.println("drawList Size : " + draws.getRaffleId().getGoodsId().getId());
-            if (!drawsList.isEmpty()) {
-                drawsList.get(0).updateStatus(Status.WINNER);
+            case CANCEL:
+                waitlistUpdate(draws);
+                break;
 
-                for (Draws value : drawsList) {
-                    value.decreaseSequence();
-                }
-
-                drawsRepository.saveAll(drawsList);
-            }
-        }
-
-        if (dto.getStatus().equals("CONFIRM")) {
-            List<Draws> drawsList = drawsRepository.findAllByGoodsIdAndStatus(draws.getRaffleId().getGoodsId().getId(), Status.WINNER);
-            if (drawsList.isEmpty()) {
-                drawsList = drawsRepository.findAllByGoodsIdAndStatus(draws.getRaffleId().getGoodsId().getId(), Status.WAITLIST);
-                for (Draws waitDraw : drawsList) {
-                    Members waitMembers = waitDraw.getRaffleId().getMemberId();
-                    waitMembers.increasePoint(Math.round(waitDraw.getRaffleId().getPoint() / 2.0));
-                    PointHists pointHists = PointHists.builder()
-                            .memberId(waitMembers)
-                            .content("낙첨 포인트 반환")
-                            .pointChange(Math.round(waitDraw.getRaffleId().getPoint() / 2.0))
-                            .totalPoint(waitMembers.getPoint())
-                            .build();
-                    pointHistsRepository.save(pointHists);
-                    membersRepository.save(waitMembers);
-                }
-            }
+            default:
+                throw new ApiException(ErrorStatus._BAD_REQUEST);
         }
 
         return DrawsResponse.EditWinnerStatus.builder()
@@ -113,9 +84,54 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
                 .build();
     }
 
+    private void waitlistUpdate(Draws draws) {
+        List<Draws> drawsList = drawsRepository.findAllByGoodsIdAndStatus(draws.getRaffleId().getGoodsId().getId(), Status.WAITLIST);
+        if (!drawsList.isEmpty()) {
+            drawsList.get(0).updateStatus(Status.WINNER);
+            for (Draws value : drawsList) {
+                value.decreaseSequence();
+            }
+            drawsRepository.saveAll(drawsList);
+        }
+    }
+
+    private void noshowPenalty(Members members) {
+        PenaltyHists penaltyHists = PenaltyHists.builder()
+                .memberId(members)
+                .content("노쑈 패널티 부여")
+                .totalPenalty((int) (members.getPenaltyCnt() + 5))
+                .penaltyCount(5)
+                .build();
+        members.updatePenalty(members.getPenaltyCnt() + 5);
+        membersRepository.save(members);
+        penaltyHistsRepository.save(penaltyHists);
+    }
+
+    private void changeConfirmRaffleEnd(Draws draws) {
+        List<Draws> drawsList = drawsRepository.findAllByGoodsIdAndStatus(draws.getRaffleId().getGoodsId().getId(), Status.WINNER);
+        if (drawsList.isEmpty()) {
+            drawsList = drawsRepository.findAllByGoodsIdAndStatus(draws.getRaffleId().getGoodsId().getId(), Status.WAITLIST);
+            for (Draws waitDraw : drawsList) {
+                nonWinnerPointRefund(waitDraw);
+            }
+        }
+    }
+
+    private void nonWinnerPointRefund(Draws waitDraw) {
+        Members waitMembers = waitDraw.getRaffleId().getMemberId();
+        waitMembers.increasePoint(Math.round(waitDraw.getRaffleId().getPoint() / 2.0));
+        PointHists pointHists = PointHists.builder()
+                .memberId(waitMembers)
+                .content("낙첨 포인트 반환")
+                .pointChange(Math.round(waitDraw.getRaffleId().getPoint() / 2.0))
+                .totalPoint(waitMembers.getPoint())
+                .build();
+        pointHistsRepository.save(pointHists);
+        membersRepository.save(waitMembers);
+    }
+
     public void drawStart(LocalDateTime now) {
         List<Goods> goodsList = goodsRepository.findByRaffleEndAtBeforeAndGoodsStatus(now, GoodsStatus.PROGRESS);
-        // TODO: 패널티에 따라 응모하는 포인트 차감하고 패널티 횟수도 감소.
 
         for (Goods goods : goodsList) {
             // 현재 시각이 응모종료시간보다 이후여야하고, 상태가 PROGRESS 여야 한다.
@@ -125,28 +141,18 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
             List<Raffles> rafflesList = rafflesRepository.findAllByGoodsIdOrderByPointAsc(goods);
 
             double seed = DrawAlgorithm.generateSeed();
-            String hash = DoubleToSHA256.getSHA256Hash(seed);
-            Hash hash_entity = Hash.builder()
-                    .hash(hash)
+            Hash hash = Hash.builder()
+                    .hash(DoubleToSHA256.getSHA256Hash(seed))
                     .seed(seed)
                     .build();
-            Hash savedHash = hashsRepository.save(hash_entity);
+            Hash savedHash = hashsRepository.save(hash);
             goods.startDraw(savedHash, GoodsStatus.COMPLETED);
 
             List<Draws> drawsList = RaffleDraw.performDraw(seed, rafflesList, goods);
 
             for (Draws draws : drawsList) {
                 if (draws.getStatus().equals(Status.NON_WINNER)) {
-                    Members members = draws.getRaffleId().getMemberId();
-                    members.increasePoint(Math.round(draws.getRaffleId().getPoint() / 2.0));
-                    PointHists pointHists = PointHists.builder()
-                            .memberId(members)
-                            .content("낙첨 포인트 반환")
-                            .pointChange(Math.round(draws.getRaffleId().getPoint() / 2.0))
-                            .totalPoint(members.getPoint())
-                            .build();
-                    pointHistsRepository.save(pointHists);
-                    membersRepository.save(members);
+                    nonWinnerPointRefund(draws);
                 }
             }
             drawsRepository.saveAll(drawsList);
@@ -188,7 +194,7 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
                         .memberId(draws.getRaffleId().getMemberId().getId())
                         .memberName(draws.getRaffleId().getMemberId().getName())
                         .build())
-                .collect(Collectors.toList());
+                .toList();
 
         return DrawsResponse.DrawsResponseResultListDTO.builder()
                 .drawsList(drawsResponseResultDTOList)

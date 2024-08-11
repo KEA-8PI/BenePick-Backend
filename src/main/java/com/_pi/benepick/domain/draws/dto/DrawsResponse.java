@@ -12,6 +12,10 @@ import java.util.List;
 
 public class DrawsResponse {
 
+    private DrawsResponse() {
+        throw new IllegalStateException("Utility Class.");
+    }
+
     // 유저별 응모 조회 반환 값에 사용되는 format
     @Builder
     @Getter

@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +48,7 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         List<DrawsResponse.DrawsResponseByWaitlistGoodsIdDTO> waitlistGoodsIdDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
                 .filter(draws -> draws.getStatus() == Status.WAITLIST)
                 .map(DrawsResponse.DrawsResponseByWaitlistGoodsIdDTO::from)
-                .collect(Collectors.toList());
+                .toList();
 
         return DrawsResponse.DrawsResponseByWaitlistGoodsIdListDTO.builder()
                 .drawsResponseByWaitlistGoodsIdDTOS(waitlistGoodsIdDTOS)

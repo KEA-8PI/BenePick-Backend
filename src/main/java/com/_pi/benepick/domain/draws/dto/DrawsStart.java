@@ -7,6 +7,10 @@ import java.util.List;
 
 public class DrawsStart {
 
+    private DrawsStart() {
+        throw new IllegalStateException("Utility Class.");
+    }
+
     @Builder
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
