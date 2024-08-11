@@ -189,6 +189,7 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
                         .sequence(draws.getSequence())
                         .memberId(draws.getRaffleId().getMemberId().getId())
                         .memberName(draws.getRaffleId().getMemberId().getName())
+                        .point(draws.getRaffleId().getPoint())
                         .build())
                 .collect(Collectors.toList());
 
