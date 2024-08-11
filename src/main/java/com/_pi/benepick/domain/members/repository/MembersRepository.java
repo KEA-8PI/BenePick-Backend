@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface MembersRepository extends JpaRepository<Members, String> {
 
     @Query(value = "select * from members where id = ?", nativeQuery = true)
-    Optional<Members> findByIdAndIsDeleted(String id);
+    Optional<Members> findByIdWithNativeQuery(String id);
 
     @Query("select m from Members m where m.name= :name ")
     Optional<Members> findAllByName(String name);
