@@ -44,6 +44,7 @@ public class CookieUtils {
         cookie.setMaxAge(maxAge);
         cookie.setPath(path);
         cookie.setSecure(true);
+        cookie.setDomain("benepick.o-r.kr");
         cookie.setAttribute("SameSite", "None"); //프론트 개발용. 배포시 제거
         return cookie;
     }
