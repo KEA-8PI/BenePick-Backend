@@ -31,7 +31,7 @@ public class WishlistsCommandServiceImpl implements WishlistsCommandService {
     }
 
     @Override
-    public Wishlists saveWishlists(Goods goods, Members members){
+    public Wishlists createWishlists(Goods goods, Members members){
         Wishlists wishlists = Wishlists.builder()
                 .goodsId(goods)
                 .memberId(members)
