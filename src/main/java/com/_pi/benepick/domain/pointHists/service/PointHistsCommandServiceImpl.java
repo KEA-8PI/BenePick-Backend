@@ -16,13 +16,7 @@ public class PointHistsCommandServiceImpl implements PointHistsCommandService{
     @Override
     public void changePointHist(PointHistsRequest.changePointHistDTO changePointHistDTO) {
         Long result = changePointHistDTO.getTotalPoint() + changePointHistDTO.getPoint();
-        PointHists pointHists = PointHists.builder()
-                .pointChange(changePointHistDTO.getPoint())
-                .content(changePointHistDTO.getContent())
-                .totalPoint(result)
-                .memberId(changePointHistDTO.getMembers())
-                .build();
-
+        PointHists pointHists = changePointHistDTO.toEntity(changePointHistDTO,result);
         pointHistsRepository.save(pointHists);
     }
 }

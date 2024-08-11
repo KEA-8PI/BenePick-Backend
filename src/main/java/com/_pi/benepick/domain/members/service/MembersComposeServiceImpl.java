@@ -42,23 +42,22 @@ public class MembersComposeServiceImpl implements MembersComposeService{
         if(member.getRole()== Role.MEMBER){
             throw new ApiException(ErrorStatus._UNAUTHORIZED);
         }
-        Members members=membersQueryService.getMemberById(memberid);
+        Members updateMember=membersQueryService.getMemberById(memberid);
 
-
-        Long totalPoint=membersQueryService.getMembertotalPoint(members);
-        Long totalPenalty=membersQueryService.getMemberPenaltyCnt(members);
+        Long totalPoint=membersQueryService.getMembertotalPoint(updateMember);
+        Long totalPenalty=membersQueryService.getMemberPenaltyCnt(updateMember);
 
         PointHistsRequest.changePointHistDTO changePointRequestDTO = new PointHistsRequest.changePointHistDTO(
-                membersRequestDTO.getPoint(), "관리자가 변경", totalPoint, members
+                membersRequestDTO.getPoint(), "관리자가 변경", totalPoint, updateMember
         );
 
         PenaltyRequest.changePenaltyHistDTO changePenaltyHistDTO= new PenaltyRequest.changePenaltyHistDTO(
-                membersRequestDTO.getPenaltyCnt(),memberid,"관리자가 변경",member,totalPenalty
+                membersRequestDTO.getPenaltyCnt(),memberid,"관리자가 변경",updateMember,totalPenalty
         );
 
         pointHistsCommandService.changePointHist(changePointRequestDTO);
         penaltyHistsCommandService.changePenaltyHist(changePenaltyHistDTO);
-        members.updateInfo(membersRequestDTO);
+        updateMember.updateInfo(membersRequestDTO);
 
         return UpdateMemberResponseDTO.builder()
                 .deptName(membersRequestDTO.getDeptName())
