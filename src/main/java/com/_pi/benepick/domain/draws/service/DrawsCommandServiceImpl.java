@@ -18,6 +18,8 @@ import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.domain.penaltyHists.entity.PenaltyHists;
 import com._pi.benepick.domain.penaltyHists.repository.PenaltyHistsRepository;
+import com._pi.benepick.domain.pointHists.entity.PointHists;
+import com._pi.benepick.domain.pointHists.repository.PointHistsRepository;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import com._pi.benepick.domain.raffles.repository.RafflesRepository;
 import com._pi.benepick.global.common.exception.ApiException;
@@ -44,8 +46,9 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
     private final HashsRepository hashsRepository;
     private final MembersRepository membersRepository;
     private final PenaltyHistsRepository penaltyHistsRepository;
+    private final PointHistsRepository pointHistsRepository;
 
-    public DrawsResponse.DrawsResponseByMembersDTO editWinnerStatus(Members members, Long winnerId, DrawsRequest.DrawsRequestDTO dto) {
+    public DrawsResponse.EditWinnerStatus editWinnerStatus(Members members, Long winnerId, DrawsRequest.DrawsRequestDTO dto) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         Draws draws = drawsRepository.findById(winnerId).orElseThrow(() -> new ApiException(ErrorStatus._RAFFLES_NOT_COMPLETED));
         try {
@@ -59,10 +62,10 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
         draws.updateStatus(Status.valueOf(dto.getStatus()));
 
         // NO_SHOW로 변경하였을 때 패널티 부여.
-        if (dto.getStatus().equals("NO_SHOW")) {
+        if (Status.valueOf(dto.getStatus()).equals(Status.NO_SHOW)) {
             PenaltyHists penaltyHists = PenaltyHists.builder()
                     .memberId(members)
-                    .content("NO SHOW")
+                    .content("노쑈 패널티 부여")
                     .totalPenalty((int) (members.getPenaltyCnt() + 5))
                     .penaltyCount(5)
                     .build();
@@ -71,8 +74,9 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
             penaltyHistsRepository.save(penaltyHists);
         }
 
-        if (dto.getStatus().equals("NO_SHOW") || dto.getStatus().equals("CANCEL")) {
+        if (Status.valueOf(dto.getStatus()).equals(Status.NO_SHOW) || Status.valueOf(dto.getStatus()).equals(Status.CANCEL)) {
             List<Draws> drawsList = drawsRepository.findAllByGoodsIdAndStatus(draws.getRaffleId().getGoodsId().getId(), Status.WAITLIST);
+            System.out.println("drawList Size : " + draws.getRaffleId().getGoodsId().getId());
             if (!drawsList.isEmpty()) {
                 drawsList.get(0).updateStatus(Status.WINNER);
 
@@ -91,12 +95,24 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
                 for (Draws waitDraw : drawsList) {
                     Members waitMembers = waitDraw.getRaffleId().getMemberId();
                     waitMembers.increasePoint(Math.round(waitDraw.getRaffleId().getPoint() / 2.0));
+                    PointHists pointHists = PointHists.builder()
+                            .memberId(waitMembers)
+                            .content("낙첨 포인트 반환")
+                            .pointChange(Math.round(waitDraw.getRaffleId().getPoint() / 2.0))
+                            .totalPoint(waitMembers.getPoint())
+                            .build();
+                    pointHistsRepository.save(pointHists);
                     membersRepository.save(waitMembers);
                 }
             }
         }
 
-        return DrawsResponse.DrawsResponseByMembersDTO.from(draws);
+        return DrawsResponse.EditWinnerStatus.builder()
+                .id(draws.getId())
+                .raffleId(draws.getRaffleId().getId())
+                .status(draws.getStatus())
+                .sequence(draws.getSequence())
+                .build();
     }
 
     public void drawStart(LocalDateTime now) {
@@ -125,6 +141,13 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
                 if (draws.getStatus().equals(Status.NON_WINNER)) {
                     Members members = draws.getRaffleId().getMemberId();
                     members.increasePoint(Math.round(draws.getRaffleId().getPoint() / 2.0));
+                    PointHists pointHists = PointHists.builder()
+                            .memberId(members)
+                            .content("낙첨 포인트 반환")
+                            .pointChange(Math.round(draws.getRaffleId().getPoint() / 2.0))
+                            .totalPoint(members.getPoint())
+                            .build();
+                    pointHistsRepository.save(pointHists);
                     membersRepository.save(members);
                 }
             }

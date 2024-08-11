@@ -24,8 +24,14 @@ public enum ErrorStatus implements BaseErrorCode {
     _GOODS_CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "GOODS_002", "카테고리를 가지고 있는 않는 상품입니다.."),
     _CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "GOODS_003", "존재하지 않는 카테고리입니다."),
     _FILE_INPUT_DISABLED(HttpStatus.BAD_REQUEST, "GOODS_004", "파일 추가가 불가능합니다."),
+    _GOODS_NAME_TOO_LONG(HttpStatus.BAD_REQUEST, "GOODS_005", "상품의 이름이 50자를 초과합니다."),
+
+    //raffle 관련
     _RAFFLES_NOT_FOUND(HttpStatus.NOT_FOUND, "RAFFLES_001", "존재하지 않는 응모입니다."),
     _RAFFLES_NOT_COMPLETED(HttpStatus.BAD_GATEWAY, "RAFFLES_002", "종료되지 않은 응모입니다."),
+    _RAFFLES_POINT_TOO_MUCH(HttpStatus.BAD_REQUEST, "RAFFLES_003", "응모하기에 포인트가 너무 많습니다."),
+    _RAFFLES_POINT_TOO_LESS(HttpStatus.BAD_REQUEST, "RAFFLES_004", "포인트는 음수가 될 수 없습니다."),
+    _RAFFLES_CANNOT_APPLY(HttpStatus.BAD_REQUEST, "RAFFLES_005", "응모 가능한 상태가 아닙니다."),
 
     //member 관련
     _MEMBERS_NOT_FOUND(HttpStatus.NOT_FOUND,"MEMBERS_001","존재하지 않는 사원입니다."),
@@ -33,6 +39,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _MEMBER_PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "MEMBER_003", "비밀번호가 일치하지 않습니다."),
     _PASSWORD_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,"MEMBERS_004","기존 비밀번호와 동일합니다."),
     _PASSWORD_DISABLED(HttpStatus.BAD_REQUEST,"MEMBERS_005","비밀번호 유효성 검사 실패"),
+    _ACCESS_DENIED_FOR_MEMBER(HttpStatus.BAD_REQUEST,"MEMBERS_006","사원이 접근할 수 없는 요청입니다."),
   
     //auth 관련
     _FILE_OUTPUT_DISABLED(HttpStatus.INTERNAL_SERVER_ERROR, "DRAWS_001", "파일 출력이 불가능합니다."),

@@ -56,6 +56,7 @@ public class WebSecurityConfig {
                             .requestMatchers(EXCLUDE_URL_ARRAY).permitAll()
                         //Swagger 관련 권한 설정
                         .requestMatchers(SWAGGER_PERMIT_URL_ARRAY).permitAll()
+                            .requestMatchers("/actuator/**").permitAll()    // actuator 모니터링 허용(추후 인증 추가 예정)
                         // USER 권한이 있어야 요청할 수 있음
                         .requestMatchers("/auth/test").hasAnyRole(Role.MEMBER.name(), Role.ADMIN.name())
                         .anyRequest().authenticated())
