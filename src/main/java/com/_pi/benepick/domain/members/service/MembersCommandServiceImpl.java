@@ -173,6 +173,7 @@ public class MembersCommandServiceImpl implements MembersCommandService{
                     Long pointChange = (long)row.getCell(1).getNumericCellValue();
     
                     Members member = membersRepository.findById(id).orElseThrow(() -> new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
+                    changePointHist(pointChange,id,"관리자 수정",member);
                     member.increasePoint(pointChange);
                     updatedMembersList.add(MembersDetailResponseDTO.from(member));
                 }
@@ -181,7 +182,7 @@ public class MembersCommandServiceImpl implements MembersCommandService{
             }
             return MembersDetailListResponseDTO.builder()
                     .membersDetailResponseDTOList(updatedMembersList).build();
-        }
+    }
 
     @Override
     public DeleteResponseDTO deleteMembers(List<String> memberIdList, Members members){
@@ -232,6 +233,10 @@ public class MembersCommandServiceImpl implements MembersCommandService{
                 }
             }
             membersRepository.saveAll(membersList);
+            for (Members member : membersList) {
+                changePointHist(member.getPoint(), member.getId(), "사원 등록", member);
+                changePenaltyHist(member.getPenaltyCnt(), member.getId(), "사원 등록", member);
+            }
         } catch (IOException e) {
             throw new ApiException(ErrorStatus._FILE_INPUT_DISABLED);
         }
