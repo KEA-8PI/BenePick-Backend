@@ -126,7 +126,7 @@ public class GoodsResponse {
                     .raffleEndAt(goods.getRaffleEndAt())
                     .category(category)
                     .count((long) goods.getRaffles().size())
-                    .isWishlist(goods.isWishlistForMember(member.getId()))
+                    .isWishlist(member != null && goods.isWishlistForMember(member.getId()))
                     .build();
         }
     }
