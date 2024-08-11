@@ -1,14 +1,9 @@
 package com._pi.benepick.domain.members.service;
-import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.members.dto.MembersRequest.*;
 import com._pi.benepick.domain.members.dto.MembersResponse;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
-import com._pi.benepick.domain.penaltyHists.repository.PenaltyHistsRepository;
-import com._pi.benepick.domain.pointHists.repository.PointHistsRepository;
-import com._pi.benepick.domain.raffles.repository.RafflesRepository;
-import com._pi.benepick.domain.wishlists.repository.WishlistsRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import com._pi.benepick.domain.members.entity.Role;
