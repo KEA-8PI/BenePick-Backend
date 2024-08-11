@@ -8,7 +8,5 @@ import java.time.LocalDateTime;
 
 public interface DrawsCommandService {
     DrawsResponse.EditWinnerStatus editWinnerStatus(Members members, Long winnerId, DrawsRequest.DrawsRequestDTO dto);
-    void drawStart(LocalDateTime now);
-    void updateGoodsStatus(LocalDateTime now);
     DrawsResponse.DrawsResponseResultListDTO verificationSeed(Long goodsId, String seed);
 }

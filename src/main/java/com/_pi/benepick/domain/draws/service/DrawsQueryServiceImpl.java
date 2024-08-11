@@ -6,6 +6,7 @@ import com._pi.benepick.domain.draws.repository.DrawsRepository;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
 import com._pi.benepick.domain.draws.entity.Status;
+import com._pi.benepick.domain.goodsCategories.service.GoodsCategoriesQueryService;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.global.common.exception.ApiException;
@@ -30,7 +31,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class DrawsQueryServiceImpl implements DrawsQueryService {
     private final DrawsRepository drawsRepository;
-    private final GoodsCategoriesRepository goodsCategoriesRepository;
+    private final GoodsCategoriesQueryService goodsCategoriesQueryService;
 
     public DrawsResponse.DrawsResponseByGoodsListDTO getResultByGoodsId(Long goodsId) {
         List<DrawsResponse.DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
@@ -72,7 +73,7 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         List<DrawsResponse.DrawsResponseByMembersDTO> drawsResponseByMembersDTOS = (drawsRepository.findByMemberId(member.getId())).stream()
                 .filter(draws -> draws.getRaffleId().getGoodsId().getGoodsStatus() == GoodsStatus.COMPLETED)
                 .map(draws -> {
-                    String categoryName = (goodsCategoriesRepository.findByGoodsId(draws.getRaffleId().getGoodsId())).map(goodsCategories -> goodsCategories.getCategoryId().getName()).orElse("NONE");
+                    String categoryName = goodsCategoriesQueryService.getGoodsCategory(draws.getRaffleId());
 
                     return DrawsResponse.DrawsResponseByMembersDTO.of(draws, categoryName);
                 })

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -114,5 +115,13 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
                 sort = Sort.by(Sort.Order.desc("id")); // 기본
         }
         return PageRequest.of(page, size, sort);
+    }
+
+    public Goods goodsFindById(Long goodsId) {
+        return goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
+    }
+
+    public List<Goods> findByRaffleEndAtBeforeAndGoodsStatus(LocalDateTime now) {
+        return goodsRepository.findByRaffleEndAtBeforeAndGoodsStatus(now, GoodsStatus.PROGRESS);
     }
 }

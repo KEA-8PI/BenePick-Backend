@@ -19,11 +19,11 @@ public class RafflesRequest {
         private Long point; // 응모 포인트
 
         // 생성
-        public static Raffles toEntity(Members memberId, Goods goodsId, RafflesRequestDTO dto, char penaltyFlag) {
+        public static Raffles toEntity(Members memberId, Goods goodsId, char penaltyFlag) {
             return Raffles.builder()
                     .memberId(memberId)
                     .goodsId(goodsId)
-                    .point(dto.point)
+                    .point(0L)
                     .penaltyFlag(penaltyFlag)
                     .build();
         }

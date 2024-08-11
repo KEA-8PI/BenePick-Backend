@@ -3,7 +3,9 @@ package com._pi.benepick.domain.raffles.service;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goods.repository.GoodsRepository;
+import com._pi.benepick.domain.goods.service.GoodsQueryService;
 import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
+import com._pi.benepick.domain.goodsCategories.service.GoodsCategoriesQueryService;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.domain.raffles.dto.RafflesResponse;
@@ -24,8 +26,8 @@ import java.util.Optional;
 public class RafflesQueryServiceImpl implements RafflesQueryService {
 
     private final RafflesRepository rafflesRepository;
-    private final GoodsRepository goodsRepository;
-    private final GoodsCategoriesRepository goodsCategoriesRepository;
+    private final GoodsQueryService goodsQueryService;
+    private final GoodsCategoriesQueryService goodsCategoriesQueryService;
 
     public RafflesResponse.RafflesResponseByMembersListDTO getProgressRafflesByMemberId(Members member) {
         if(member.getRole().equals(Role.ADMIN)) throw new ApiException(ErrorStatus._UNAUTHORIZED);
@@ -35,8 +37,7 @@ public class RafflesQueryServiceImpl implements RafflesQueryService {
         List<RafflesResponse.RafflesResponseByMembersDTO> rafflesResponseByMembersDTOS = rafflesList.stream()
             .filter(raffles -> raffles.getGoodsId().getGoodsStatus() == GoodsStatus.PROGRESS)
             .map(raffles -> {
-                String categoryName = (goodsCategoriesRepository.findByGoodsId(raffles.getGoodsId()))
-                    .map(goodsCategories -> goodsCategories.getCategoryId().getName()).orElse("NONE");
+                String categoryName = goodsCategoriesQueryService.getGoodsCategory(raffles);
 
                 return RafflesResponse.RafflesResponseByMembersDTO.of(raffles, categoryName);
             })
@@ -50,21 +51,18 @@ public class RafflesQueryServiceImpl implements RafflesQueryService {
 
     public RafflesResponse.RafflesResponseByGoodsListDTO getAllRafflesByGoodsId(Members members, Long goodsId) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        Optional<Goods> goodsOptional = goodsRepository.findById(goodsId);
+        List<RafflesResponse.RafflesResponseByGoodsDTO> rafflesResponseByGoodsDTOS = rafflesRepository
+                .findAllByGoodsId(goodsQueryService.goodsFindById(goodsId)).stream()
+                .map(RafflesResponse.RafflesResponseByGoodsDTO::from)
+            .toList();
 
-        if (goodsOptional.isPresent()) {
-            Goods goods = goodsOptional.get();
-            List<Raffles> rafflesList = rafflesRepository.findAllByGoodsId(goods);
-
-            List<RafflesResponse.RafflesResponseByGoodsDTO> rafflesResponseByGoodsDTOS = rafflesList.stream()
-                    .map(RafflesResponse.RafflesResponseByGoodsDTO::from)
-                .toList();
-
-            return RafflesResponse.RafflesResponseByGoodsListDTO.builder()
-                    .rafflesResponseByGoodsList(rafflesResponseByGoodsDTOS)
-                    .build();
-        } else {
-            throw new ApiException(ErrorStatus._GOODS_NOT_FOUND);
-        }
+        return RafflesResponse.RafflesResponseByGoodsListDTO.builder()
+                .rafflesResponseByGoodsList(rafflesResponseByGoodsDTOS)
+                .build();
     }
+
+    public List<Raffles> findAllByGoodsIdOrderByPointAsc(Goods goods) {
+        return rafflesRepository.findAllByGoodsIdOrderByPointAsc(goods);
+    }
+
 }
