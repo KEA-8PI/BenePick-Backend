@@ -1,9 +1,8 @@
 package com._pi.benepick.domain.wishlists.dto;
-import com._pi.benepick.domain.goods.dto.GoodsResponse;
 
+import com._pi.benepick.domain.goods.dto.GoodsResponse;
 import com._pi.benepick.domain.wishlists.entity.Wishlists;
 import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 

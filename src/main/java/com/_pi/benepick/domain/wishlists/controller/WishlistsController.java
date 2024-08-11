@@ -6,7 +6,6 @@ import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.wishlists.dto.WishlistResponse.*;
 import com._pi.benepick.domain.wishlists.service.WishlistsComposeService;
 import com._pi.benepick.domain.wishlists.service.WishlistsQueryService;
-import com._pi.benepick.domain.wishlists.service.WishlistsCommandSerivce;
 import com._pi.benepick.global.common.annotation.MemberObject;
 import com._pi.benepick.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;

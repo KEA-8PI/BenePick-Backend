@@ -1,4 +1,5 @@
 package com._pi.benepick.domain.wishlists.dto;
+
 import lombok.*;
 
 public class WishlistRequest {
