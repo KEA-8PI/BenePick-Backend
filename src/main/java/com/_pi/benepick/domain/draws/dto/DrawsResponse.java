@@ -4,6 +4,7 @@ import com._pi.benepick.domain.draws.entity.Status;
 import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.raffles.entity.Raffles;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -79,9 +80,81 @@ public class DrawsResponse {
                     .point(draws.getRaffleId().getPoint())
                     .drawStatus(draws.getStatus())
                     .rafflesAt(draws.getRaffleId().getUpdatedAt())
+                    .sequence(draws.getSequence())
                     .build();
         }
 
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class EditWinnerStatus {
+        private Long id; //추첨_id
+        private Long raffleId; //응모_id
+        private int sequence; // 순서
+        private Status status; // WINNER, WAITLIST, CANCLE, NOSHOW
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class DrawsResponseByWinnerGoodsIdDTO {
+        private String memberId; // 멤버_id
+        private String memberName; // 멤버_이름
+        private Long point; // 사용포인트
+        private Status status;
+        private LocalDateTime rafflesAt;
+
+        public static DrawsResponseByWinnerGoodsIdDTO from(Draws draw) {
+            return DrawsResponseByWinnerGoodsIdDTO.builder()
+                    .rafflesAt(draw.getUpdatedAt())
+                    .point(draw.getRaffleId().getPoint())
+                    .memberName(draw.getRaffleId().getMemberId().getName())
+                    .memberId(draw.getRaffleId().getMemberId().getId())
+                    .status(draw.getStatus())
+                    .build();
+        }
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class DrawsResponseByWinnerGoodsIdListDTO {
+        private List<DrawsResponse.DrawsResponseByWinnerGoodsIdDTO> drawsResponseByWinnerGoodsIdDTOS;
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class DrawsResponseByWaitlistGoodsIdDTO {
+        private String memberId; // 멤버_id
+        private String memberName; // 멤버_이름
+        private Long point; // 사용포인트
+        private int status;
+        private LocalDateTime rafflesAt;
+
+        public static DrawsResponseByWaitlistGoodsIdDTO from(Draws draw) {
+            return DrawsResponseByWaitlistGoodsIdDTO.builder()
+                .rafflesAt(draw.getUpdatedAt())
+                .point(draw.getRaffleId().getPoint())
+                .memberName(draw.getRaffleId().getMemberId().getName())
+                .memberId(draw.getRaffleId().getMemberId().getId())
+                .status(draw.getSequence())
+                .build();
+        }
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class DrawsResponseByWaitlistGoodsIdListDTO {
+        private List<DrawsResponse.DrawsResponseByWaitlistGoodsIdDTO> drawsResponseByWaitlistGoodsIdDTOS;
     }
 
     @Builder

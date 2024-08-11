@@ -29,4 +29,5 @@ public class Wishlists extends BaseJPATimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id")
     private Goods goodsId; //상품_id
+
 }

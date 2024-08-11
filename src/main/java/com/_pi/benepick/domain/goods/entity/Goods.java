@@ -1,7 +1,9 @@
 package com._pi.benepick.domain.goods.entity;
 
+import com._pi.benepick.domain.goodsCategories.entity.GoodsCategories;
 import com._pi.benepick.domain.hash.entity.Hash;
 import com._pi.benepick.domain.raffles.entity.Raffles;
+import com._pi.benepick.domain.wishlists.entity.Wishlists;
 import com._pi.benepick.global.common.BaseJPATimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -47,13 +49,20 @@ public class Goods extends BaseJPATimeEntity {
 
     @OneToOne(fetch = FetchType.LAZY, targetEntity = Hash.class)
     @JoinColumn(name = "hash_id")
-    private Hash hash; //응모_id
+    private Hash hash; //해시값
 
     @Enumerated(EnumType.STRING)
     private GoodsStatus goodsStatus; //상품응모상태 (PROGRESS,SCHEDULED,COMPLETED)
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "goodsId", cascade = CascadeType.ALL, orphanRemoval = true)
+    //
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "goodsId", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Raffles> raffles; // 응모자 리스트
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "goodsId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Wishlists> wishlists; // 위시리스트
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "goodsId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private GoodsCategories goodsCategories; // 상품 카테고리
 
     public void startDraw(Hash hash, GoodsStatus goodsStatus) {
         this.hash = hash;

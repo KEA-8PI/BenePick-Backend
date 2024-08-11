@@ -1,6 +1,12 @@
 package com._pi.benepick.domain.raffles.dto;
 
+import com._pi.benepick.domain.goods.entity.Goods;
+import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.raffles.entity.Raffles;
+import jakarta.persistence.Column;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,23 +24,14 @@ public class RafflesResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class RafflesResponseByGoodsDTO {
-        private Long id; // 응모_id
+        private String id; // 사원_id
         private String memberName; // 멤버_이름
         private Long point; // 사용포인트
         private LocalDateTime rafflesAt;
 
         public static RafflesResponseByGoodsDTO from(Raffles raffles) {
             return RafflesResponseByGoodsDTO.builder()
-                    .id(raffles.getId())
-                    .memberName(raffles.getMemberId().getName())
-                    .point(raffles.getPoint())
-                    .rafflesAt(raffles.getUpdatedAt())
-                    .build();
-        }
-
-        public static RafflesResponseByGoodsDTO of(Raffles raffles, LocalDateTime dateTime) {
-            return RafflesResponseByGoodsDTO.builder()
-                    .id(raffles.getId())
+                    .id(raffles.getMemberId().getId())
                     .memberName(raffles.getMemberId().getName())
                     .point(raffles.getPoint())
                     .rafflesAt(raffles.getUpdatedAt())
@@ -62,6 +59,18 @@ public class RafflesResponse {
                     .categoryName(categoryName)
                     .build();
         }
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ApplyRafflesResponseByGoodsId {
+        private Long id; //응모_id
+        private String memberId; //멤버_id
+        private Long goodsId; //상품_id
+        private Long point; //사용포인트
+        private char penaltyFlag;
     }
 
     @Builder

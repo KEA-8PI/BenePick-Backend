@@ -4,5 +4,5 @@ import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.penaltyHists.dto.PenaltyResponse;
 
 public interface PenaltyHistsQueryService {
-    PenaltyResponse.PenaltyListResponseDTO getPenaltyHists(Members members);
+    PenaltyResponse.PenaltyListResponseDTO getPenaltyHists(Integer page, Integer size,Members members);
 }

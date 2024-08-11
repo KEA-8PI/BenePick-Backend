@@ -184,9 +184,9 @@ public class GoodsResponse {
     public static class GoodsDeleteResponseDTO {
         private List<Long> deletedGoodsList;
 
-        public static GoodsDeleteResponseDTO from(List<Goods> goodsList){
+        public static GoodsDeleteResponseDTO from(List<Long> goodsList){
             return GoodsDeleteResponseDTO.builder()
-                    .deletedGoodsList(goodsList.stream().map(Goods::getId).toList())
+                    .deletedGoodsList(goodsList)
                     .build();
         }
     }

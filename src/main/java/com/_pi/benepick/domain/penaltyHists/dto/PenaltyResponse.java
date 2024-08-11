@@ -25,5 +25,6 @@ public class PenaltyResponse {
     @NoArgsConstructor
     public static class PenaltyListResponseDTO{
         private List<PenaltyResponseDTO> penaltyResponseDTOList;
+        private int totalCnt;
     }
 }
