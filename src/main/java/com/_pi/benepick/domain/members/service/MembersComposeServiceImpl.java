@@ -39,10 +39,11 @@ public class MembersComposeServiceImpl implements MembersComposeService{
 
     @Override
     public UpdateMemberResponseDTO updateMemberInfo(String memberid, MembersRequest.MembersRequestDTO membersRequestDTO, Members member){
-        Members members=membersQueryService.getMemberById(memberid);
-        if(members.getRole()== Role.MEMBER){
+        if(member.getRole()== Role.MEMBER){
             throw new ApiException(ErrorStatus._UNAUTHORIZED);
         }
+        Members members=membersQueryService.getMemberById(memberid);
+
 
         Long totalPoint=membersQueryService.getMembertotalPoint(members);
         Long totalPenalty=membersQueryService.getMemberPenaltyCnt(members);
