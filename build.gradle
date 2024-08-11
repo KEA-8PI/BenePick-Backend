@@ -54,8 +54,13 @@ dependencies {
 	implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
 	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	// spring actuator
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
 
 }
+
+println "Current environment: ${project.hasProperty('env') ? project.env : 'not set'}"
 
 processResources.dependsOn('copyGitSubmodule')
 tasks.register('copyGitSubmodule', Copy) {
@@ -63,8 +68,13 @@ tasks.register('copyGitSubmodule', Copy) {
 		mkdir 'src/main/resources'
 	}
 	from 'config/benepick'
-	include '*.yml'
+	include '*.yml', 'keystore.p12'
 	into 'src/main/resources'
+
+	// Only run this task if the env is not 'prod'
+	onlyIf {
+		!project.hasProperty('env') || !project.env.equals('prod')
+	}
 }
 
 tasks.named('test') {

@@ -1,6 +1,7 @@
 package com._pi.benepick.domain.wishlists.dto;
-
+import com._pi.benepick.domain.goods.dto.GoodsResponse;
 import com._pi.benepick.domain.goods.entity.Goods;
+
 import com._pi.benepick.domain.wishlists.entity.Wishlists;
 import lombok.*;
 
@@ -20,10 +21,23 @@ public class WishlistResponse {
         private Long amounts;
         private String image;
         private String goodsStatus;
-        private String raffleStartAt;
-        private String raffleEndAt;
+        private LocalDateTime raffleStartAt;
+        private LocalDateTime raffleEndAt;
         private String category;
         private Long count;
+
+        public static WishlistDTO from(Wishlists wishlists){
+            return WishlistDTO.builder()
+                    .id(wishlists.getId())
+                    .name(wishlists.getGoodsId().getName())
+                    .amounts(wishlists.getGoodsId().getAmounts())
+                    .image(wishlists.getGoodsId().getImage())
+                    .goodsStatus(wishlists.getGoodsId().getGoodsStatus().name())
+                    .raffleEndAt(wishlists.getGoodsId().getRaffleEndAt())
+                    .raffleStartAt(wishlists.getGoodsId().getRaffleStartAt())
+                    .count((long)wishlists.getGoodsId().getRaffles().size())
+                    .build();
+        }
     }
 
     @Builder
@@ -51,12 +65,12 @@ public class WishlistResponse {
     @NoArgsConstructor
     public static class WishlistAddDTO{
         Long id;
-        Goods goods;
+        GoodsResponse.GoodsResponseDTO goods;
 
         public static WishlistAddDTO from(Wishlists wishlists){
             return WishlistAddDTO.builder()
                     .id(wishlists.getId())
-                    .goods(wishlists.getGoodsId())
+                    .goods(GoodsResponse.GoodsResponseDTO.from(wishlists.getGoodsId()))
                     .build();
         }
 

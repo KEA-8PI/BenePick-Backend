@@ -1,6 +1,10 @@
 # Use an official Gradle image to build the application
 FROM gradle:7.6.0-jdk17 AS builder
 
+# Set the environment variable for production
+ARG BUILD_ENV=prod
+ENV BUILD_ENV=${BUILD_ENV}
+
 # Set the working directory inside the container
 WORKDIR /app
 
@@ -14,8 +18,12 @@ COPY gradle gradle
 COPY src src
 COPY config config
 
+COPY config/benepick/keystore.p12 src/main/resources/keystore.p12
+
+COPY config/benepick/application-prod.yml src/main/resources/application.yml
+
 # Run the Gradle build to create the executable JAR file
-RUN ./gradlew build --no-daemon -x test
+RUN ./gradlew build --no-daemon -x test -Penv=${BUILD_ENV}
 
 # Use an official OpenJDK image as the base for the final image
 FROM openjdk:17-jdk-slim
@@ -28,6 +36,8 @@ COPY --from=builder /app/build/libs/*.jar benepick-backend.jar
 
 # Expose the application port (change this if your application uses a different port)
 EXPOSE 8080
+# EXPOSE HTTPS PORT
+EXPOSE 8443
 
 # Set the entry point to run the application
 ENTRYPOINT ["java", "-jar", "benepick-backend.jar"]
