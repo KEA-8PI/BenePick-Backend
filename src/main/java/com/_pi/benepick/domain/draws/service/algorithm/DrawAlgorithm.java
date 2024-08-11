@@ -1,7 +1,6 @@
 package com._pi.benepick.domain.draws.service.algorithm;
 
 import com._pi.benepick.domain.draws.dto.DrawsStart;
-import com._pi.benepick.domain.raffles.entity.Raffles;
 import lombok.Getter;
 
 import java.security.SecureRandom;

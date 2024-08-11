@@ -2,9 +2,6 @@ package com._pi.benepick.domain.draws.dto;
 
 import com._pi.benepick.domain.draws.entity.Status;
 import com._pi.benepick.domain.draws.entity.Draws;
-import com._pi.benepick.domain.members.entity.Members;
-import com._pi.benepick.domain.raffles.entity.Raffles;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,8 +1,5 @@
 package com._pi.benepick.domain.raffles.dto;
 
-import com._pi.benepick.domain.draws.dto.DrawsRequest;
-import com._pi.benepick.domain.draws.entity.Draws;
-import com._pi.benepick.domain.draws.entity.Status;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.raffles.entity.Raffles;
@@ -23,17 +20,6 @@ public class RafflesRequest {
                     .memberId(memberId)
                     .goodsId(goodsId)
                     .point(dto.point)
-                    .penaltyFlag(penaltyFlag)
-                    .build();
-        }
-
-        // 변경
-        public static Raffles toEntity(Long id, Members memberId, Goods goodsId, Long point, char penaltyFlag) {
-            return Raffles.builder()
-                    .id(id)
-                    .memberId(memberId)
-                    .goodsId(goodsId)
-                    .point(point)
                     .penaltyFlag(penaltyFlag)
                     .build();
         }

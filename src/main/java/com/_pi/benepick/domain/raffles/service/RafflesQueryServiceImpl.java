@@ -6,8 +6,6 @@ import com._pi.benepick.domain.goods.repository.GoodsRepository;
 import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
-import com._pi.benepick.domain.members.repository.MembersRepository;
-import com._pi.benepick.domain.raffles.dto.RafflesRequest;
 import com._pi.benepick.domain.raffles.dto.RafflesResponse;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import com._pi.benepick.domain.raffles.repository.RafflesRepository;
@@ -27,7 +25,6 @@ public class RafflesQueryServiceImpl implements RafflesQueryService {
 
     private final RafflesRepository rafflesRepository;
     private final GoodsRepository goodsRepository;
-    private final MembersRepository membersRepository;
     private final GoodsCategoriesRepository goodsCategoriesRepository;
 
     public RafflesResponse.RafflesResponseByMembersListDTO getProgressRafflesByMemberId(Members member) {

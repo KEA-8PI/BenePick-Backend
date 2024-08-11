@@ -3,10 +3,8 @@ package com._pi.benepick.domain.raffles.service;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goods.repository.GoodsRepository;
-import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
-import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.domain.penaltyHists.entity.PenaltyHists;
 import com._pi.benepick.domain.penaltyHists.repository.PenaltyHistsRepository;
 import com._pi.benepick.domain.pointHists.entity.PointHists;
@@ -21,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -31,7 +28,6 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
 
     private final RafflesRepository rafflesRepository;
     private final GoodsRepository goodsRepository;
-    private final MembersRepository membersRepository;
     private final PenaltyHistsRepository penaltyHistsRepository;
     private final PointHistsRepository pointHistsRepository;
 
@@ -41,8 +37,7 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
         if (!(members.getRole().equals(Role.MEMBER))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         if (!(goods.getGoodsStatus().equals(GoodsStatus.PROGRESS))) throw new ApiException(ErrorStatus._RAFFLES_CANNOT_APPLY);
 
-        // 히스토리 반영 부분
-        // TODO: 포인트 소모 히스토리 서비스 로직 구현 필요
+        // 포인트 소모 히스토리 반영 부분
         members.decreasePoint(raffleAddDTO.getPoint());
         if (members.getPoint() < 0) {
             throw new ApiException(ErrorStatus._RAFFLES_POINT_TOO_MUCH);
@@ -54,9 +49,6 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
                 .totalPoint(members.getPoint())
                 .build();
         pointHistsRepository.save(pointHists);
-
-        // historyService.addPointUsageHistory(memberId, pointsToDeduct, "Raffle Participation");
-        // 패널티 가지고 있을 때
 
         Optional<Raffles> optionalRaffles = rafflesRepository.findByGoodsIdAndMemberId(goods, members);
         if (optionalRaffles.isPresent()) {
@@ -77,7 +69,7 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
             return RafflesResponse.RafflesResponseByGoodsDTO.from(raffles);
         }
         else {
-            Raffles raffles = null;
+            Raffles raffles;
             if (members.getPenaltyCnt() > 0 && raffleAddDTO.getPoint() >= 100) {
                 raffles = RafflesRequest.RafflesRequestDTO.toEntity(members, goods, raffleAddDTO, 'T');
                 PenaltyHists penaltyHists = PenaltyHists.builder()

@@ -1,7 +1,5 @@
 package com._pi.benepick.domain.draws.dto;
 
-import com._pi.benepick.domain.draws.entity.Draws;
-import com._pi.benepick.domain.draws.entity.Status;
 import lombok.*;
 
 public class DrawsRequest {
