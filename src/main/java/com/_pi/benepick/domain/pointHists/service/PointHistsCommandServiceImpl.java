@@ -15,23 +15,23 @@ public class PointHistsCommandServiceImpl implements PointHistsCommandService{
 
     private final PointHistsRepository pointHistsRepository;
 
-    public PointHists savePointHists(Members members, String comment, Long point) {
+    public void savePointHists(Members members, String comment, Long point) {
         PointHists pointHists = PointHists.builder()
                 .memberId(members)
                 .content(comment)
                 .pointChange(point)
                 .totalPoint(members.getPoint())
                 .build();
-        return pointHistsRepository.save(pointHists);
+        pointHistsRepository.save(pointHists);
     }
 
-    public PointHists refundPointHists(Members members, Draws draws, String comment) {
+    public void refundPointHists(Members members, Draws draws, String comment) {
         PointHists pointHists = PointHists.builder()
                 .memberId(members)
                 .content(comment)
                 .pointChange(Math.round(draws.getRaffleId().getPoint() / 2.0))
                 .totalPoint(members.getPoint())
                 .build();
-        return pointHistsRepository.save(pointHists);
+        pointHistsRepository.save(pointHists);
     }
 }

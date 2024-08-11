@@ -14,14 +14,14 @@ public class PenaltyHistsCommandServiceImpl implements PenaltyHistsCommandServic
 
     private final PenaltyHistsRepository penaltyHistsRepository;
 
-    public PenaltyHists updatePenaltyHists(Members members, String comment, int penalty) {
+    public void updatePenaltyHists(Members members, String comment, int penalty) {
         PenaltyHists penaltyHists = PenaltyHists.builder()
                 .memberId(members)
                 .content(comment)
                 .totalPenalty(Math.toIntExact(members.getPenaltyCnt()))
                 .penaltyCount(penalty)
                 .build();
-        return penaltyHistsRepository.save(penaltyHists);
+        penaltyHistsRepository.save(penaltyHists);
     }
 
 }

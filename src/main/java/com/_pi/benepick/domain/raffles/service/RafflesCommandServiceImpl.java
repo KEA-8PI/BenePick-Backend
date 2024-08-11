@@ -2,15 +2,10 @@ package com._pi.benepick.domain.raffles.service;
 
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
-import com._pi.benepick.domain.goods.repository.GoodsRepository;
 import com._pi.benepick.domain.goods.service.GoodsQueryService;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
-import com._pi.benepick.domain.penaltyHists.entity.PenaltyHists;
-import com._pi.benepick.domain.penaltyHists.repository.PenaltyHistsRepository;
 import com._pi.benepick.domain.penaltyHists.service.PenaltyHistsCommandService;
-import com._pi.benepick.domain.pointHists.entity.PointHists;
-import com._pi.benepick.domain.pointHists.repository.PointHistsRepository;
 import com._pi.benepick.domain.pointHists.service.PointHistsCommandService;
 import com._pi.benepick.domain.raffles.dto.RafflesRequest;
 import com._pi.benepick.domain.raffles.dto.RafflesResponse;
@@ -21,8 +16,6 @@ import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
