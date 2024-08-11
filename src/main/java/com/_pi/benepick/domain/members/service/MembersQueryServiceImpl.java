@@ -61,16 +61,16 @@ public class MembersQueryServiceImpl implements MembersQueryService {
 
     @Override
     public Role getMemberRoleByid(String id){
-        return membersRepository.findById(id).get().getRole();
+        return membersRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND)).getRole();
     }
 
     @Override
     public Long getMemberPoint(String members){
-        return membersRepository.findById(members).get().getPoint();
+        return membersRepository.findById(members).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND)).getPoint();
     }
 
     @Override
     public Long getMemberPenaltyCnt(String members){
-        return membersRepository.findById(members).get().getPenaltyCnt();
+        return membersRepository.findById(members).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND)).getPenaltyCnt();
     }
 }
