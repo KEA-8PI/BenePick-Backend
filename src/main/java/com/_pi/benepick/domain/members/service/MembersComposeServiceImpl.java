@@ -26,9 +26,9 @@ import java.util.List;
 @Transactional
 public class MembersComposeServiceImpl implements MembersComposeService{
 
-private final MembersQueryService membersQueryService;
-private final PenaltyHistsCommandService penaltyHistsCommandService;
-private final PointHistsCommandService pointHistsCommandService;
+    private final MembersQueryService membersQueryService;
+    private final PenaltyHistsCommandService penaltyHistsCommandService;
+    private final PointHistsCommandService pointHistsCommandService;
     private final MembersRepository membersRepository;
     private final PenaltyHistsRepository penaltyHistsRepository;
     private final PointHistsRepository pointHistsRepository;
