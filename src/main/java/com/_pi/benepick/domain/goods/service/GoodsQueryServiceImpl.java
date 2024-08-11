@@ -40,19 +40,19 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
         }
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
         Page<Goods> goodsPage;
-
         if (keyword != null && !keyword.isEmpty()) {
             goodsPage = goodsRepository.findByNameContainingIgnoreCase(keyword, pageRequest);
         } else {
             goodsPage = goodsRepository.findAll(pageRequest);
         }
-
+        int total=(int)goodsPage.getTotalElements();
         List<GoodsResponse.GoodsResponseDTO> goodsDTOList = goodsPage.getContent().stream()
                 .map(GoodsResponse.GoodsResponseDTO::from)
                 .toList();
 
         return GoodsResponse.GoodsListResponseDTO.builder()
                 .goodsDTOList(goodsDTOList)
+                .totalCnt(total)
                 .build();
     }
 
@@ -91,12 +91,14 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
         } else {
             goodsPage = goodsRepository.searchGoods(goodsStatus, categoryId, keyword, pageRequest);
         }
+        int total=(int)goodsPage.getTotalElements();
 
         List<GoodsResponse.GoodsSearchResponseDTO> goodsSearchDTOList = goodsPage.getContent().stream()
                 .map(g -> GoodsResponse.GoodsSearchResponseDTO.of(g, category))
                 .toList();
         return GoodsResponse.GoodsListSearchResponseDTO.builder()
                 .goodsSearchDTOList(goodsSearchDTOList)
+                .totalCnt(total)
                 .build();
     }
 
