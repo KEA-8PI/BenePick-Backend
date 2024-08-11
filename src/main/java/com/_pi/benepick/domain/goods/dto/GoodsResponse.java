@@ -77,6 +77,7 @@ public class GoodsResponse {
     @NoArgsConstructor
     public static class GoodsListResponseDTO {
         private List<GoodsResponseDTO> goodsDTOList;
+        private int totalCnt;
     }
 
 
@@ -131,6 +132,7 @@ public class GoodsResponse {
     @NoArgsConstructor
     public static class GoodsListSearchResponseDTO {
         private List<GoodsSearchResponseDTO> goodsSearchDTOList;
+        private int totalCnt;
     }
 
     // 상품 추가 및 수정
