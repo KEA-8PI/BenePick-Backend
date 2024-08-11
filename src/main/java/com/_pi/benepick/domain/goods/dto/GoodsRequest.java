@@ -28,6 +28,12 @@ public class GoodsRequest {
         private LocalDateTime raffleEndAt; //응모 종료일
         private String category; //카테고리
 
+        public void restrictName() {
+            if (name.length() > 50) {
+                name = name.substring(0, 50);
+            }
+        }
+
         public Goods toEntity(GoodsStatus status) {
             return Goods.builder()
                     .name(name)

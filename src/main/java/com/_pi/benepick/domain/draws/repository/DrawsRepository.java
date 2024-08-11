@@ -3,7 +3,6 @@ package com._pi.benepick.domain.draws.repository;
 import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.draws.entity.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -17,7 +16,7 @@ public interface DrawsRepository extends JpaRepository<Draws, Long> {
 
     @Query("SELECT d FROM Draws d LEFT JOIN Raffles r ON d.raffleId.id = r.id WHERE r.memberId.id = :memberId")
     List<Draws> findByMemberId(@Param("memberId") String memberId);
-
+  
     @Query("SELECT d FROM Draws d LEFT JOIN Raffles r ON d.raffleId.id = r.id WHERE r.goodsId.id = :goodsId AND d.status = :status ORDER BY d.sequence ASC")
     List<Draws> findAllByGoodsIdAndStatus(@Param("goodsId") Long goodsId, @Param("status") Status status);
     

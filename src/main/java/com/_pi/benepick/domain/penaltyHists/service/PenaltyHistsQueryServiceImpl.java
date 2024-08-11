@@ -9,11 +9,14 @@ import com._pi.benepick.domain.penaltyHists.repository.PenaltyHistsRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,24 +28,25 @@ public class PenaltyHistsQueryServiceImpl implements PenaltyHistsQueryService
     private final MembersRepository membersRepository;
 
     @Override
-    public PenaltyListResponseDTO getPenaltyHists(Members member){
+    public PenaltyListResponseDTO getPenaltyHists(Integer page, Integer size,Members member){
         Members members=membersRepository.findById(member.getId()).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
 
-       List<PenaltyHists> penaltyHistsList= penaltyHistsRepository.findAllByMemberId_Id(members.getId());
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<PenaltyHists> penaltyHistsPage;
+        int total=penaltyHistsRepository.countAllByMemberId_Id(members.getId());
+       penaltyHistsPage= penaltyHistsRepository.findAllByMemberId_Id(pageRequest,members.getId());
+        List<PenaltyResponseDTO> result = penaltyHistsPage.stream()
+                .map(p -> PenaltyResponseDTO.builder()
+                        .penaltyCount(p.getPenaltyCount())
+                        .totalPenalty(p.getTotalPenalty())
+                        .createdAt(p.getCreatedAt())
+                        .content(p.getContent())
+                        .build())
+                .collect(Collectors.toList());
 
-
-       List<PenaltyResponseDTO> result=new ArrayList<>();
-       for(PenaltyHists p: penaltyHistsList){
-           PenaltyResponseDTO dto=PenaltyResponseDTO.builder()
-                   .penaltyCount(p.getPenaltyCount())
-                   .totalPenalty(p.getTotalPenalty())
-                   .createdAt(p.getCreatedAt())
-                   .content(p.getContent())
-                   .build();
-           result.add(dto);
-       }
        return PenaltyListResponseDTO.builder()
                .penaltyResponseDTOList(result)
+               .totalCnt(total)
                .build();
     }
 }
