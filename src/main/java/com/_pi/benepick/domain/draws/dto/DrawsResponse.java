@@ -21,9 +21,8 @@ public class DrawsResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class DrawsResponseByMembersDTO {
-        private Long id; // 응모_id
-        private String memberId; // 멤버_id
         private Long goodsId; // 상품_id
+        private String goodsName;
         private Long point; // 사용포인트
         private int sequence;
         private Status drawStatus; // 당첨 상태
@@ -32,9 +31,8 @@ public class DrawsResponse {
 
         public static DrawsResponse.DrawsResponseByMembersDTO of(Draws draws, String categoryName) {
             return DrawsResponseByMembersDTO.builder()
-                    .id(draws.getRaffleId().getId())
-                    .memberId(draws.getRaffleId().getMemberId().getId())
                     .goodsId(draws.getRaffleId().getGoodsId().getId())
+                    .goodsName(draws.getRaffleId().getGoodsId().getName())
                     .point(draws.getRaffleId().getPoint())
                     .sequence(draws.getSequence())
                     .drawStatus(draws.getStatus())
@@ -45,9 +43,8 @@ public class DrawsResponse {
 
         public static DrawsResponse.DrawsResponseByMembersDTO from(Draws draws) {
             return DrawsResponseByMembersDTO.builder()
-                    .id(draws.getRaffleId().getId())
-                    .memberId(draws.getRaffleId().getMemberId().getId())
                     .goodsId(draws.getRaffleId().getGoodsId().getId())
+                    .goodsName(draws.getRaffleId().getGoodsId().getName())
                     .point(draws.getRaffleId().getPoint())
                     .sequence(draws.getSequence())
                     .drawStatus(draws.getStatus())
@@ -107,6 +104,7 @@ public class DrawsResponse {
         private Long point; // 사용포인트
         private Status status;
         private LocalDateTime rafflesAt;
+        private Long drawId;
 
         public static DrawsResponseByWinnerGoodsIdDTO from(Draws draw) {
             return DrawsResponseByWinnerGoodsIdDTO.builder()
@@ -115,6 +113,7 @@ public class DrawsResponse {
                     .memberName(draw.getRaffleId().getMemberId().getName())
                     .memberId(draw.getRaffleId().getMemberId().getId())
                     .status(draw.getStatus())
+                    .drawId(draw.getId())
                     .build();
         }
     }
@@ -166,6 +165,7 @@ public class DrawsResponse {
         private int sequence;
         private String memberId;
         private String memberName;
+        private Long point;
     }
 
     @Builder

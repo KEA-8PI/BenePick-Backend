@@ -51,4 +51,10 @@ public class RafflesController {
     public ApiResponse<RafflesResponse.RafflesResponseByGoodsListDTO> getAllRafflesByGoodsId(@Parameter(hidden = true) @MemberObject Members member,@PathVariable Long goodsId) {
         return ApiResponse.onSuccess(rafflesQueryService.getAllRafflesByGoodsId(member, goodsId));
     }
+
+    @Operation(summary = "응모 현황 정보", description = "상품에 대한 응모 정보들을 확인할 수 있습니다.")
+    @GetMapping("/current/state/{goodsId}")
+    public ApiResponse<RafflesResponse.CurrentStateByGoodsListDTO> getCurrentStateByGoodsId(@PathVariable Long goodsId) {
+        return ApiResponse.onSuccess(rafflesQueryService.getCurrentStateByGoods(goodsId));
+    }
 }

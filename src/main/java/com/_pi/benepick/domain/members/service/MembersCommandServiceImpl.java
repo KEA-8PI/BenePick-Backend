@@ -7,6 +7,7 @@ import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import com._pi.benepick.domain.members.entity.Role;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -95,21 +96,24 @@ public class MembersCommandServiceImpl implements MembersCommandService{
 
         try (InputStream inputStream = file.getInputStream();
              Workbook workbook = new XSSFWorkbook(inputStream)) {
-
             XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
+
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) { continue;}
-
-                Members members = Members.builder()
-                        .id(row.getCell(0).getStringCellValue())
-                        .name(row.getCell(1).getStringCellValue())
-                        .deptName(row.getCell(2).getStringCellValue())
-                        .password(row.getCell(3).getStringCellValue())
-                        .penaltyCnt((long) row.getCell(4).getNumericCellValue())
-                        .point((long) row.getCell(5).getNumericCellValue())
-                        .role(Role.MEMBER)
-                        .build();
-                membersList.add(members);
+                String id = row.getCell(0).getStringCellValue();
+                Optional<Members> existingMember = membersRepository.findByIdWithNativeQuery(id);
+                if (existingMember.isEmpty()) {
+                    Members members = Members.builder()
+                            .id(id)
+                            .name(row.getCell(1).getStringCellValue())
+                            .deptName(row.getCell(2).getStringCellValue())
+                            .password(row.getCell(3).getStringCellValue())
+                            .penaltyCnt((long) row.getCell(4).getNumericCellValue())
+                            .point((long) row.getCell(5).getNumericCellValue())
+                            .role(Role.MEMBER)
+                            .build();
+                    membersList.add(members);
+                }
             }
             membersRepository.saveAll(membersList);
         } catch (IOException e) {

@@ -17,8 +17,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -69,5 +71,46 @@ public class RafflesQueryServiceImpl implements RafflesQueryService {
         } else {
             throw new ApiException(ErrorStatus._GOODS_NOT_FOUND);
         }
+    }
+
+    public RafflesResponse.CurrentStateByGoodsListDTO getCurrentStateByGoods(Long goodsId) {
+        List<Raffles> rafflesList = rafflesRepository.findAllByGoodsIdOrderByPointDesc(
+                goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND)));
+
+        List<RafflesResponse.CurrentStateByGoodsDTO> currentStateByGoodsDTOS = new ArrayList<>();
+        int limit = Math.min(5, rafflesList.size());
+        for (int i = 0; i < limit; i++) {
+            currentStateByGoodsDTOS.add(RafflesResponse.CurrentStateByGoodsDTO.builder()
+                            .grade(i + 1)
+                            .point(rafflesList.get(i).getPoint())
+                            .build());
+        }
+
+        if (rafflesList.size() > 5) {
+            Long totalRemainingPoints = rafflesList.subList(5, rafflesList.size())
+                    .stream()
+                    .mapToLong(Raffles::getPoint)
+                    .sum();
+
+            currentStateByGoodsDTOS.add(RafflesResponse.CurrentStateByGoodsDTO.builder()
+                    .grade(6)
+                    .point(totalRemainingPoints)
+                    .build());
+        }
+
+        Long total = pointTotal(rafflesList);
+        return RafflesResponse.CurrentStateByGoodsListDTO.builder()
+                .currentStateByGoodsDTOList(currentStateByGoodsDTOS)
+                .average(Math.round((float) total / rafflesList.size()))
+                .total(total)
+                .build();
+    }
+
+    private Long pointTotal(List<Raffles> rafflesList) {
+        Long total = 0L;
+        for (Raffles raffles : rafflesList) {
+            total += raffles.getPoint();
+        }
+        return total;
     }
 }
