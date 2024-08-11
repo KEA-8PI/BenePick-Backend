@@ -32,7 +32,7 @@ public class MembersResponse {
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor
-    public static class updateMemberResponseDTO{
+    public static class UpdateMemberResponseDTO{
         private String deptName;
         private String name;
         private Long point;

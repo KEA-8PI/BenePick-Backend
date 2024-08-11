@@ -1,36 +1,22 @@
 package com._pi.benepick.domain.members.service;
-import com._pi.benepick.domain.categories.entity.Categories;
-import com._pi.benepick.domain.goods.dto.GoodsResponse;
-import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
-import com._pi.benepick.domain.goodsCategories.entity.GoodsCategories;
 import com._pi.benepick.domain.members.dto.MembersRequest;
-
-import com._pi.benepick.domain.draws.repository.DrawsRepository;
-import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.members.dto.MembersRequest.*;
-
 import com._pi.benepick.domain.members.dto.MembersResponse;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
-
 import com._pi.benepick.domain.penaltyHists.repository.PenaltyHistsRepository;
 import com._pi.benepick.domain.pointHists.repository.PointHistsRepository;
-import com._pi.benepick.domain.raffles.entity.Raffles;
 import com._pi.benepick.domain.raffles.repository.RafflesRepository;
 import com._pi.benepick.domain.wishlists.repository.WishlistsRepository;
-
-
 import com._pi.benepick.domain.penaltyHists.entity.PenaltyHists;
-import com._pi.benepick.domain.penaltyHists.repository.PenaltyHistsRepository;
 import com._pi.benepick.domain.pointHists.entity.PointHists;
 
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import com._pi.benepick.domain.members.entity.Role;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -58,17 +44,17 @@ public class MembersCommandServiceImpl implements MembersCommandService{
 
 
     @Override
-    public updateMemberResponseDTO updateMemberInfo(String memberid, MembersRequest.MembersRequestDTO membersRequestDTO,Members member){
+    public UpdateMemberResponseDTO updateMemberInfo(String memberid, MembersRequest.MembersRequestDTO membersRequestDTO,Members member){
         Members members=membersRepository.findById(memberid).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
         if(membersRepository.findById(member.getId()).get().getRole()== Role.MEMBER){
-            new ApiException(ErrorStatus._UNAUTHORIZED);
+            throw new ApiException(ErrorStatus._UNAUTHORIZED);
         }
         changePointHist(membersRequestDTO.getPoint(),memberid,"",members);
         changePenaltyHist(membersRequestDTO.getPenaltyCnt(),memberid," ",members);
 
         members.updateInfo(membersRequestDTO);
 
-        return updateMemberResponseDTO.builder()
+        return UpdateMemberResponseDTO.builder()
                 .deptName(membersRequestDTO.getDeptName())
                 .name(membersRequestDTO.getName())
                 .point(membersRequestDTO.getPoint())
@@ -79,6 +65,7 @@ public class MembersCommandServiceImpl implements MembersCommandService{
 
     private void changePointHist(Long point,String members,String content,Members member){
         Long totalPoint=membersRepository.findById(members).get().getPoint();
+
         Long result=totalPoint+point;
 
         PointHists pointHists=PointHists.builder()
@@ -174,7 +161,7 @@ public class MembersCommandServiceImpl implements MembersCommandService{
         List<String> deletedId = new ArrayList<>();
 
         for(String id:memberIdList){
-            Members member = membersRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
+            membersRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
             penaltyHistsRepository.deleteAllByMemberId_Id(id);
             pointHistsRepository.deleteAllByMemberId_Id(id);
             wishlistsRepository.deleteAllByMemberId_Id(id);
