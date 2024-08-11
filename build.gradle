@@ -57,14 +57,21 @@ dependencies {
 
 }
 
+println "Current environment: ${project.hasProperty('env') ? project.env : 'not set'}"
+
 processResources.dependsOn('copyGitSubmodule')
 tasks.register('copyGitSubmodule', Copy) {
 	doFirst {
 		mkdir 'src/main/resources'
 	}
 	from 'config/benepick'
-	include '*.yml'
+	include '*.yml', 'keystore.p12'
 	into 'src/main/resources'
+
+	// Only run this task if the env is not 'prod'
+	onlyIf {
+		!project.hasProperty('env') || !project.env.equals('prod')
+	}
 }
 
 tasks.named('test') {

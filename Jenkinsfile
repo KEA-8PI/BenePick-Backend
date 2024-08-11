@@ -8,7 +8,8 @@ pipeline {
         DOCKER_IMAGE = "${DOCKER_REGISTRY}/benepick-container/${IMAGE_NAME}:${IMAGE_TAG}"
         REGISTRY_CREDENTIALS_ID = "docker-registry-credentials"
         GITHUB_CREDENTIALS_ID = "github-token"
-        
+        SSH_CREDENTIALS_ID = "deploy-server-ssh" // SSH 인증 정보
+        REMOTE_SERVER = "ubuntu@10.0.0.120"
     }
 
     stages {
@@ -33,19 +34,24 @@ pipeline {
                 }
             }
         }
-        stage('Deploy') {
+        stage('Deploy to Remote Server') {
             steps {
                 script {
-                    docker.withRegistry("https://${DOCKER_REGISTRY}", "${REGISTRY_CREDENTIALS_ID}") {
-                        sh """
-                        docker pull ${DOCKER_IMAGE}
-                        docker stop ${IMAGE_NAME} || true
-                        docker rm ${IMAGE_NAME} || true
-                        docker run -d --restart unless-stopped --name ${IMAGE_NAME} -p 8080:8080 ${DOCKER_IMAGE}
-                        """
+                    sshagent(["${SSH_CREDENTIALS_ID}"]) {
+                        withCredentials([usernamePassword(credentialsId: REGISTRY_CREDENTIALS_ID, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                            sh """
+                            ssh -o StrictHostKeyChecking=no -t ${REMOTE_SERVER} << EOF
+                                echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin ${DOCKER_REGISTRY}
+                                docker pull ${DOCKER_IMAGE}
+                                docker stop ${IMAGE_NAME} || true
+                                docker rm ${IMAGE_NAME} || true
+                                docker run -d --restart unless-stopped --name ${IMAGE_NAME} -p 8080:8080 -p 443:8443 ${DOCKER_IMAGE}
+EOF
+                            """
+                        }
                     }
                 }
             }
-        }   
+        }
     }
 }
