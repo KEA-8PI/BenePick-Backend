@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,19 +30,16 @@ public class WishlistsQueryServiceImpl implements WishlistsQueryService{
     @Override
     public WishlistResponse.WishlistListDTO getWishList(GoodsStatus goodsStatus, Integer page, Integer size, GoodsFilter sortBy, Members members){
         PageRequest pageRequest=createPageRequest(page, size, sortBy);
-
         String memberId = members.getId();
-
         Page<Wishlists> wishlistsPage;
         if (GoodsFilter.POPULAR.equals(sortBy)) {
             wishlistsPage = wishlistsRepository.searchWishlistsByRaffleCount(memberId, goodsStatus, pageRequest);
-
         } else {
             wishlistsPage = wishlistsRepository.findAllByMemberId_IdAndGoodsId_GoodsStatus(memberId, goodsStatus, pageRequest);
         }
         List<WishlistResponse.WishlistDTO> wishlistDTOS = (wishlistsPage != null ? wishlistsPage.getContent() : Collections.emptyList()).stream()
                 .map(w -> WishlistResponse.WishlistDTO.from((Wishlists) w))
-                .collect(Collectors.toList());
+                .toList();
 
         return WishlistResponse.WishlistListDTO.builder()
                 .wishlistDTOS(wishlistDTOS)
