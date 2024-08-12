@@ -1,13 +1,8 @@
 package com._pi.benepick.domain.goods.service;
 
-import com._pi.benepick.domain.categories.entity.Categories;
 import com._pi.benepick.domain.goods.entity.GoodsFilter;
-import com._pi.benepick.domain.goods.entity.GoodsStatus;
-import com._pi.benepick.domain.goodsCategories.entity.GoodsCategories;
 import com._pi.benepick.domain.goods.dto.GoodsResponse;
 import com._pi.benepick.domain.goods.entity.Goods;
-import com._pi.benepick.domain.categories.repository.CategoriesRepository;
-import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
 import com._pi.benepick.domain.goods.repository.GoodsRepository;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
@@ -21,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,8 +23,6 @@ import java.util.Optional;
 public class GoodsQueryServiceImpl implements GoodsQueryService {
 
     private final GoodsRepository goodsRepository;
-    private final GoodsCategoriesRepository goodsCategoriesRepository;
-    private final CategoriesRepository categoriesRepository;
 
     // 상품 목록 조회 (+ 검색)
     @Override

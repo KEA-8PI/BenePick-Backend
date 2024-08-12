@@ -3,7 +3,6 @@ package com._pi.benepick.domain.goods.service;
 import com._pi.benepick.domain.goods.dto.GoodsResponse;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsFilter;
-import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.members.entity.Members;
 import org.springframework.data.domain.PageRequest;
 

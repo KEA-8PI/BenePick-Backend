@@ -3,7 +3,6 @@ package com._pi.benepick.domain.goods.entity;
 import com._pi.benepick.domain.goods.dto.GoodsRequest;
 import com._pi.benepick.domain.goodsCategories.entity.GoodsCategories;
 import com._pi.benepick.domain.hash.entity.Hash;
-import com._pi.benepick.domain.members.dto.MembersRequest;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import com._pi.benepick.domain.wishlists.entity.Wishlists;
 import com._pi.benepick.global.common.BaseJPATimeEntity;

@@ -1,11 +1,9 @@
 package com._pi.benepick.domain.goods.service;
 
-import com._pi.benepick.domain.categories.repository.CategoriesRepository;
 import com._pi.benepick.domain.goods.dto.GoodsRequest;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goods.repository.GoodsRepository;
-import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +17,6 @@ import static com._pi.benepick.domain.goods.entity.GoodsStatus.COMPLETED;
 @Transactional
 public class GoodsCommandServiceImpl implements GoodsCommandService {
     private final GoodsRepository goodsRepository;
-    private final GoodsCategoriesRepository goodsCategoriesRepository;
-    private final CategoriesRepository categoriesRepository;
 
     @Override
     public Goods createGoods(GoodsRequest.GoodsRequestDTO goodsAddDTO) {

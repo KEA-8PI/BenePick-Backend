@@ -17,10 +17,6 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
     @Query("SELECT g FROM Goods g WHERE LOWER(g.name) LIKE LOWER(CONCAT('%', :name, '%'))")
     Page<Goods> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
-    @Modifying
-    @Query("UPDATE Goods g SET g.name = :name, g.amounts = :amounts, g.image = :image, g.description = :description, g.price = :price, g.discountPrice = :discountPrice, g.raffleStartAt = :raffleStartAt, g.raffleEndAt = :raffleEndAt, g.goodsStatus = :goodsStatus WHERE g.id = :goodsId")
-    void updateGoods(Long goodsId, String name, Long amounts, String image, String description, Long price, Long discountPrice, LocalDateTime raffleStartAt, LocalDateTime raffleEndAt, GoodsStatus goodsStatus);
-
     @Query("SELECT g FROM Goods g " +
             "WHERE g.goodsStatus = :goodsStatus " +
             "AND (:categoryId IS NULL OR EXISTS (SELECT 1 FROM GoodsCategories gc WHERE gc.goodsId.id = g.id AND gc.categoryId.id = :categoryId)) " +
