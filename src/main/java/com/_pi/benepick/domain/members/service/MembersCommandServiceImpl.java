@@ -101,8 +101,8 @@ public class MembersCommandServiceImpl implements MembersCommandService{
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) { continue;}
                 String id = row.getCell(0).getStringCellValue();
-                Optional<Members> existingMember = membersRepository.findByIdWithNativeQuery(id);
-                if (existingMember.isEmpty()) {
+                Members existingMember = membersRepository.findByIdWithNativeQuery(id).orElseThrow(()->new ApiException(ErrorStatus._ALREADY_EXIST_MEMBER));
+                if (existingMember == null) {
                     Members members = Members.builder()
                             .id(id)
                             .name(row.getCell(1).getStringCellValue())
