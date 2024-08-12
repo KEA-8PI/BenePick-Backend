@@ -29,9 +29,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -48,6 +46,7 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
     private final MembersRepository membersRepository;
     private final PenaltyHistsRepository penaltyHistsRepository;
     private final PointHistsRepository pointHistsRepository;
+    private final AlarmService alarmService;
 
     public DrawsResponse.EditWinnerStatus editWinnerStatus(Members members, Long winnerId, DrawsRequest.DrawsRequestDTO dto) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
@@ -150,6 +149,10 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
                             .build();
                     pointHistsRepository.save(pointHists);
                     membersRepository.save(members);
+                } else if (draws.getStatus().equals(Status.WINNER)) {
+                    Members members = draws.getRaffleId().getMemberId();
+                    String url = "http://localhost:3000/goods/" + draws.getRaffleId().getGoodsId();
+                    alarmService.saveMessage(members.getId(), members.getName(), url);
                 }
             }
             drawsRepository.saveAll(drawsList);

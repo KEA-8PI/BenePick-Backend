@@ -9,4 +9,6 @@ public interface AlarmService {
     String getCongratulationsMessage(String email, String name, String url);
 
     void sendAlarmStart(LocalDateTime now);
+
+    void saveMessage(String email, String name, String url);
 }

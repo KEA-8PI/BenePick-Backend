@@ -84,9 +84,16 @@ public class KakaoWorkAlarmServiceImpl implements AlarmService {
         List<Message> messages = messageRepository.findAllByIsDeleted(false);
         for (Message message : messages) {
             sendAlarm(message.getContents());
-            messageRepository.delete(message);
             log.info("send alarm to {}", message.getEmail());
+            messageRepository.delete(message);
         }
     }
+
+    @Override
+    public void saveMessage(String email, String name, String url) {
+        log.info("save message to {}", email);
+        messageRepository.save(Message.of(email, name, url));
+    }
+
 }
 
