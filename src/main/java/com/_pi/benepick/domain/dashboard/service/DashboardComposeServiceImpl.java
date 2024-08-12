@@ -1,7 +1,7 @@
 package com._pi.benepick.domain.dashboard.service;
 
 import com._pi.benepick.domain.categories.entity.Categories;
-import com._pi.benepick.domain.categories.repository.CategoriesRepository;
+import com._pi.benepick.domain.categories.service.CategoriesQueryService;
 import com._pi.benepick.domain.dashboard.dto.DashboardResponse;
 import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.draws.entity.Status;
@@ -10,25 +10,24 @@ import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.repository.GoodsRepository;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import com._pi.benepick.domain.raffles.repository.RafflesRepository;
-import com._pi.benepick.global.common.exception.ApiException;
-import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class DashboardQueryServiceImpl implements DashboardQueryService {
-
+public class DashboardComposeServiceImpl implements DashboardComposeService {
     private final GoodsRepository goodsRepository;
     private final DrawsRepository drawsRepository;
     private final RafflesRepository rafflesRepository;
-    private final CategoriesRepository categoriesRepository;
+    private final CategoriesQueryService categoriesQueryService;
 
     // 당첨자 status
     private static final List<Status> WinnedStatus = List.of(Status.WINNER, Status.CANCEL, Status.NO_SHOW, Status.CONFIRM);
@@ -61,8 +60,7 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
     private List<Goods> getGoodsList(String categoryName, LocalDateTime startDate, LocalDateTime endDate) {
         List<Goods> goodsList;
         if (categoryName != null && !categoryName.isEmpty()) {
-            Categories category = categoriesRepository.findByName(categoryName)
-                    .orElseThrow(() -> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
+            Categories category = categoriesQueryService.getCategoriesByName(categoryName);
             goodsList = goodsRepository.findGoodsByCategoryId(category.getId());
         } else {
             goodsList = goodsRepository.findAll();
@@ -70,7 +68,7 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
         return goodsList.stream()
                 .filter(goods -> goods.getRaffleEndAt().isAfter(startDate) && goods.getRaffleEndAt().isBefore(endDate))
                 .sorted(Comparator.comparing(Goods::getRaffleEndAt))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     // 회차별 당첨자 평균 응모 포인트
@@ -78,7 +76,7 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
         return goodsList.stream()
                 .map(goods -> drawsRepository.findAveragePointByGoodsIdAndStatus(goods.getId(), Status.WINNER))
                 .map(avg -> avg != null ? avg : 0.0)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
@@ -92,7 +90,7 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
                             .mapToDouble(Long::doubleValue)
                             .sum();
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     // 회차별 대기 충원율
@@ -104,7 +102,7 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
                     long refillCount = drawsRepository.countByRaffleIdsAndStatuses(raffleIds, List.of(Status.CANCEL, Status.NO_SHOW));
                     return (totalDraws == 0) ? 0.0 : (refillCount / (double) totalDraws);
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     // 응모자 중 당첨자 순위 top5
@@ -125,7 +123,7 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
                 .sorted(Map.Entry.<Integer, Integer>comparingByValue().reversed())
                 .limit(5)
                 .map(entry -> Map.entry(entry.getKey(), entry.getValue() / (double) totalRankCount))
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
