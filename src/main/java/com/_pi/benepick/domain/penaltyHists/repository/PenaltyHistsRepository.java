@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface PenaltyHistsRepository extends JpaRepository<PenaltyHists, Long> {
-    @Query("select p from PenaltyHists  p where p.memberId.id =:id")
-    List<PenaltyHists> findAllByMemberId(String id);
+    @Query("select p from PenaltyHists  p where p.memberId.id =:id group by p order by p.created_at desc ")
+    List<PenaltyHists> findAllByMemberIdOrderByCreated_atDesc(String id);
 }
