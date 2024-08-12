@@ -13,14 +13,13 @@ public class PenaltyRequest {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class changePenaltyHistDTO{
+    public static class ChangePenaltyHistDTO {
         private Long penaltyCnt;
-        private String members;
         private String content;
         private Members member;
         private Long totalPenalty;
 
-        public PenaltyHists toEntity(changePenaltyHistDTO changePenaltyHistDTO,Long result){
+        public PenaltyHists toEntity(ChangePenaltyHistDTO changePenaltyHistDTO,Long result){
             return PenaltyHists.builder()
                     .content(changePenaltyHistDTO.getContent())
                     .memberId(changePenaltyHistDTO.getMember())
