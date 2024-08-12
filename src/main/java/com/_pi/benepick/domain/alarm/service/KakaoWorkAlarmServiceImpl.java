@@ -79,8 +79,33 @@ public class KakaoWorkAlarmServiceImpl implements AlarmService {
         }
     }
 
+    /**
+     * 이메일, 사용자의 이름을 넣어 추가 당첨 축하 메시지를 만들어 반환한다.
+     * @param email: String
+     * @param name: String
+     * @return  json 형태의 메시지
+     */
+    public String getAdditionalCongratulationsMessage(final String email, final String name, final String url) {
+        ObjectMapper mapper = new ObjectMapper();
+        MessageContent messageContent = new MessageContent(email, "추가 당첨 축하 메시지입니다.");
+
+        HeaderBlock headerBlock = new HeaderBlock("header", "추가로 당첨되신 것을 축하드립니다!", "white");
+        TextBlock textBlock = new TextBlock("text", name + "님의 추가 당첨을 축하드립니다!\n지금 당장 확인하러 가보세요");
+        ImageBlock imageBlock = new ImageBlock("image_link", "https://t1.kakaocdn.net/kakaowork/resources/block-kit/imagelink/image1@3x.jpg");
+
+        ButtonBlock buttonBlock = new ButtonBlock("button", "확인하러 가기", "default");
+        Action action = new Action("open_system_browser", "당첨_확인_button", url);
+        buttonBlock.setAction(action);
+        messageContent.setBlocks(List.of(headerBlock, textBlock, imageBlock, buttonBlock));
+        try {
+            return mapper.writeValueAsString(messageContent);
+        } catch (JsonProcessingException e) {
+            throw new ApiException(ErrorStatus._INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @Override
-    public void sendAlarmStart(LocalDateTime now) {
+    public void sendAlarmStart() {
         List<Message> messages = messageRepository.findAllByIsDeleted(false);
         for (Message message : messages) {
             sendAlarm(message.getContents());
@@ -90,10 +115,9 @@ public class KakaoWorkAlarmServiceImpl implements AlarmService {
     }
 
     @Override
-    public void saveMessage(String email, String name, String url) {
+    public void saveMessage(String email, String name, String contents) {
         log.info("save message to {}", email);
-        messageRepository.save(Message.of(email, name, url));
+        messageRepository.save(Message.of(email, name, contents));
     }
-
 }
 

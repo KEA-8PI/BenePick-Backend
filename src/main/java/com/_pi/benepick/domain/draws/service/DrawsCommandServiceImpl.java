@@ -79,6 +79,10 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
             System.out.println("drawList Size : " + draws.getRaffleId().getGoodsId().getId());
             if (!drawsList.isEmpty()) {
                 drawsList.get(0).updateStatus(Status.WINNER);
+                Members additionalWinner = drawsList.get(0).getRaffleId().getMemberId();
+                String url = "http://localhost:3000/goods/" + draws.getRaffleId().getGoodsId();
+                String contents = alarmService.getAdditionalCongratulationsMessage(additionalWinner.getId(), additionalWinner.getName(), url);
+                alarmService.saveMessage(additionalWinner.getId(), additionalWinner.getName(), contents);
 
                 for (Draws value : drawsList) {
                     value.decreaseSequence();
@@ -152,7 +156,8 @@ public class DrawsCommandServiceImpl implements DrawsCommandService {
                 } else if (draws.getStatus().equals(Status.WINNER)) {
                     Members members = draws.getRaffleId().getMemberId();
                     String url = "http://localhost:3000/goods/" + draws.getRaffleId().getGoodsId();
-                    alarmService.saveMessage(members.getId(), members.getName(), url);
+                    String contents = alarmService.getCongratulationsMessage(members.getId(), members.getName(), url);
+                    alarmService.saveMessage(members.getId(), members.getName(), contents);
                 }
             }
             drawsRepository.saveAll(drawsList);

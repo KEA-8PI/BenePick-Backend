@@ -28,8 +28,7 @@ public class SchedulerConfiguration {
     // 매일 오전 9시에 실행
     @Scheduled(cron = "01 00 09 * * ?")
     public void messageCronTask() {
-        LocalDateTime now = LocalDateTime.now();
-        alarmService.sendAlarmStart(now);
+        alarmService.sendAlarmStart();
     }
 
 }

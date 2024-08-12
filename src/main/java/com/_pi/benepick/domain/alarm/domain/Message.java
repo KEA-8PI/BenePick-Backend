@@ -28,11 +28,11 @@ public class Message extends BaseJPATimeEntity {
 
     private String contents;
 
-    public static Message of(String email, String name, String url) {
+    public static Message of(String email, String name, String contents) {
         return Message.builder()
                 .email(email)
                 .name(name)
-                .contents(url)
+                .contents(contents)
                 .build();
     }
 
