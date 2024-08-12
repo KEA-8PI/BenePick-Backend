@@ -1,7 +1,6 @@
 package com._pi.benepick.domain.pointHists.repository;
 
 import com._pi.benepick.domain.pointHists.entity.PointHists;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

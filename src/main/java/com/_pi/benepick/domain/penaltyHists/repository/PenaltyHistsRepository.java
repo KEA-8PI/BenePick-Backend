@@ -1,11 +1,10 @@
 package com._pi.benepick.domain.penaltyHists.repository;
+
 import com._pi.benepick.domain.penaltyHists.entity.PenaltyHists;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-
 
 
 @Repository

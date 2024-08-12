@@ -12,13 +12,13 @@ public class PointHistsRequest {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class changePointHistDTO{
+    public static class ChangePointHistDTO {
         private Long point;
         private String content;
         private Long totalPoint;
         private Members members;
 
-        public PointHists toEntity(changePointHistDTO changePointHistDTO, Long result){
+        public PointHists toEntity(ChangePointHistDTO changePointHistDTO, Long result){
             return PointHists.builder()
                     .pointChange(changePointHistDTO.getPoint())
                     .content(changePointHistDTO.getContent())

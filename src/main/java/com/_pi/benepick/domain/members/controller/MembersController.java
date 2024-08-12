@@ -62,7 +62,7 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
     @Operation(summary = "복지포인트 파일 업로드", description = "복지 포인트 파일을 업로드합니다. (관리자용)")
     @PostMapping(value="/point/upload",consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<MembersDetailListResponseDTO> uploadPointFile(@RequestPart("file") MultipartFile file) throws IOException {
-        return  ApiResponse.onSuccess(membersCommandService.uploadPointFile(file));
+        return  ApiResponse.onSuccess(membersComposeService.uploadPointFile(file));
     }
 
     @Operation(summary = "사원 정보 수정", description = "사원 정보를 수정합니다. (관리자용)")
@@ -81,7 +81,7 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
     @Operation(summary = "사원 추가 파일 등록", description = "복지 포인트 파일을 업로드합니다. (관리자용)")
     @PostMapping(value="/add/upload",consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<MembersDetailListResponseDTO> uploadMemberFile(@RequestPart("file") MultipartFile file){
-        return ApiResponse.onSuccess(membersCommandService.uploadMemberFile(file));
+        return ApiResponse.onSuccess(membersComposeService.uploadMemberFile(file));
     }
 
 }

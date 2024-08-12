@@ -2,26 +2,34 @@ package com._pi.benepick.domain.members.service;
 
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.members.dto.MembersRequest;
+import com._pi.benepick.domain.members.dto.MembersResponse;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.domain.members.repository.MembersRepository;
-import com._pi.benepick.domain.penaltyHists.dto.PenaltyRequest;
+import com._pi.benepick.domain.penaltyHists.dto.PenaltyRequest.ChangePenaltyHistDTO;
 import com._pi.benepick.domain.penaltyHists.repository.PenaltyHistsRepository;
 import com._pi.benepick.domain.penaltyHists.service.PenaltyHistsCommandService;
-import com._pi.benepick.domain.pointHists.dto.PointHistsRequest;
+import com._pi.benepick.domain.pointHists.dto.PointHistsRequest.ChangePointHistDTO;
 import com._pi.benepick.domain.pointHists.repository.PointHistsRepository;
 import com._pi.benepick.domain.pointHists.service.PointHistsCommandService;
 import com._pi.benepick.domain.raffles.repository.RafflesRepository;
 import com._pi.benepick.domain.wishlists.repository.WishlistsRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
+import java.io.IOException;
+import java.io.InputStream;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -47,12 +55,12 @@ public class MembersComposeServiceImpl implements MembersComposeService{
         Long totalPoint=membersQueryService.getMembertotalPoint(updateMember);
         Long totalPenalty=membersQueryService.getMemberPenaltyCnt(updateMember);
 
-        PointHistsRequest.changePointHistDTO changePointRequestDTO = new PointHistsRequest.changePointHistDTO(
+        ChangePointHistDTO changePointRequestDTO = new ChangePointHistDTO(
                 membersRequestDTO.getPoint(), "관리자가 변경", totalPoint, updateMember
         );
 
-        PenaltyRequest.changePenaltyHistDTO changePenaltyHistDTO= new PenaltyRequest.changePenaltyHistDTO(
-                membersRequestDTO.getPenaltyCnt(),memberid,"관리자가 변경",updateMember,totalPenalty
+        ChangePenaltyHistDTO changePenaltyHistDTO= new ChangePenaltyHistDTO(
+                membersRequestDTO.getPenaltyCnt(),"관리자가 변경",updateMember,totalPenalty
         );
 
         pointHistsCommandService.changePointHist(changePointRequestDTO);
@@ -89,5 +97,87 @@ public class MembersComposeServiceImpl implements MembersComposeService{
         return DeleteResponseDTO.builder()
                 .memberid(deletedId)
                 .build();
+    }
+
+    @Override
+    public MembersDetailListResponseDTO uploadPointFile(MultipartFile file) {
+        List<MembersDetailResponseDTO> updatedMembersList = new ArrayList<>();
+
+        try (InputStream inputStream = file.getInputStream();
+            Workbook workbook = new XSSFWorkbook(inputStream)) {
+
+            XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) { continue;}
+
+                String id = row.getCell(0).getStringCellValue();
+                Long pointChange = (long)row.getCell(1).getNumericCellValue();
+
+                Members member = membersRepository.findById(id).orElseThrow(() -> new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
+                pointHistsCommandService.changePointHist(ChangePointHistDTO.builder()
+                    .point(pointChange)
+                    .content("관리자 수정")
+                    .totalPoint(member.getPoint())
+                    .members(member)
+                    .build());
+                member.increasePoint(pointChange);
+
+                updatedMembersList.add(MembersDetailResponseDTO.from(member));
+            }
+        } catch (IOException e) {
+            throw new ApiException(ErrorStatus._FILE_INPUT_DISABLED);
+        }
+        return MembersDetailListResponseDTO.builder()
+            .membersDetailResponseDTOList(updatedMembersList).build();
+    }
+
+    @Override
+    public MembersDetailListResponseDTO uploadMemberFile(MultipartFile file) {
+        List<Members> membersList = new ArrayList<>();
+
+        try (InputStream inputStream = file.getInputStream();
+            Workbook workbook = new XSSFWorkbook(inputStream)) {
+            XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
+
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) { continue;}
+                String id = row.getCell(0).getStringCellValue();
+                membersRepository.findByIdWithNativeQuery(id).orElseThrow(()->new ApiException(ErrorStatus._ALREADY_EXIST_MEMBER));
+                Members members = Members.builder()
+                    .id(id)
+                    .name(row.getCell(1).getStringCellValue())
+                    .deptName(row.getCell(2).getStringCellValue())
+                    .password(row.getCell(3).getStringCellValue())
+                    .penaltyCnt((long) row.getCell(4).getNumericCellValue())
+                    .point((long) row.getCell(5).getNumericCellValue())
+                    .role(Role.MEMBER)
+                    .build();
+                membersList.add(members);
+            }
+            membersRepository.saveAll(membersList);
+            for (Members member : membersList) {
+                pointHistsCommandService.changePointHist(ChangePointHistDTO.builder()
+                        .point(member.getPoint())
+                        .content("사원 등록")
+                        .totalPoint(member.getPoint())
+                        .members(member)
+                    .build());
+                penaltyHistsCommandService.changePenaltyHist(ChangePenaltyHistDTO.builder()
+                        .totalPenalty(member.getPenaltyCnt())
+                        .content("사원 등록")
+                        .member(member)
+                        .penaltyCnt(member.getPenaltyCnt())
+                    .build());
+            }
+        } catch (IOException e) {
+            throw new ApiException(ErrorStatus._FILE_INPUT_DISABLED);
+        }
+        List<MembersDetailResponseDTO> responseDTOList = membersList.stream()
+            .map(MembersDetailResponseDTO::from)
+            .toList();
+
+        return MembersResponse.MembersDetailListResponseDTO.builder()
+            .membersDetailResponseDTOList(responseDTOList)
+            .build();
     }
 }
