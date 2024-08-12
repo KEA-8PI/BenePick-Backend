@@ -9,5 +9,5 @@ public interface WishlistsCommandService {
 
     WishlistResponse.WishlistSuccessDTO deleteWishlist(Long wishlistId, Members members);
 
-    Wishlists saveWishlists(Goods goods, Members members);
+    Wishlists createWishlists(Goods goods, Members members);
 }

@@ -24,7 +24,7 @@ public class WishlistsComposeServiceImpl implements WishlistsComposeService {
     public WishlistResponse.WishlistAddDTO addWishlist(Members members, Long id) {
         Goods goods = goodsQueryService.getGoodsById(id);
         if( wishlistsQueryService.isWishlistsEmpty(members, id)){
-            Wishlists wishlists=wishlistsCommandService.saveWishlists(goods,members);
+            Wishlists wishlists=wishlistsCommandService.createWishlists(goods,members);
             return WishlistResponse.WishlistAddDTO.from(wishlists);
         }else{
             throw new ApiException(ErrorStatus._WISHLIST_ALREADY_EXISTS);
