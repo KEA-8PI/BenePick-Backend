@@ -1,25 +1,16 @@
 package com._pi.benepick.domain.members.service;
 import com._pi.benepick.domain.members.dto.MembersRequest.*;
-import com._pi.benepick.domain.members.dto.MembersResponse;
 import com._pi.benepick.domain.members.dto.MembersResponse.*;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import com._pi.benepick.domain.members.entity.Role;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;;
+
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +18,7 @@ import java.util.List;;
 public class MembersCommandServiceImpl implements MembersCommandService{
 
     private final MembersRepository membersRepository;
-
+    private final PasswordEncoder passwordEncoder;
     @Override
     public MembersuccessDTO changePassword(MemberPasswordDTO memberPasswordDTO, Members members){
         if (members.getPassword().equals(memberPasswordDTO.getPassword())){
@@ -36,7 +27,7 @@ public class MembersCommandServiceImpl implements MembersCommandService{
         if(!isValid(memberPasswordDTO.getPassword())){
             throw new ApiException(ErrorStatus._PASSWORD_DISABLED);
         }
-        members.updatePassword( memberPasswordDTO.getPassword());
+        members.updatePassword(memberPasswordDTO.getPassword(),passwordEncoder);
         return MembersuccessDTO.builder()
                 .msg("성공입니다.")
                 .build();
@@ -60,6 +51,7 @@ public class MembersCommandServiceImpl implements MembersCommandService{
         }
 
         Members members=membersRequestDTO.toEntity(membersRequestDTO);
+        members.initPassword(passwordEncoder);
         membersRepository.save(members);
 
         return MembersDetailResponseDTO.from(members);
