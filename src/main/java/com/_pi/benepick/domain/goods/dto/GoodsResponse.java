@@ -67,7 +67,7 @@ public class GoodsResponse {
             return GoodsResponseDTO.builder()
                     .id(goods.getId())
                     .name(goods.getName())
-                    .goodsStatus(goods.getGoodsStatus().name())
+                    .goodsStatus(String.valueOf(goods.getGoodsStatus()))
                     .raffleStartAt(goods.getRaffleStartAt())
                     .raffleEndAt(goods.getRaffleEndAt())
                     .build();

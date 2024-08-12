@@ -4,7 +4,6 @@ import com._pi.benepick.domain.goods.dto.GoodsRequest;
 import com._pi.benepick.domain.goods.dto.GoodsResponse;
 import com._pi.benepick.domain.goods.entity.GoodsFilter;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
-import com._pi.benepick.domain.goods.service.GoodsCommandService;
 import com._pi.benepick.domain.goods.service.GoodsComposeService;
 import com._pi.benepick.domain.goods.service.GoodsQueryService;
 import com._pi.benepick.domain.members.entity.Members;
@@ -27,7 +26,6 @@ import java.util.List;
 public class GoodsController {
 
     private final GoodsQueryService goodsQueryService;
-    private final GoodsCommandService goodsCommandService;
     private final GoodsComposeService goodsComposeService;
 
     //상품 목록 조회 (관리자)

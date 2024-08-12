@@ -119,7 +119,8 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
         goods.updateGoods(goodsUpdateDTO,status);
 
         Categories category = categoriesQueryService.getCategoriesByName(goodsUpdateDTO.getCategory());
-        goodsCategoriesCommandService.createGoodsCategories(goods, category);
+        GoodsCategories goodsCategories = goodsCategoriesQueryService.getGoodsCategoriesByGoodsId(goods);
+        goodsCategories.updateGoodsCategories(goods, category);
 
         Goods updatedGoods = goodsQueryService.getGoodsById(goodsId);
         return GoodsResponse.GoodsAddResponseDTO.of(updatedGoods, category.getName());
