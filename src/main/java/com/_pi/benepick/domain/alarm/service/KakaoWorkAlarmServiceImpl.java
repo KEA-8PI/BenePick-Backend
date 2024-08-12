@@ -1,11 +1,11 @@
 package com._pi.benepick.domain.alarm.service;
 
-import com._pi.benepick.domain.alarm.message.HeaderBlock;
-import com._pi.benepick.domain.alarm.message.ImageBlock;
-import com._pi.benepick.domain.alarm.message.Message;
-import com._pi.benepick.domain.alarm.message.TextBlock;
-import com._pi.benepick.domain.alarm.message.ButtonBlock;
-import com._pi.benepick.domain.alarm.message.Action;
+import com._pi.benepick.domain.alarm.messageObject.HeaderBlock;
+import com._pi.benepick.domain.alarm.messageObject.ImageBlock;
+import com._pi.benepick.domain.alarm.messageObject.MessageContent;
+import com._pi.benepick.domain.alarm.messageObject.TextBlock;
+import com._pi.benepick.domain.alarm.messageObject.ButtonBlock;
+import com._pi.benepick.domain.alarm.messageObject.Action;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -52,9 +52,9 @@ public class KakaoWorkAlarmServiceImpl implements AlarmService {
      * @param name: String
      * @return  json 형태의 메시지
      */
-    private String getCongratulationsMessage(final String email, final String name) {
+    public String getCongratulationsMessage(final String email, final String name) {
         ObjectMapper mapper = new ObjectMapper();
-        Message message = new Message(email, "당첨 축하 메시지입니다.");
+        MessageContent messageContent = new MessageContent(email, "당첨 축하 메시지입니다.");
 
         HeaderBlock headerBlock = new HeaderBlock("header", "당첨 축하드립니다!", "white");
         TextBlock textBlock = new TextBlock("text", name + "님의 당첨을 축하드립니다!\n지금 당장 확인하러 가보세요");
@@ -63,9 +63,9 @@ public class KakaoWorkAlarmServiceImpl implements AlarmService {
         ButtonBlock buttonBlock = new ButtonBlock("button", "확인하러 가기", "default");
         Action action = new Action("open_system_browser", "당첨_확인_button", "https://dktechin.com");
         buttonBlock.setAction(action);
-        message.setBlocks(List.of(headerBlock, textBlock, imageBlock, buttonBlock));
+        messageContent.setBlocks(List.of(headerBlock, textBlock, imageBlock, buttonBlock));
         try {
-            return mapper.writeValueAsString(message);
+            return mapper.writeValueAsString(messageContent);
         } catch (JsonProcessingException e) {
             throw new ApiException(ErrorStatus._INTERNAL_SERVER_ERROR);
         }
