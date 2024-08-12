@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface PointHistsRepository extends JpaRepository<PointHists, Long> {
 
-    @Query("select p from PointHists p WHERE p.memberId.id=:id")
+    @Query("select p from PointHists p WHERE p.memberId.id=:id group by p order by p.createdAt desc ")
     Page<PointHists> findAllByMemberId(Pageable pageable, String id);
 
     void deleteAllByMemberId_Id(String id);

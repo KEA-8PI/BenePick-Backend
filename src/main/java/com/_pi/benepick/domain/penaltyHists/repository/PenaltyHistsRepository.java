@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PenaltyHistsRepository extends JpaRepository<PenaltyHists, Long> {
 
-    Page<PenaltyHists> findAllByMemberId_Id(Pageable pageable, String id);
+    Page<PenaltyHists> findAllByMemberId_IdOrderByCreatedAtDesc(Pageable pageable, String id);
     void deleteAllByMemberId_Id(String id);
 
     int countAllByMemberId_Id(String id);
