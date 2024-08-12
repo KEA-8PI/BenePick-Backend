@@ -101,8 +101,7 @@ public class MembersCommandServiceImpl implements MembersCommandService{
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) { continue;}
                 String id = row.getCell(0).getStringCellValue();
-                Members existingMember = membersRepository.findByIdWithNativeQuery(id).orElseThrow(()->new ApiException(ErrorStatus._ALREADY_EXIST_MEMBER));
-                if (existingMember == null) {
+                membersRepository.findByIdWithNativeQuery(id).orElseThrow(()->new ApiException(ErrorStatus._ALREADY_EXIST_MEMBER));
                     Members members = Members.builder()
                             .id(id)
                             .name(row.getCell(1).getStringCellValue())
@@ -113,7 +112,6 @@ public class MembersCommandServiceImpl implements MembersCommandService{
                             .role(Role.MEMBER)
                             .build();
                     membersList.add(members);
-                }
             }
             membersRepository.saveAll(membersList);
         } catch (IOException e) {
