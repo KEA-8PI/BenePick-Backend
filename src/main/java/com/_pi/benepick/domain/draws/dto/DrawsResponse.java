@@ -92,6 +92,15 @@ public class DrawsResponse {
         private Long raffleId; //응모_id
         private int sequence; // 순서
         private Status status; // WINNER, WAITLIST, CANCLE, NOSHOW
+
+        public static EditWinnerStatus from(Draws draws) {
+            return DrawsResponse.EditWinnerStatus.builder()
+                    .id(draws.getId())
+                    .raffleId(draws.getRaffleId().getId())
+                    .status(draws.getStatus())
+                    .sequence(draws.getSequence())
+                    .build();
+        }
     }
 
     @Builder
@@ -166,6 +175,15 @@ public class DrawsResponse {
         private String memberId;
         private String memberName;
         private Long point;
+
+        public static DrawsResponseResultDTO from(Draws draws) {
+            return DrawsResponse.DrawsResponseResultDTO.builder()
+                    .status(draws.getStatus())
+                    .sequence(draws.getSequence())
+                    .memberId(draws.getRaffleId().getMemberId().getId())
+                    .memberName(draws.getRaffleId().getMemberId().getName())
+                    .build();
+        }
     }
 
     @Builder

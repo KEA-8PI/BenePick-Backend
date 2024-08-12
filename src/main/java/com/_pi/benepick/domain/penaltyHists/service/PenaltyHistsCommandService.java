@@ -1,8 +1,7 @@
 package com._pi.benepick.domain.penaltyHists.service;
 
-import com._pi.benepick.domain.members.entity.Members;
-import com._pi.benepick.domain.penaltyHists.dto.PenaltyRequest;
+import com._pi.benepick.domain.penaltyHists.dto.PenaltyRequest.ChangePenaltyHistDTO;
 
 public interface PenaltyHistsCommandService {
-    void savePenaltyHists(PenaltyRequest.ChangePenaltyHistDTO changePenaltyHistDTO);
+    void createPenaltyHists(ChangePenaltyHistDTO changePenaltyHistDTO);
 }

@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class HashQueryServiceImpl implements HashQueryService {
 
     private final HashsRepository hashsRepository;
-    public Hash findByHash(String hash) {
+    public Hash findByCryptoHash(String hash) {
         return hashsRepository.findByCryptoHash(hash).orElse(Hash.builder()
             .seed(DrawAlgorithm.generateSeed())
             .cryptoHash(hash)

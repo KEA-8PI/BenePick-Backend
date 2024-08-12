@@ -7,13 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com._pi.benepick.domain.members.entity.Members;
-import com._pi.benepick.domain.penaltyHists.entity.PenaltyHists;
-import com._pi.benepick.domain.penaltyHists.repository.PenaltyHistsRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -21,7 +14,7 @@ public class PenaltyHistsCommandServiceImpl implements PenaltyHistsCommandServic
 
     private final PenaltyHistsRepository penaltyHistsRepository;
 
-    public void savePenaltyHists(ChangePenaltyHistDTO changePenaltyHistDTO) {
+    public void createPenaltyHists(ChangePenaltyHistDTO changePenaltyHistDTO) {
         PenaltyHists penaltyHists = PenaltyHists.builder()
                 .memberId(changePenaltyHistDTO.getMember())
                 .content(changePenaltyHistDTO.getContent())

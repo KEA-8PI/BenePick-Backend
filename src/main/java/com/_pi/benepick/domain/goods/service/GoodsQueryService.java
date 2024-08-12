@@ -14,6 +14,6 @@ public interface GoodsQueryService {
     GoodsResponse.GoodsDetailResponseDTO getGoodsInfo(Long goodsId); // 상품 상세 조회
     GoodsResponse.GoodsSeedsResponseDTO getSeeds(Long goodsId); //시드 값 조회
     GoodsResponse.GoodsListSearchResponseDTO searchGoods(GoodsStatus goodsStatus, Integer page, Integer size, String keyword, GoodsFilter sortBy, String category, Members member); //상품 검색
-    Goods goodsFindById(Long goodsId);
+    Goods findById(Long goodsId);
     List<Goods> findByRaffleEndAtBeforeAndGoodsStatus(LocalDateTime now);
 }

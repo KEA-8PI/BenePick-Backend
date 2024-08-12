@@ -13,7 +13,7 @@ public class DrawsRequest {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor
     public static class DrawsRequestDTO {
-        private String status; // 물품 상태
+        private String status;
     }
 
 }

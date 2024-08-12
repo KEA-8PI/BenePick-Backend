@@ -16,10 +16,11 @@ public class RafflesCommandServiceImpl implements RafflesCommandService{
 
     private final RafflesRepository rafflesRepository;
 
-    public Raffles findRaffleByGoodsIdAndMemberId(Goods goods, Members members, Long point) {
+    public Raffles fetchOrInitializeRaffle(Goods goods, Members members, Long point) {
         Raffles raffles = rafflesRepository.findByGoodsIdAndMemberId(goods, members).orElse(RafflesRequest.RafflesRequestDTO
                 .toEntity(members, goods, 'F'));
         raffles.increasePoint(point);
+        rafflesRepository.save(raffles);
         return raffles;
     }
 }

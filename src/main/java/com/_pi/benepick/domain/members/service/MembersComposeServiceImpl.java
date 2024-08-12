@@ -63,8 +63,8 @@ public class MembersComposeServiceImpl implements MembersComposeService{
                 membersRequestDTO.getPenaltyCnt(),"관리자가 변경",updateMember,totalPenalty
         );
 
-        pointHistsCommandService.savePointHists(changePointRequestDTO);
-        penaltyHistsCommandService.savePenaltyHists(changePenaltyHistDTO);
+        pointHistsCommandService.createPointHists(changePointRequestDTO);
+        penaltyHistsCommandService.createPenaltyHists(changePenaltyHistDTO);
         updateMember.updateInfo(membersRequestDTO);
 
         return UpdateMemberResponseDTO.builder()
@@ -114,7 +114,7 @@ public class MembersComposeServiceImpl implements MembersComposeService{
                 Long pointChange = (long)row.getCell(1).getNumericCellValue();
 
                 Members member = membersRepository.findById(id).orElseThrow(() -> new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
-                pointHistsCommandService.savePointHists(ChangePointHistDTO.builder()
+                pointHistsCommandService.createPointHists(ChangePointHistDTO.builder()
                     .point(pointChange)
                     .content("관리자 수정")
                     .totalPoint(member.getPoint())
@@ -156,13 +156,13 @@ public class MembersComposeServiceImpl implements MembersComposeService{
             }
             membersRepository.saveAll(membersList);
             for (Members member : membersList) {
-                pointHistsCommandService.savePointHists(ChangePointHistDTO.builder()
+                pointHistsCommandService.createPointHists(ChangePointHistDTO.builder()
                         .point(member.getPoint())
                         .content("사원 등록")
                         .totalPoint(member.getPoint())
                         .members(member)
                     .build());
-                penaltyHistsCommandService.savePenaltyHists(ChangePenaltyHistDTO.builder()
+                penaltyHistsCommandService.createPenaltyHists(ChangePenaltyHistDTO.builder()
                         .totalPenalty(member.getPenaltyCnt())
                         .content("사원 등록")
                         .member(member)

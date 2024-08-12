@@ -3,5 +3,5 @@ package com._pi.benepick.domain.hash.service;
 import com._pi.benepick.domain.hash.entity.Hash;
 
 public interface HashQueryService {
-    Hash findByHash(String hash);
+    Hash findByCryptoHash(String hash);
 }

@@ -10,9 +10,6 @@ import java.time.LocalDateTime;
 public interface DrawsComposeService {
     void drawStart(LocalDateTime now);
     DrawsResponse.EditWinnerStatus editWinnerStatus(Members members, Long winnerId, DrawsRequest.DrawsRequestDTO dto);
-    DrawsResponse.DrawsResponseResultListDTO verificationSeed(Long goodsId, String seed);DrawsResponse.DrawsResponseByGoodsListDTO getResultByGoodsId(Long goodsId);
-    DrawsResponse.DrawsResponseByWaitlistGoodsIdListDTO getWaitlistByGoodsId(Members members, Long goodsId);
-    DrawsResponse.DrawsResponseByWinnerGoodsIdListDTO getWinnersByGoodsId(Members members, Long goodsId);
+    DrawsResponse.DrawsResponseResultListDTO verificationSeed(Long goodsId, String seed);
     DrawsResponse.DrawsResponseByMembersListDTO getCompleteRafflesByMemberId(Members member);
-    void downloadExcel(Members members, Long goodsId, HttpServletResponse response);
 }

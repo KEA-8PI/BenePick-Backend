@@ -56,7 +56,7 @@ public class RafflesComposeServiceImpl implements RafflesComposeService {
     public RafflesResponse.RafflesResponseByGoodsListDTO getAllRafflesByGoodsId(Members members, Long goodsId) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         List<RafflesResponse.RafflesResponseByGoodsDTO> rafflesResponseByGoodsDTOS = rafflesQueryService
-                .findAllByGoodsId(goodsQueryService.goodsFindById(goodsId)).stream()
+                .findAllByGoodsId(goodsQueryService.findById(goodsId)).stream()
                 .map(RafflesResponse.RafflesResponseByGoodsDTO::from)
                 .toList();
 
@@ -69,7 +69,7 @@ public class RafflesComposeServiceImpl implements RafflesComposeService {
         if (raffleAddDTO.getPoint() <= 0) throw new ApiException(ErrorStatus._RAFFLES_POINT_TOO_LESS);
         if (!(members.getRole().equals(Role.MEMBER))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
 
-        Goods goods = goodsQueryService.goodsFindById(goodsId);
+        Goods goods = goodsQueryService.findById(goodsId);
         if (!(goods.getGoodsStatus().equals(GoodsStatus.PROGRESS))) throw new ApiException(ErrorStatus._RAFFLES_CANNOT_APPLY);
 
         // 포인트 소모 히스토리 반영 부분
@@ -79,16 +79,16 @@ public class RafflesComposeServiceImpl implements RafflesComposeService {
         }
         String comment = "응모 신청";
 
-        pointHistsCommandService.savePointHists(new PointHistsRequest.ChangePointHistDTO(
+        pointHistsCommandService.createPointHists(new PointHistsRequest.ChangePointHistDTO(
                 -raffleAddDTO.getPoint(), comment, members.getPoint(), members
         ));
 
-        Raffles raffles = rafflesCommandService.findRaffleByGoodsIdAndMemberId(goods, members, raffleAddDTO.getPoint());
+        Raffles raffles = rafflesCommandService.fetchOrInitializeRaffle(goods, members, raffleAddDTO.getPoint());
 
         if (members.getPenaltyCnt() > 0 && raffles.getPoint() >= 100 && raffles.getPenaltyFlag() == 'F') {
             raffles.updatePenaltyFlag('T');
             members.updatePenalty(members.getPenaltyCnt() - 1);
-            penaltyHistsCommandService.savePenaltyHists(new PenaltyRequest.ChangePenaltyHistDTO(
+            penaltyHistsCommandService.createPenaltyHists(new PenaltyRequest.ChangePenaltyHistDTO(
                     -1L,comment,members,members.getPenaltyCnt()
             ));
         }
@@ -97,7 +97,7 @@ public class RafflesComposeServiceImpl implements RafflesComposeService {
     }
 
     public RafflesResponse.CurrentStateByGoodsListDTO getCurrentStateByGoods(Long goodsId) {
-        List<Raffles> rafflesList = rafflesQueryService.findAllByGoodsIdOrderByPointDesc(goodsQueryService.goodsFindById(goodsId));
+        List<Raffles> rafflesList = rafflesQueryService.findAllByGoodsIdOrderByPointDesc(goodsQueryService.findById(goodsId));
 
         List<RafflesResponse.CurrentStateByGoodsDTO> currentStateByGoodsDTOS = new ArrayList<>();
         for (int i = 0; i < Math.min(5, rafflesList.size()); i++) {

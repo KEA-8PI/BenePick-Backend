@@ -2,6 +2,7 @@ package com._pi.benepick.domain.draws.controller;
 
 import com._pi.benepick.domain.draws.dto.DrawsRequest;
 import com._pi.benepick.domain.draws.service.DrawsComposeService;
+import com._pi.benepick.domain.draws.service.DrawsQueryService;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.global.common.annotation.MemberObject;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,23 +23,24 @@ import org.springframework.web.bind.annotation.*;
 public class DrawsController {
 
     private final DrawsComposeService drawsComposeService;
+    private final DrawsQueryService drawsQueryService;
 
     @Operation(summary = "상품별 결과 조회", description = "상품의 추첨 결과가 당첨자인 사원들과 그 내역을 확인할 수 있습니다.(사용자 페이지)")
     @GetMapping("/result/{goodsId}")
     public ApiResponse<DrawsResponse.DrawsResponseByGoodsListDTO> getResultByGoodsId(@PathVariable Long goodsId) {
-        return ApiResponse.onSuccess(drawsComposeService.getResultByGoodsId(goodsId));
+        return ApiResponse.onSuccess(drawsQueryService.getResultByGoodsId(goodsId));
     }
 
     @Operation(summary = "상품별 당첨자 조회", description = "상품에 응모한 사원들 중 추첨 결과가 대기 & 낙첨이 아닌 사원들과 그 내역을 확인할 수 있습니다.(관리자 페이지)")
     @GetMapping("/winners/{goodsId}")
     public ApiResponse<DrawsResponse.DrawsResponseByWinnerGoodsIdListDTO> getWinnersByGoodsId(@Parameter(hidden = true) @MemberObject Members member, @PathVariable Long goodsId) {
-        return ApiResponse.onSuccess(drawsComposeService.getWinnersByGoodsId(member, goodsId));
+        return ApiResponse.onSuccess(drawsQueryService.getWinnersByGoodsId(member, goodsId));
     }
 
     @Operation(summary = "상품별 대기자 조회", description = "상품에 응모한 사원들 중 추첨 결과가 대기중인 사원들과 그 내역을 확인할 수 있습니다.")
     @GetMapping("/waitlist/{goodsId}")
     public ApiResponse<DrawsResponse.DrawsResponseByWaitlistGoodsIdListDTO> getWaitlistByGoodsId(@Parameter(hidden = true) @MemberObject Members member,@PathVariable Long goodsId) {
-        return ApiResponse.onSuccess(drawsComposeService.getWaitlistByGoodsId(member, goodsId));
+        return ApiResponse.onSuccess(drawsQueryService.getWaitlistByGoodsId(member, goodsId));
     }
 
     @Operation(summary = "사원별 종료된 응모 내역 조회", description = "사원이 응모한 추첨 종료된 상품들과 그 내역을 확인할 수 있습니다.")
@@ -56,7 +58,7 @@ public class DrawsController {
     @Operation(summary = "추첨 결과 다운로드", description = "추첨 결과가 정리된 엑셀 파일을 다운로드 할 수 있습니다.")
     @GetMapping("/download/{goodsId}")
     public void downloadExcel(@Parameter(hidden = true) @MemberObject Members member, @PathVariable Long goodsId, HttpServletResponse response) {
-        drawsComposeService.downloadExcel(member, goodsId, response);
+        drawsQueryService.downloadExcel(member, goodsId, response);
     }
 
     @Operation(summary = "추첨 검증", description = "시드값을 이용하여 추첨 로직 검증을 할 수 있습니다.")

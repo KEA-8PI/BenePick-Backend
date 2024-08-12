@@ -17,7 +17,7 @@ public class PointHistsCommandServiceImpl implements PointHistsCommandService{
 
     private final PointHistsRepository pointHistsRepository;
 
-    public void savePointHists(PointHistsRequest.ChangePointHistDTO changePointRequestDTO) {
+    public void createPointHists(PointHistsRequest.ChangePointHistDTO changePointRequestDTO) {
         PointHists pointHists = PointHists.builder()
                 .memberId(changePointRequestDTO.getMembers())
                 .content(changePointRequestDTO.getContent())

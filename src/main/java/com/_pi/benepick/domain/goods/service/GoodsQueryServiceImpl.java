@@ -120,7 +120,7 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
         return PageRequest.of(page, size, sort);
     }
 
-    public Goods goodsFindById(Long goodsId) {
+    public Goods findById(Long goodsId) {
         return goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
     }
 

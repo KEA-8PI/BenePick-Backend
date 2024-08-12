@@ -22,7 +22,7 @@ public class WishlistsComposeServiceImpl implements WishlistsComposeService {
 
     @Override
     public WishlistResponse.WishlistAddDTO addWishlist(Members members, Long id) {
-        Goods goods = goodsQueryService.goodsFindById(id);
+        Goods goods = goodsQueryService.findById(id);
         if( wishlistsQueryService.isWishlistsEmpty(members, id)){
             Wishlists wishlists=wishlistsCommandService.createWishlists(goods,members);
             return WishlistResponse.WishlistAddDTO.from(wishlists);
