@@ -7,10 +7,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CookieUtils {
-    private CookieUtils() {
-        throw new IllegalStateException("Utility class");
-    }
-    
     public static Cookie getCookie(HttpServletRequest request, String name) {
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
