@@ -91,11 +91,11 @@ public class MembersComposeServiceImpl implements MembersComposeService{
         membersRepository.save(members);
 
         ChangePointHistDTO changePointRequestDTO = new ChangePointHistDTO(
-                0L, "사원 등록", 0L, members
+                0L, "사원 등록", membersRequestDTO.getPoint(), members
         );
 
         ChangePenaltyHistDTO changePenaltyHistDTO= new ChangePenaltyHistDTO(
-                0L,"사원 등록",members,0L
+                0L,"사원 등록",members,membersRequestDTO.getPenaltyCnt()
         );
 
         pointHistsCommandService.changePointHist(changePointRequestDTO);
