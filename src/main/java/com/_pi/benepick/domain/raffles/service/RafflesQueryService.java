@@ -8,7 +8,7 @@ import com._pi.benepick.domain.raffles.entity.Raffles;
 import java.util.List;
 
 public interface RafflesQueryService {
-    RafflesResponse.RafflesResponseByMembersListDTO getProgressRafflesByMemberId(Members member); //상품 목록 조회
-    RafflesResponse.RafflesResponseByGoodsListDTO getAllRafflesByGoodsId(Members members, Long goodsId); //상품 목록 조회
     List<Raffles> findAllByGoodsIdOrderByPointAsc(Goods goods);
+    List<Raffles> findAllByMemberId(Members members);
+    List<Raffles> findAllBygoodsId(Goods goods);
 }
