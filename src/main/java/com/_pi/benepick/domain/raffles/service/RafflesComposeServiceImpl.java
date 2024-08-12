@@ -53,7 +53,7 @@ public class RafflesComposeServiceImpl implements RafflesComposeService {
     public RafflesResponse.RafflesResponseByGoodsListDTO getAllRafflesByGoodsId(Members members, Long goodsId) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         List<RafflesResponse.RafflesResponseByGoodsDTO> rafflesResponseByGoodsDTOS = rafflesQueryService
-                .findAllBygoodsId(goodsQueryService.goodsFindById(goodsId)).stream()
+                .findAllByGoodsId(goodsQueryService.goodsFindById(goodsId)).stream()
                 .map(RafflesResponse.RafflesResponseByGoodsDTO::from)
                 .toList();
 

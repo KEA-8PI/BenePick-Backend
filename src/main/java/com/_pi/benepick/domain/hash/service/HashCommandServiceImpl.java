@@ -16,7 +16,7 @@ public class HashCommandServiceImpl implements HashCommandService {
 
     public Hash saveHash(double seed) {
         Hash hash = Hash.builder()
-                .hash(DoubleToSHA256.getSHA256Hash(seed))
+                .cryptoHash(DoubleToSHA256.getSHA256Hash(seed))
                 .seed(seed)
                 .build();
         return hashsRepository.save(hash);

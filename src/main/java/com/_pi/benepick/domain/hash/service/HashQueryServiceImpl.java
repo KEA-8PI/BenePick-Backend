@@ -14,9 +14,9 @@ public class HashQueryServiceImpl implements HashQueryService {
 
     private final HashsRepository hashsRepository;
     public Hash findByHash(String hash) {
-        return hashsRepository.findByHash(hash).orElse(Hash.builder()
+        return hashsRepository.findByCryptoHash(hash).orElse(Hash.builder()
             .seed(DrawAlgorithm.generateSeed())
-            .hash(hash)
+            .cryptoHash(hash)
             .build());
     }
 }

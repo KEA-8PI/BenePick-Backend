@@ -21,7 +21,7 @@ public class RafflesQueryServiceImpl implements RafflesQueryService {
         return rafflesRepository.findAllByMemberId(members);
     }
 
-    public List<Raffles> findAllBygoodsId(Goods goods) {
+    public List<Raffles> findAllByGoodsId(Goods goods) {
         return rafflesRepository.findAllByGoodsId(goods);
     }
 
