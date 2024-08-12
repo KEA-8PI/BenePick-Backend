@@ -56,8 +56,8 @@ public class GoodsController {
     //상품 검색
     @Operation(summary = "상품 검색 (메인페이지용)", description = "선택된 필터,카테고리,검색어를 기반으로 상품을 조회합니다.")
     @GetMapping("/search/{goodsStatus}")
-    public ApiResponse<GoodsResponse.GoodsListSearchResponseDTO> searchGoods(@PathVariable GoodsStatus goodsStatus, @RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String keyword, @RequestParam GoodsFilter sortBy, @RequestParam(required = false) String category) {
-        return ApiResponse.onSuccess(goodsQueryService.searchGoods(goodsStatus, page, size, keyword, sortBy, category));
+    public ApiResponse<GoodsResponse.GoodsListSearchResponseDTO> searchGoods(@Parameter(hidden = true) @MemberObject Members member,@PathVariable GoodsStatus goodsStatus, @RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String keyword, @RequestParam GoodsFilter sortBy, @RequestParam(required = false) String category) {
+        return ApiResponse.onSuccess(goodsQueryService.searchGoods(goodsStatus, page, size, keyword, sortBy, category, member));
     }
 
     //상품 추가 (관리자)
