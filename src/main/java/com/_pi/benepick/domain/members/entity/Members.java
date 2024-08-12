@@ -12,13 +12,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
-
 import java.util.Objects;
-
 
 @Entity
 @Getter
@@ -51,10 +48,6 @@ public class Members extends BaseJPATimeEntity {
     private Role role; //역할
 
     private String profileImg; //프로필사진
-
-    public void updateId(String id) {
-        this.id = id;
-    }
 
     public void updateInfo(MembersRequest.MembersRequestDTO membersRequestDTO){
             this.point = Objects.nonNull( membersRequestDTO.getPoint())? membersRequestDTO.getPoint() : this.point;

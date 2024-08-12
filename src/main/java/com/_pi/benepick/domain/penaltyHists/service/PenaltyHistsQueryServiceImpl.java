@@ -7,11 +7,12 @@ import com._pi.benepick.domain.penaltyHists.entity.PenaltyHists;
 import com._pi.benepick.domain.penaltyHists.repository.PenaltyHistsRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
+
+import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @Service
@@ -30,7 +31,7 @@ public class PenaltyHistsQueryServiceImpl implements PenaltyHistsQueryService
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<PenaltyHists> penaltyHistsPage;
         int total=penaltyHistsRepository.countAllByMemberId_Id(members.getId());
-       penaltyHistsPage= penaltyHistsRepository.findAllByMemberId_Id(pageRequest,members.getId());
+       penaltyHistsPage= penaltyHistsRepository.findAllByMemberId_IdOrderByCreatedAtDesc(pageRequest,members.getId());
         List<PenaltyResponseDTO> result = penaltyHistsPage.stream()
                 .map(p -> PenaltyResponseDTO.builder()
                         .penaltyCount(p.getPenaltyCount())

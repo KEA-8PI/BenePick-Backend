@@ -4,9 +4,10 @@ import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.pointHists.entity.PointHists;
 import com._pi.benepick.domain.pointHists.repository.PointHistsRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
