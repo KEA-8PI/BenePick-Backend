@@ -15,7 +15,9 @@ import com._pi.benepick.domain.hash.service.HashCommandService;
 import com._pi.benepick.domain.hash.service.HashQueryService;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
+import com._pi.benepick.domain.penaltyHists.dto.PenaltyRequest;
 import com._pi.benepick.domain.penaltyHists.service.PenaltyHistsCommandService;
+import com._pi.benepick.domain.pointHists.dto.PointHistsRequest;
 import com._pi.benepick.domain.pointHists.service.PointHistsCommandService;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import com._pi.benepick.domain.raffles.service.RafflesQueryService;
@@ -241,7 +243,9 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
 
     private void noshowPenalty(Members members) {
         members.updatePenalty(members.getPenaltyCnt() + 5);
-        penaltyHistsCommandService.updatePenaltyHists(members, "노쑈 패널티 부여", 5);
+        penaltyHistsCommandService.savePenaltyHists(new PenaltyRequest.ChangePenaltyHistDTO(
+                5L,"노쑈 패널티 부여",members,members.getPenaltyCnt()
+        ));
     }
 
     private void changeConfirmRaffleEnd(Draws draws) {
@@ -257,7 +261,9 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
     private void nonWinnerPointRefund(Draws waitDraw) {
         Members waitMembers = waitDraw.getRaffleId().getMemberId();
         waitMembers.increasePoint(Math.round(waitDraw.getRaffleId().getPoint() / 2.0));
-        pointHistsCommandService.refundPointHists(waitMembers, waitDraw, "낙첨 포인트 반환");
+        pointHistsCommandService.refundPointHists(new PointHistsRequest.RefundPointHistDTO(
+                "낙첨 포인트 반환", waitDraw
+        ));
     }
 
     public DrawsResponse.DrawsResponseResultListDTO verificationSeed(Long goodsId, String hash) {

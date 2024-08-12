@@ -2,6 +2,7 @@ package com._pi.benepick.domain.pointHists.service;
 
 import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.members.entity.Members;
+import com._pi.benepick.domain.pointHists.dto.PointHistsRequest;
 import com._pi.benepick.domain.pointHists.entity.PointHists;
 import com._pi.benepick.domain.pointHists.repository.PointHistsRepository;
 import org.springframework.stereotype.Service;
@@ -16,22 +17,22 @@ public class PointHistsCommandServiceImpl implements PointHistsCommandService{
 
     private final PointHistsRepository pointHistsRepository;
 
-    public void savePointHists(Members members, String comment, Long point) {
+    public void savePointHists(PointHistsRequest.ChangePointHistDTO changePointRequestDTO) {
         PointHists pointHists = PointHists.builder()
-                .memberId(members)
-                .content(comment)
-                .pointChange(point)
-                .totalPoint(members.getPoint())
+                .memberId(changePointRequestDTO.getMembers())
+                .content(changePointRequestDTO.getContent())
+                .pointChange(changePointRequestDTO.getPoint())
+                .totalPoint(changePointRequestDTO.getTotalPoint())
                 .build();
         pointHistsRepository.save(pointHists);
     }
 
-    public void refundPointHists(Members members, Draws draws, String comment) {
+    public void refundPointHists(PointHistsRequest.RefundPointHistDTO refundPointHistDTO) {
         PointHists pointHists = PointHists.builder()
-                .memberId(members)
-                .content(comment)
-                .pointChange(Math.round(draws.getRaffleId().getPoint() / 2.0))
-                .totalPoint(members.getPoint())
+                .memberId(refundPointHistDTO.getDraws().getRaffleId().getMemberId())
+                .content(refundPointHistDTO.getContent())
+                .pointChange(Math.round(refundPointHistDTO.getDraws().getRaffleId().getPoint() / 2.0))
+                .totalPoint(refundPointHistDTO.getDraws().getRaffleId().getMemberId().getPoint())
                 .build();
         pointHistsRepository.save(pointHists);
     }

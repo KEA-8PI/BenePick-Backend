@@ -30,4 +30,7 @@ public class RafflesQueryServiceImpl implements RafflesQueryService {
         return rafflesRepository.findAllByGoodsIdOrderByPointAsc(goods);
     }
 
+    public List<Raffles> findAllByGoodsIdOrderByPointDesc(Goods goods) {
+        return rafflesRepository.findAllByGoodsIdOrderByPointDesc(goods);
+    }
 }

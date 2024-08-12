@@ -10,4 +10,5 @@ public interface RafflesQueryService {
     List<Raffles> findAllByGoodsIdOrderByPointAsc(Goods goods);
     List<Raffles> findAllByMemberId(Members members);
     List<Raffles> findAllByGoodsId(Goods goods);
+    List<Raffles> findAllByGoodsIdOrderByPointDesc(Goods goods);
 }
