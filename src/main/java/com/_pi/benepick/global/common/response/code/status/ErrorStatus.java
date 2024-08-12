@@ -25,6 +25,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "GOODS_003", "존재하지 않는 카테고리입니다."),
     _FILE_INPUT_DISABLED(HttpStatus.BAD_REQUEST, "GOODS_004", "파일 추가가 불가능합니다."),
     _GOODS_NAME_TOO_LONG(HttpStatus.BAD_REQUEST, "GOODS_005", "상품의 이름이 50자를 초과합니다."),
+    _COMPLETED_GOODS(HttpStatus.BAD_REQUEST, "GOODS_006", "응모가 종료된 상품입니다."),
 
     //raffle 관련
     _RAFFLES_NOT_FOUND(HttpStatus.NOT_FOUND, "RAFFLES_001", "존재하지 않는 응모입니다."),
