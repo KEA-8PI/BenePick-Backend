@@ -2,7 +2,6 @@ package com._pi.benepick.domain.draws.dto;
 
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import lombok.*;
-
 import java.util.List;
 
 public class DrawsStart {
