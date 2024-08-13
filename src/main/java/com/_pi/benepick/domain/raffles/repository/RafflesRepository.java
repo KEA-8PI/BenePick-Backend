@@ -6,7 +6,6 @@ import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.raffles.dto.RafflesResponse.RafflesAndGoodsCategory;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -30,9 +29,6 @@ public interface RafflesRepository extends JpaRepository<Raffles, Long> {
             "LEFT JOIN Categories c ON gc.categoryId.id = c.id " +
             "WHERE r.memberId.id = :memberId ORDER BY r.id")
     List<RafflesAndGoodsCategory> findRafflsAndGoodsCategoryByMemberId(@Param("memberId") String memberId);
-
-    @Query("SELECT r.id FROM Raffles r WHERE r.goodsId.id = :goodsId")
-    List<Long> findRaffleIdsByGoodsId(Long goodsId);
 
     Optional<Raffles> findByGoodsIdAndMemberId(Goods goods, Members members);
 

@@ -18,6 +18,7 @@ import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -31,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static com._pi.benepick.domain.goods.entity.GoodsStatus.COMPLETED;
@@ -38,6 +40,7 @@ import static com._pi.benepick.domain.goods.entity.GoodsStatus.COMPLETED;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class GoodsComposeServiceImpl implements GoodsComposeService {
     private final GoodsRepository goodsRepository;
     private final GoodsCategoriesCommandService goodsCategoriesCommandService;
@@ -154,9 +157,7 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
     @Override
     public GoodsResponse.GoodsDetailResponseDTO getGoodsInfo(Long goodsId) {
         Goods goods = goodsQueryService.getGoodsById(goodsId);
-        GoodsCategories goodsCategories = goodsCategoriesQueryService.getGoodsCategoriesByGoodsId(goods);
-        Categories category = categoriesQueryService.getCategoriesById(goodsCategories.getCategoryId().getId());
-        return GoodsResponse.GoodsDetailResponseDTO.of(goods, category.getName());
+        return GoodsResponse.GoodsDetailResponseDTO.of(goods);
     }
 
     // 상품 검색
@@ -169,6 +170,7 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
             Categories categories = categoriesQueryService.getCategoriesByName(category);
             categoryId = categories.getId();
         }
+
         // 상품 검색 쿼리 호출
         Page<Goods> goodsPage;
         if (GoodsFilter.POPULAR.equals(sortBy)) { // 인기순 처리
@@ -176,10 +178,10 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
         } else {
             goodsPage = goodsRepository.searchGoods(goodsStatus, categoryId, keyword, pageRequest);
         }
-        int total=(int)goodsPage.getTotalElements();
+        int total = (int) goodsPage.getTotalElements();
 
         List<GoodsResponse.GoodsSearchResponseDTO> goodsSearchDTOList = goodsPage.getContent().stream()
-                .map(g -> GoodsResponse.GoodsSearchResponseDTO.of(g, category, member))
+                .map(g -> GoodsResponse.GoodsSearchResponseDTO.of(g,member))
                 .toList();
         return GoodsResponse.GoodsListSearchResponseDTO.builder()
                 .goodsSearchDTOList(goodsSearchDTOList)
@@ -187,5 +189,19 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
                 .build();
     }
 
+    @Override
+    public List<Goods> getGoodsList(String categoryName, LocalDateTime startDate, LocalDateTime endDate) {
+        List<Goods> goodsList;
+        if (categoryName != null && !categoryName.isEmpty()) {
+            Categories category = categoriesQueryService.getCategoriesByName(categoryName);
+            goodsList = goodsQueryService.getGoodsByCategoryId(category.getId());
+        } else {
+            goodsList = goodsQueryService.getAll();
+        }
+        return goodsList.stream()
+                .filter(goods -> goods.getRaffleEndAt().isAfter(startDate) && goods.getRaffleEndAt().isBefore(endDate))
+                .sorted(Comparator.comparing(Goods::getRaffleEndAt))
+                .toList();
+    }
 }
 

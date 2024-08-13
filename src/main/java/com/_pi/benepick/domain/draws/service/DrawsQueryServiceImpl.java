@@ -150,5 +150,18 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         }
     }
 
+    @Override
+    public Double getAveragePointByGoodsIdAndStatuses(Long goodsId, List<Status> statuses){
+        return drawsRepository.findAveragePointByGoodsIdAndStatuses(goodsId, statuses);
+    }
 
+    @Override
+    public Long countByRaffleIdsAndStatuses(List<Long> rafflesId, List<Status> statuses){
+        return drawsRepository.countByRaffleIdsAndStatuses(rafflesId, statuses);
+    }
+
+    @Override
+    public List<Draws> getDrawsByGoodsIdAndStatuses(Long goodsId, List<Status> statuses){
+        return drawsRepository.findDrawsByGoodsIdAndStatuses(goodsId, statuses);
+    }
 }
