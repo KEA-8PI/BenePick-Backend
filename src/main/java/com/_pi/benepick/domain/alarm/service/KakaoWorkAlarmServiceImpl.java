@@ -1,6 +1,7 @@
 package com._pi.benepick.domain.alarm.service;
 
 import com._pi.benepick.domain.alarm.domain.Message;
+import com._pi.benepick.domain.alarm.domain.MessageType;
 import com._pi.benepick.domain.alarm.messageObject.HeaderBlock;
 import com._pi.benepick.domain.alarm.messageObject.ImageBlock;
 import com._pi.benepick.domain.alarm.messageObject.MessageContent;
@@ -8,6 +9,7 @@ import com._pi.benepick.domain.alarm.messageObject.TextBlock;
 import com._pi.benepick.domain.alarm.messageObject.ButtonBlock;
 import com._pi.benepick.domain.alarm.messageObject.Action;
 import com._pi.benepick.domain.alarm.repository.MessageRepository;
+import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -52,6 +54,13 @@ public class KakaoWorkAlarmServiceImpl implements AlarmService {
         String url = "https://api.kakaowork.com/v1/messages.send_by_email";
 
         return restTemplate.exchange(url, HttpMethod.POST, requestAPI, Object.class).getBody();
+    }
+
+    public String getMessageFactory(Members members, String url, MessageType type) {
+        if (type.equals(MessageType.ADDITIONAL)) {
+            return getAdditionalCongratulationsMessage(members.getId(), members.getName(), url);
+        }
+        return getCongratulationsMessage(members.getId(), members.getName(), url);
     }
 
     /**
