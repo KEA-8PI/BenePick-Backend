@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = EnumValidator.class)
 public @interface EnumValid {
-    String message() default "Invalid value. This is not permitted.";
+    String message() default "Role은 enum 타입만 가능합니다.";
 
     Class<?>[] groups() default {};
 
