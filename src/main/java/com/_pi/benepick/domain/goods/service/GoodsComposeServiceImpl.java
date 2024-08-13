@@ -14,6 +14,7 @@ import com._pi.benepick.domain.goodsCategories.entity.GoodsCategories;
 import com._pi.benepick.domain.goodsCategories.service.GoodsCategoriesCommandService;
 import com._pi.benepick.domain.goodsCategories.service.GoodsCategoriesQueryService;
 import com._pi.benepick.domain.members.entity.Members;
+import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +49,9 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
     // 상품 파일 추가
     @Override
     public GoodsResponse.GoodsUploadResponseDTO uploadGoodsFile(MultipartFile file, Members member) {
-        goodsQueryService.checkAdmin(member);
+        if (member.getRole() == Role.MEMBER) {
+            throw new ApiException(ErrorStatus._ACCESS_DENIED_FOR_MEMBER);
+        }
         List<GoodsResponse.GoodsAddResponseDTO> goodsAddResponseDTOList = new ArrayList<>();
 
         try (InputStream inputStream = file.getInputStream();
@@ -94,7 +97,9 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
     // 상품 추가 ( 응모 상태 자동 수정 )
     @Override
     public GoodsAddResponseDTO addGoods(GoodsRequestDTO goodsAddDTO, Members member) {
-        goodsQueryService.checkAdmin(member);
+        if (member.getRole() == Role.MEMBER) {
+            throw new ApiException(ErrorStatus._ACCESS_DENIED_FOR_MEMBER);
+        }
         goodsAddDTO.restrictName();
 
         Goods goods = goodsCommandService.createGoods(goodsAddDTO);
@@ -108,7 +113,9 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
     // 상품 수정 ( 응모 상태 자동 수정 )
     @Override
     public GoodsResponse.GoodsAddResponseDTO updateGoods(Long goodsId, GoodsRequest.GoodsRequestDTO goodsUpdateDTO, Members member) {
-        goodsQueryService.checkAdmin(member);
+        if (member.getRole() == Role.MEMBER) {
+            throw new ApiException(ErrorStatus._ACCESS_DENIED_FOR_MEMBER);
+        }
         goodsUpdateDTO.restrictName();
 
         Goods goods = goodsQueryService.getGoodsById(goodsId);
@@ -129,7 +136,9 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
     // 상품 삭제
     @Override
     public GoodsResponse.GoodsDeleteResponseDTO deleteGoods(List<Long> deleteList, Members member) {
-        goodsQueryService.checkAdmin(member);
+        if (member.getRole() == Role.MEMBER) {
+            throw new ApiException(ErrorStatus._ACCESS_DENIED_FOR_MEMBER);
+        }
 
         List<Long> deletedList = new ArrayList<>();
 

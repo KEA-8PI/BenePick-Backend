@@ -27,7 +27,9 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
     // 상품 목록 조회 (+ 검색)
     @Override
     public GoodsResponse.GoodsListResponseDTO getGoodsList(Integer page, Integer size, String keyword, Members member) {
-        checkAdmin(member);
+        if (member.getRole() == Role.MEMBER) {
+            throw new ApiException(ErrorStatus._ACCESS_DENIED_FOR_MEMBER);
+        }
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
         Page<Goods> goodsPage;
         if (keyword != null && !keyword.isEmpty()) {
@@ -73,12 +75,5 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
     @Override
     public Goods getGoodsById(Long id){
         return goodsRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._GOODS_NOT_FOUND));
-    }
-
-    @Override
-    public void checkAdmin(Members member) {
-        if (member.getRole() == Role.MEMBER) {
-            throw new ApiException(ErrorStatus._ACCESS_DENIED_FOR_MEMBER);
-        }
     }
 }
