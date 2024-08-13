@@ -112,4 +112,12 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
             throw new ApiException(ErrorStatus._ACCESS_DENIED_FOR_MEMBER);
         }
     }
+
+    public void updateGoodsStatus(LocalDateTime now) {
+        List<Goods> goodsList = goodsRepository.findByRaffleStartAtBeforeAndGoodsStatus(now, GoodsStatus.SCHEDULED);
+        for (Goods goods : goodsList) {
+            goods.updateStatus(GoodsStatus.PROGRESS);
+        }
+    }
+
 }

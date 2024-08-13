@@ -9,6 +9,10 @@ import java.security.NoSuchAlgorithmException;
 
 public class DoubleToSHA256 {
 
+    private DoubleToSHA256() {
+        throw new IllegalStateException("Utility Class.");
+    }
+
     public static String getSHA256Hash(double input) {
         String inputString = Double.toString(input);
         byte[] inputBytes = inputString.getBytes(StandardCharsets.UTF_8);

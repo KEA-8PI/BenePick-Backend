@@ -1,4 +1,5 @@
 package com._pi.benepick.domain.penaltyHists.service;
+
 import com._pi.benepick.domain.penaltyHists.dto.PenaltyRequest.ChangePenaltyHistDTO;
 import com._pi.benepick.domain.penaltyHists.entity.PenaltyHists;
 import com._pi.benepick.domain.penaltyHists.repository.PenaltyHistsRepository;
@@ -10,11 +11,16 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class PenaltyHistsCommandServiceImpl implements PenaltyHistsCommandService{
+
     private final PenaltyHistsRepository penaltyHistsRepository;
-    @Override
-    public void changePenaltyHist(ChangePenaltyHistDTO changePenaltyHistDTO){
-        Long result=changePenaltyHistDTO.getTotalPenalty()+changePenaltyHistDTO.getPenaltyCnt();
-        PenaltyHists penaltyHists=changePenaltyHistDTO.toEntity(changePenaltyHistDTO,result);
+
+    public void createPenaltyHists(ChangePenaltyHistDTO changePenaltyHistDTO) {
+        PenaltyHists penaltyHists = PenaltyHists.builder()
+                .memberId(changePenaltyHistDTO.getMember())
+                .content(changePenaltyHistDTO.getContent())
+                .totalPenalty(Math.toIntExact(changePenaltyHistDTO.getMember().getPenaltyCnt()))
+                .penaltyCount(Math.toIntExact(changePenaltyHistDTO.getPenaltyCnt()))
+                .build();
         penaltyHistsRepository.save(penaltyHists);
     }
 }

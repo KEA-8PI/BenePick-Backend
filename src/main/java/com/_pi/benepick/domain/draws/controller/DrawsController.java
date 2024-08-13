@@ -1,33 +1,19 @@
 package com._pi.benepick.domain.draws.controller;
 
 import com._pi.benepick.domain.draws.dto.DrawsRequest;
-import com._pi.benepick.domain.draws.entity.Draws;
-import com._pi.benepick.domain.draws.service.DrawsCommandService;
+import com._pi.benepick.domain.draws.service.DrawsComposeService;
+import com._pi.benepick.domain.draws.service.DrawsQueryService;
 import com._pi.benepick.domain.members.entity.Members;
-import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.global.common.annotation.MemberObject;
-import com._pi.benepick.global.common.exception.ApiException;
-import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletResponse;
 import com._pi.benepick.domain.draws.dto.DrawsResponse;
-import com._pi.benepick.domain.draws.service.DrawsQueryService;
 import com._pi.benepick.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,8 +22,8 @@ import java.util.stream.Collectors;
 @Tag(name = "Draws", description = "추첨 API")
 public class DrawsController {
 
+    private final DrawsComposeService drawsComposeService;
     private final DrawsQueryService drawsQueryService;
-    private final DrawsCommandService drawsCommandService;
 
     @Operation(summary = "상품별 결과 조회", description = "상품의 추첨 결과가 당첨자인 사원들과 그 내역을 확인할 수 있습니다.(사용자 페이지)")
     @GetMapping("/result/{goodsId}")
@@ -60,13 +46,13 @@ public class DrawsController {
     @Operation(summary = "사원별 종료된 응모 내역 조회", description = "사원이 응모한 추첨 종료된 상품들과 그 내역을 확인할 수 있습니다.")
     @GetMapping("/complete/list")
     public ApiResponse<DrawsResponse.DrawsResponseByMembersListDTO> getCompleteRafflesByMemberId(@Parameter(hidden = true) @MemberObject Members member) {
-        return ApiResponse.onSuccess(drawsQueryService.getCompleteRafflesByMemberId(member));
+        return ApiResponse.onSuccess(drawsComposeService.getCompleteRafflesByMemberId(member));
     }
 
     @Operation(summary = "당첨자 상태 관리", description = "당첨자들의 상태를 관리할 수 있습니다.")
     @PatchMapping("/winners/edit/{winnersId}")
     public ApiResponse<DrawsResponse.EditWinnerStatus> editWinnerStatus(@Parameter(hidden = true) @MemberObject Members member,@PathVariable Long winnersId, @RequestBody DrawsRequest.DrawsRequestDTO dto) {
-        return ApiResponse.onSuccess(drawsCommandService.editWinnerStatus(member, winnersId, dto));
+        return ApiResponse.onSuccess(drawsComposeService.editWinnerStatus(member, winnersId, dto));
     }
 
     @Operation(summary = "추첨 결과 다운로드", description = "추첨 결과가 정리된 엑셀 파일을 다운로드 할 수 있습니다.")
@@ -78,7 +64,7 @@ public class DrawsController {
     @Operation(summary = "추첨 검증", description = "시드값을 이용하여 추첨 로직 검증을 할 수 있습니다.")
     @GetMapping("/verification/{goodsId}")
     public ApiResponse<DrawsResponse.DrawsResponseResultListDTO> verificationSeed(@PathVariable Long goodsId, @RequestParam String seed) {
-        return ApiResponse.onSuccess(drawsCommandService.verificationSeed(goodsId, seed));
+        return ApiResponse.onSuccess(drawsComposeService.verificationSeed(goodsId, seed));
     }
 
 }
