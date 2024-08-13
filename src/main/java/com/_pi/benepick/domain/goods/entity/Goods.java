@@ -1,5 +1,6 @@
 package com._pi.benepick.domain.goods.entity;
 
+import com._pi.benepick.domain.goods.dto.GoodsRequest;
 import com._pi.benepick.domain.goodsCategories.entity.GoodsCategories;
 import com._pi.benepick.domain.hash.entity.Hash;
 import com._pi.benepick.domain.raffles.entity.Raffles;
@@ -16,6 +17,7 @@ import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -76,5 +78,17 @@ public class Goods extends BaseJPATimeEntity {
     public boolean isWishlistForMember(String memberId) {
         return wishlists.stream()
                 .anyMatch(wishlist -> wishlist.getMemberId().getId().equals(memberId));
+    }
+
+    public void updateGoods(GoodsRequest.GoodsRequestDTO goodsUpdateDTO, GoodsStatus goodsStatus){
+        this.name = Objects.nonNull( goodsUpdateDTO.getName())? goodsUpdateDTO.getName() : this.name;
+        this.amounts = Objects.nonNull( goodsUpdateDTO.getAmounts())? goodsUpdateDTO.getAmounts() : this.amounts;
+        this.image = Objects.nonNull( goodsUpdateDTO.getImage())? goodsUpdateDTO.getImage() : this.image;
+        this.description = Objects.nonNull( goodsUpdateDTO.getDescription())? goodsUpdateDTO.getDescription() : this.description;
+        this.price = Objects.nonNull( goodsUpdateDTO.getPrice())? goodsUpdateDTO.getPrice() : this.price;
+        this.discountPrice = Objects.nonNull( goodsUpdateDTO.getDiscountPrice())? goodsUpdateDTO.getDiscountPrice() : this.discountPrice;
+        this.raffleStartAt = Objects.nonNull( goodsUpdateDTO.getRaffleStartAt())? goodsUpdateDTO.getRaffleStartAt() : this.raffleStartAt;
+        this.raffleEndAt = Objects.nonNull( goodsUpdateDTO.getRaffleEndAt())? goodsUpdateDTO.getRaffleEndAt() : this.raffleEndAt;
+        this.goodsStatus = goodsStatus;
     }
 }
