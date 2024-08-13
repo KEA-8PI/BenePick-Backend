@@ -32,10 +32,6 @@ public class AuthCommandServiceImpl implements AuthCommandService {
         Members member = membersRepository.findById(requestDTO.getId())
                 .orElseThrow(() -> new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
 
-//        if (!member.getPassword().equals(requestDTO.getPassword())) {
-//            throw new ApiException(ErrorStatus._MEMBER_PASSWORD_NOT_MATCH);
-//        }
-
         if(!passwordEncoder.matches(requestDTO.getPassword(),member.getPassword())){
             throw new ApiException(ErrorStatus._MEMBER_PASSWORD_NOT_MATCH);
         }
