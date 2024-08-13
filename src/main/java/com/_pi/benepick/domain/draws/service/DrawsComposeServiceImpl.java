@@ -45,6 +45,7 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
     private final PointHistsCommandService pointHistsCommandService;
     private final PenaltyHistsCommandService penaltyHistsCommandService;
     private final HashQueryService hashQueryService;
+    private final AlarmService alarmService;
 
     public void drawStart(LocalDateTime now) {
         List<Goods> goodsList = goodsQueryService.findByRaffleEndAtBeforeAndGoodsStatus(now);
