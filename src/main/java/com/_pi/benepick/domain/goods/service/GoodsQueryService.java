@@ -15,4 +15,6 @@ public interface GoodsQueryService {
     PageRequest createPageRequest(Integer page, Integer size, GoodsFilter sortBy);
     Goods getGoodsById(Long id);
     List<Goods> findByRaffleEndAtBeforeAndGoodsStatus(LocalDateTime now);
+    List<Goods> getGoodsByCategoryId(Long categoryId);
+    List<Goods> getAll();
 }

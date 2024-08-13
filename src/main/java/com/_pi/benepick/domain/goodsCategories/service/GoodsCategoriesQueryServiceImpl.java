@@ -23,8 +23,7 @@ public class GoodsCategoriesQueryServiceImpl implements GoodsCategoriesQueryServ
 
     @Override
     public String getGoodsCategory(Raffles raffles) {
-        String categoryName = (goodsCategoriesRepository.findByGoodsId(raffles.getGoodsId()))
+        return goodsCategoriesRepository.findByGoodsId(raffles.getGoodsId())
                 .map(goodsCategories -> goodsCategories.getCategoryId().getName()).orElse("NONE");
-        return categoryName;
     }
 }

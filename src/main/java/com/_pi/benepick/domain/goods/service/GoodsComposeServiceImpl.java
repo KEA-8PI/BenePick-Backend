@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static com._pi.benepick.domain.goods.entity.GoodsStatus.COMPLETED;
@@ -188,5 +189,19 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
                 .build();
     }
 
+    @Override
+    public List<Goods> getGoodsList(String categoryName, LocalDateTime startDate, LocalDateTime endDate) {
+        List<Goods> goodsList;
+        if (categoryName != null && !categoryName.isEmpty()) {
+            Categories category = categoriesQueryService.getCategoriesByName(categoryName);
+            goodsList = goodsQueryService.getGoodsByCategoryId(category.getId());
+        } else {
+            goodsList = goodsQueryService.getAll();
+        }
+        return goodsList.stream()
+                .filter(goods -> goods.getRaffleEndAt().isAfter(startDate) && goods.getRaffleEndAt().isBefore(endDate))
+                .sorted(Comparator.comparing(Goods::getRaffleEndAt))
+                .toList();
+    }
 }
 
