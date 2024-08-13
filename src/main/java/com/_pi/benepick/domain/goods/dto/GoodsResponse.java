@@ -33,7 +33,7 @@ public class GoodsResponse {
         private String category; //카테고리
         private Long count; //응모자 수
 
-        public static GoodsDetailResponseDTO of(Goods goods, String category){
+        public static GoodsDetailResponseDTO of(Goods goods){
             return GoodsDetailResponseDTO.builder()
                     .id(goods.getId())
                     .name(goods.getName())
@@ -45,7 +45,7 @@ public class GoodsResponse {
                     .discountPrice(goods.getDiscountPrice())
                     .raffleStartAt(goods.getRaffleStartAt())
                     .raffleEndAt(goods.getRaffleEndAt())
-                    .category(category)
+                    .category(goods.getGoodsCategories().getCategoryId().getName())
                     .count((long) goods.getRaffles().size())
                     .build();
         }
@@ -115,7 +115,7 @@ public class GoodsResponse {
         private Long count; //응모자 수
         private boolean isWishlist; //위시리스트 등록 여부
 
-        public static GoodsSearchResponseDTO of(Goods goods, String category, Members member) {
+        public static GoodsSearchResponseDTO of(Goods goods, Members member) {
             return GoodsSearchResponseDTO.builder()
                     .id(goods.getId())
                     .name(goods.getName())
@@ -124,7 +124,7 @@ public class GoodsResponse {
                     .goodsStatus(goods.getGoodsStatus().name())
                     .raffleStartAt(goods.getRaffleStartAt())
                     .raffleEndAt(goods.getRaffleEndAt())
-                    .category(category)
+                    .category(goods.getGoodsCategories().getCategoryId().getName())
                     .count((long) goods.getRaffles().size())
                     .isWishlist(member != null && goods.isWishlistForMember(member.getId()))
                     .build();

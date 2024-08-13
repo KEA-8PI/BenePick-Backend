@@ -15,7 +15,11 @@ public interface DrawsQueryService {
     DrawsResponseByWinnerGoodsIdListDTO getWinnersByGoodsId(Members members, Long goodsId);
     Draws findDrawsById(Long drawsId);
     List<Draws> findAllByGoodsIdAndStatus(Goods goods, Status status);
+    List<Draws> findByMemberId(Members member);
     List<Draws> findByGoodsId(Long goodsId);
     DrawsResponseByMembersListDTO getCompleteRafflesByMemberId(Members member);
     void downloadExcel(Members members, Long goodsId, HttpServletResponse response);
+    Double getAveragePointByGoodsIdAndStatuses(Long goodsId, List<Status> statuses);
+    Long countByRaffleIdsAndStatuses(List<Long> rafflesId, List<Status> statuses);
+    List<Draws> getDrawsByGoodsIdAndStatuses(Long goodsId, List<Status> statuses);
 }

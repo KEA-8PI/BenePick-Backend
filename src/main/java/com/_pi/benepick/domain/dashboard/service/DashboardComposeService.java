@@ -4,6 +4,6 @@ import com._pi.benepick.domain.dashboard.dto.DashboardResponse;
 
 import java.time.LocalDateTime;
 
-public interface DashboardQueryService {
+public interface DashboardComposeService {
     DashboardResponse.DashboardResponseDTO getDashboard(String category, LocalDateTime startDate, LocalDateTime endDate);
 }
