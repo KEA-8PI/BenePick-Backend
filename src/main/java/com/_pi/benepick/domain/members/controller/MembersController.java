@@ -56,7 +56,7 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
     }
     @Operation(summary = "사원 등록", description = "사원을 등록합니다 (관리자용)")
     @PostMapping("/add")
-    public ApiResponse<MembersDetailResponseDTO> addMember(@Parameter(hidden = true) @MemberObject Members member,@RequestBody @Valid AdminMemberRequestDTO membersRequestDTO){
+    public ApiResponse<MembersDetailResponseDTO> addMember(@Parameter(hidden = true) @MemberObject Members member,@Valid @RequestBody AdminMemberRequestDTO membersRequestDTO){
         return ApiResponse.onSuccess(membersComposeService.addMembers(membersRequestDTO,member));
     }
 
@@ -68,7 +68,7 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
 
     @Operation(summary = "사원 정보 수정", description = "사원 정보를 수정합니다. (관리자용)")
     @PatchMapping("/info/{memberID}")
-    public ApiResponse<UpdateMemberResponseDTO> updateMemberInfo(@Parameter(hidden = true) @MemberObject Members member,@PathVariable String memberID, @RequestBody MembersRequestDTO membersRequestDTO){
+    public ApiResponse<UpdateMemberResponseDTO> updateMemberInfo(@Parameter(hidden = true) @MemberObject Members member,@PathVariable String memberID, @Valid @RequestBody MembersRequestDTO membersRequestDTO){
         return ApiResponse.onSuccess(membersComposeService.updateMemberInfo(memberID,membersRequestDTO,member));
     }
 
