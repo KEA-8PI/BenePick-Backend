@@ -50,11 +50,4 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
         }
     }
 
-    public void updateGoodsStatus(LocalDateTime now) {
-        List<Goods> goodsList = goodsRepository.findByRaffleStartAtBeforeAndGoodsStatus(now, GoodsStatus.SCHEDULED);
-        for (Goods goods : goodsList) {
-            goods.updateStatus(GoodsStatus.PROGRESS);
-        }
-    }
-
 }
