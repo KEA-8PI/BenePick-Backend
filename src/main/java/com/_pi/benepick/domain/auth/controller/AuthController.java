@@ -5,7 +5,6 @@ import com._pi.benepick.domain.auth.dto.AuthResponse.AuthLoginResponseDTO;
 import com._pi.benepick.domain.auth.dto.AuthResponse.AuthLogoutResponseDTO;
 import com._pi.benepick.domain.auth.service.AuthCommandService;
 import com._pi.benepick.domain.members.entity.Members;
-import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.global.common.annotation.MemberObject;
 import com._pi.benepick.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 @Tag(name = "Auth", description = "인증 API")
 public class AuthController {
-    private final MembersRepository membersRepository;
     private final AuthCommandService authCommandService;
 
     @PostMapping("/login")

@@ -32,6 +32,7 @@ private final PointHistsQueryService pointHistsQueryService;
                         .pointChange(p.getPointChange())
                         .totalPoint(p.getTotalPoint())
                         .content(p.getContent())
+                        .createdAt(p.getCreatedAt())
                         .build())
                 .toList();
 

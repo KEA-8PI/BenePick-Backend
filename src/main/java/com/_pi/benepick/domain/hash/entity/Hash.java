@@ -20,7 +20,7 @@ public class Hash extends BaseJPATimeEntity {
     private Long id;
 
     @Column
-    private String hash;
+    private String cryptoHash;
 
     @Column
     private Double seed;

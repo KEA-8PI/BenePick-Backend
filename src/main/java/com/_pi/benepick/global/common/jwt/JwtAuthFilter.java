@@ -2,7 +2,6 @@ package com._pi.benepick.global.common.jwt;
 
 
 import com._pi.benepick.global.common.jwt.dto.JwtResponse.JwtPairDTO;
-import com._pi.benepick.global.common.jwt.entity.JwtTokens;
 import com._pi.benepick.global.common.utils.CookieUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -10,9 +9,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;

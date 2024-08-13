@@ -2,7 +2,6 @@ package com._pi.benepick.domain.goods.dto;
 
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,13 +46,6 @@ public class GoodsRequest {
                     .goodsStatus(status)
                     .build();
         }
-    }
-
-    @Builder
-    @AllArgsConstructor
-    @Getter
-    public static class GoodsDeleteRequestDTO {
-        private List<Long> goodsList;
     }
 
 }
