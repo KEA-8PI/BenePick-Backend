@@ -77,6 +77,29 @@ public class MembersComposeServiceImpl implements MembersComposeService{
     }
 
     @Override
+    public MembersDetailResponseDTO addMembers(MembersRequest.AdminMemberRequestDTO membersRequestDTO, Members member){
+        if(membersRepository.findById(membersRequestDTO.getId()).isPresent()){
+            throw new ApiException(ErrorStatus._ALREADY_EXIST_MEMBER);
+        }
+        if(member.getRole() == Role.MEMBER){
+            throw new ApiException(ErrorStatus._UNAUTHORIZED);
+        }
+        Members members=membersRequestDTO.toEntity(membersRequestDTO);
+        membersRepository.save(members);
+        ChangePointHistDTO changePointRequestDTO = new ChangePointHistDTO(
+                0L, "사원 등록", membersRequestDTO.getPoint(), members
+        );
+
+        ChangePenaltyHistDTO changePenaltyHistDTO= new ChangePenaltyHistDTO(
+                0L,"사원 등록",members,membersRequestDTO.getPenaltyCnt()
+        );
+
+        pointHistsCommandService.changePointHist(changePointRequestDTO);
+        penaltyHistsCommandService.changePenaltyHist(changePenaltyHistDTO);
+        return MembersDetailResponseDTO.from(members);
+    }
+
+    @Override
     public DeleteResponseDTO deleteMembers(List<String> memberIdList, Members members){
         //관리자 인지 확인하는 로직
         if(membersQueryService.getMemberRoleByid(members.getId())== Role.MEMBER){
