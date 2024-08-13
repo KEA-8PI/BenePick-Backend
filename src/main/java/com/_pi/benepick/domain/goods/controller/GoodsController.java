@@ -12,6 +12,7 @@ import com._pi.benepick.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -55,26 +56,26 @@ public class GoodsController {
     @Operation(summary = "상품 검색 (메인페이지용)", description = "선택된 필터,카테고리,검색어를 기반으로 상품을 조회합니다.")
     @GetMapping("/search/{goodsStatus}")
     public ApiResponse<GoodsResponse.GoodsListSearchResponseDTO> searchGoods(@Parameter(hidden = true) @MemberObject Members member,
-                                                                             @PathVariable GoodsStatus goodsStatus,
-                                                                             @RequestParam Integer page,
-                                                                             @RequestParam Integer size,
-                                                                             @RequestParam(required = false) String keyword,
-                                                                             @RequestParam GoodsFilter sortBy,
-                                                                             @RequestParam(required = false) String category) {
+                                                                             @PathVariable @Valid GoodsStatus goodsStatus,
+                                                                             @RequestParam @Valid Integer page,
+                                                                             @RequestParam @Valid Integer size,
+                                                                             @RequestParam(required = false) @Valid String keyword,
+                                                                             @RequestParam @Valid GoodsFilter sortBy,
+                                                                             @RequestParam(required = false ) @Valid String category) {
         return ApiResponse.onSuccess(goodsComposeService.searchGoods(goodsStatus, page, size, keyword, sortBy, category, member));
     }
 
     //상품 추가 (관리자)
     @Operation(summary = "상품 추가", description = "상품을 추가합니다.")
     @PostMapping("/add")
-    public ApiResponse<GoodsResponse.GoodsAddResponseDTO> addGoods(@Parameter(hidden = true) @MemberObject Members member, @RequestBody GoodsRequest.GoodsRequestDTO goodsAddDTO) {
+    public ApiResponse<GoodsResponse.GoodsAddResponseDTO> addGoods(@Parameter(hidden = true) @MemberObject Members member, @RequestBody @Valid GoodsRequest.GoodsRequestDTO goodsAddDTO) {
         return ApiResponse.onSuccess(goodsComposeService.addGoods(goodsAddDTO, member));
     }
 
     //상품 파일 업로드 (관리자)
     @Operation(summary = "상품 파일 업로드", description = "엑셀 파일을 업로드하여 상품 정보를 저장합니다.")
     @PostMapping(value ="/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<GoodsResponse.GoodsUploadResponseDTO> uploadGoodsFile(@Parameter(hidden = true) @MemberObject Members member, @RequestPart("file") MultipartFile file) {
+    public ApiResponse<GoodsResponse.GoodsUploadResponseDTO> uploadGoodsFile(@Parameter(hidden = true) @MemberObject Members member, @RequestPart("file") @Valid MultipartFile file) {
         return ApiResponse.onSuccess(goodsComposeService.uploadGoodsFile(file, member));
     }
 
@@ -82,15 +83,15 @@ public class GoodsController {
     @Operation(summary = "상품 수정", description = "상품 상세 정보를 수정합니다.")
     @PostMapping("/update/{goodsId}")
     public ApiResponse<GoodsResponse.GoodsAddResponseDTO> updateGoods(@Parameter(hidden = true) @MemberObject Members member,
-                                                                      @PathVariable Long goodsId,
-                                                                      @RequestBody GoodsRequest.GoodsRequestDTO goodsUpdateDTO) {
+                                                                      @PathVariable @Valid Long goodsId,
+                                                                      @RequestBody @Valid GoodsRequest.GoodsRequestDTO goodsUpdateDTO) {
         return ApiResponse.onSuccess(goodsComposeService.updateGoods(goodsId, goodsUpdateDTO, member));
     }
 
     //상품 삭제 (관리자)
     @Operation(summary = "상품 삭제", description = "상품을 삭제합니다.")
     @DeleteMapping("/delete")
-    public ApiResponse<GoodsResponse.GoodsDeleteResponseDTO> deleteGoods(@Parameter(hidden = true) @MemberObject Members member, @RequestParam List<Long> deleteList) {
+    public ApiResponse<GoodsResponse.GoodsDeleteResponseDTO> deleteGoods(@Parameter(hidden = true) @MemberObject Members member, @RequestParam @Valid List<Long> deleteList) {
         return ApiResponse.onSuccess(goodsComposeService.deleteGoods(deleteList, member));
     }
 }
