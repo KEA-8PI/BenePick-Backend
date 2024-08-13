@@ -3,8 +3,6 @@ package com._pi.benepick.global.common.jwt;
 
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.jwt.dto.JwtResponse.JwtPairDTO;
-import com._pi.benepick.global.common.jwt.entity.JwtTokens;
-import com._pi.benepick.global.common.jwt.repository.JwtTokensRepository;
 import com._pi.benepick.global.common.jwt.service.JwtCommandService;
 import com._pi.benepick.global.common.jwt.service.JwtQueryService;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
@@ -14,7 +12,6 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +20,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 @RequiredArgsConstructor
 @Component
@@ -127,14 +123,5 @@ public class JwtTokenProvider {
     // 리프레시 토큰 쿠키 생성
     public Cookie createRefreshTokenCookie(String token) {
         return CookieUtils.createCookie("refreshToken", token, (int) refreshTokenExpiration, "/");
-    }
-
-
-    // localhost에서도 테스트하기 위해 추가
-    public Cookie createLocalHostAccessTokenCookie(String token) {
-        return CookieUtils.createLocalhostCookie("accessToken", token, (int) accessTokenExpiration, "/");
-    }
-    public Cookie createLocalHostRefreshTokenCookie(String token) {
-        return CookieUtils.createLocalhostCookie("refreshToken", token, (int) refreshTokenExpiration, "/");
     }
 }

@@ -2,7 +2,6 @@ package com._pi.benepick.global.common.jwt;
 
 
 import com._pi.benepick.global.common.jwt.dto.JwtResponse.JwtPairDTO;
-import com._pi.benepick.global.common.jwt.entity.JwtTokens;
 import com._pi.benepick.global.common.utils.CookieUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -10,7 +9,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -45,12 +43,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     // redis에 기존 refresh token 삭제 및 새로운 refresh token 저장
                     Cookie accessTokenCookie = jwtTokenProvider.createAccessTokenCookie(newToken.getAccessToken());
                     Cookie refreshTokenCookie = jwtTokenProvider.createRefreshTokenCookie(newToken.getRefreshToken());
-
-                    // localhost에서도 테스트하기 위해 추가
-                    Cookie localAccessTokenCookie = jwtTokenProvider.createLocalHostAccessTokenCookie(newToken.getAccessToken());
-                    Cookie localRefreshTokenCookie = jwtTokenProvider.createLocalHostRefreshTokenCookie(newToken.getAccessToken());
-                    response.addCookie(localAccessTokenCookie);
-                    response.addCookie(localRefreshTokenCookie);
 
                     response.addCookie(accessTokenCookie);
                     response.addCookie(refreshTokenCookie);

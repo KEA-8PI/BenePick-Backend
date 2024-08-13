@@ -1,22 +1,19 @@
 package com._pi.benepick.domain.raffles.dto;
 
-import com._pi.benepick.domain.goods.entity.Goods;
-import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.raffles.entity.Raffles;
-import jakarta.persistence.Column;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class RafflesResponse {
+
+    private RafflesResponse() {
+        throw new IllegalStateException("Utility Class.");
+    }
 
     // 상품별 응모 조회 반환 값에 사용되는 format
     @Builder
@@ -46,14 +43,16 @@ public class RafflesResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class RafflesResponseByMembersDTO {
-        private Long id; // 응모_id
+        private Long goodsId; // 응모_id
+        private String goodsName;
         private Long point; // 사용포인트
         private LocalDateTime rafflesAt;
         private String categoryName; //카테고리 이름
 
         public static RafflesResponseByMembersDTO of(Raffles raffles, String categoryName) {
             return RafflesResponseByMembersDTO.builder()
-                    .id(raffles.getId())
+                    .goodsId(raffles.getGoodsId().getId())
+                    .goodsName(raffles.getGoodsId().getName())
                     .point(raffles.getPoint())
                     .rafflesAt(raffles.getUpdatedAt())
                     .categoryName(categoryName)
@@ -87,5 +86,25 @@ public class RafflesResponse {
     @NoArgsConstructor
     public static class RafflesResponseByMembersListDTO {
         private List<RafflesResponseByMembersDTO> rafflesResponseByMembersList;
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CurrentStateByGoodsDTO {
+        private int grade;
+        private Long point;
+
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CurrentStateByGoodsListDTO {
+        private List<CurrentStateByGoodsDTO> currentStateByGoodsDTOList;
+        private int average;
+        private Long total;
     }
 }

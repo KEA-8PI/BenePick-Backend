@@ -17,11 +17,11 @@ public interface RafflesRepository extends JpaRepository<Raffles, Long> {
 
     List<Raffles> findAllByGoodsIdOrderByPointAsc(Goods goods);
 
+    List<Raffles> findAllByGoodsIdOrderByPointDesc(Goods goods);
+
     List<Raffles> findAllByGoodsId(Goods goods);
 
     List<Raffles> findAllByMemberId(Members members);
-
-    List<Raffles> findAllByMemberId_Id(String id);
 
     @Query("SELECT r.id FROM Raffles r WHERE r.goodsId.id = :goodsId")
     List<Long> findRaffleIdsByGoodsId(Long goodsId);

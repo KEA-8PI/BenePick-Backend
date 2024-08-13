@@ -18,12 +18,13 @@ public class JwtCommandServiceImpl implements JwtCommandService{
 
     @Value("${jwt.refresh.expiration}")
     private long refreshTokenExpiration;
+
     @Override
     public JwtPairDTO createJwtPair(String accessToken, String refreshToken) {
         JwtTokens jwtTokens = JwtTokens.builder()
                 .id(accessToken)
                 .refreshToken(refreshToken)
-                .ttl(refreshTokenExpiration)
+                .duration(refreshTokenExpiration)
                 .build();
 
         jwtTokensRepository.save(jwtTokens);

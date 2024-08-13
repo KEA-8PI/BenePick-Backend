@@ -1,21 +1,12 @@
 package com._pi.benepick.domain.draws.service;
 
-import com._pi.benepick.domain.draws.dto.DrawsRequest;
 import com._pi.benepick.domain.draws.dto.DrawsResponse;
 import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.draws.repository.DrawsRepository;
-import com._pi.benepick.domain.draws.service.algorithm.DrawAlgorithm;
-import com._pi.benepick.domain.draws.service.algorithm.RaffleDraw;
 import com._pi.benepick.domain.goods.entity.Goods;
-import com._pi.benepick.domain.goods.entity.GoodsStatus;
-import com._pi.benepick.domain.goods.repository.GoodsRepository;
-import com._pi.benepick.domain.goodsCategories.repository.GoodsCategoriesRepository;
 import com._pi.benepick.domain.draws.entity.Status;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
-import com._pi.benepick.domain.members.repository.MembersRepository;
-import com._pi.benepick.domain.raffles.entity.Raffles;
-import com._pi.benepick.domain.raffles.repository.RafflesRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,7 +16,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,14 +23,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class DrawsQueryServiceImpl implements DrawsQueryService {
     private final DrawsRepository drawsRepository;
-    private final GoodsCategoriesRepository goodsCategoriesRepository;
 
     public DrawsResponse.DrawsResponseByGoodsListDTO getResultByGoodsId(Long goodsId) {
         List<DrawsResponse.DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
@@ -58,7 +46,7 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         List<DrawsResponse.DrawsResponseByWaitlistGoodsIdDTO> waitlistGoodsIdDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
                 .filter(draws -> draws.getStatus() == Status.WAITLIST)
                 .map(DrawsResponse.DrawsResponseByWaitlistGoodsIdDTO::from)
-                .collect(Collectors.toList());
+                .toList();
 
         return DrawsResponse.DrawsResponseByWaitlistGoodsIdListDTO.builder()
                 .drawsResponseByWaitlistGoodsIdDTOS(waitlistGoodsIdDTOS)
@@ -70,27 +58,27 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         List<DrawsResponse.DrawsResponseByWinnerGoodsIdDTO> winnerGoodsIdDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
                 .filter(draws -> draws.getStatus() != Status.WAITLIST && draws.getStatus() != Status.NON_WINNER)
                 .map(DrawsResponse.DrawsResponseByWinnerGoodsIdDTO::from)
-            .toList();
+                .toList();
 
         return DrawsResponse.DrawsResponseByWinnerGoodsIdListDTO.builder()
                 .drawsResponseByWinnerGoodsIdDTOS(winnerGoodsIdDTOS)
                 .build();
     }
 
-    public DrawsResponse.DrawsResponseByMembersListDTO getCompleteRafflesByMemberId(Members member) {
-        if (!(member.getRole().equals(Role.MEMBER))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        List<DrawsResponse.DrawsResponseByMembersDTO> drawsResponseByMembersDTOS = (drawsRepository.findByMemberId(member.getId())).stream()
-                .filter(draws -> draws.getRaffleId().getGoodsId().getGoodsStatus() == GoodsStatus.COMPLETED)
-                .map(draws -> {
-                    String categoryName = (goodsCategoriesRepository.findByGoodsId(draws.getRaffleId().getGoodsId())).map(goodsCategories -> goodsCategories.getCategoryId().getName()).orElse("NONE");
+    public Draws findDrawsById(Long drawsId) {
+        return drawsRepository.findById(drawsId).orElseThrow(() -> new ApiException(ErrorStatus._RAFFLES_NOT_COMPLETED));
+    }
 
-                    return DrawsResponse.DrawsResponseByMembersDTO.of(draws, categoryName);
-                })
-            .toList();
+    public List<Draws> findAllByGoodsIdAndStatus(Goods goods, Status status) {
+        return drawsRepository.findAllByGoodsIdAndStatus(goods.getId(), status);
+    }
 
-        return DrawsResponse.DrawsResponseByMembersListDTO.builder()
-                .drawsResponseByMembersList(drawsResponseByMembersDTOS)
-                .build();
+    public List<Draws> findByGoodsId(Long goodsId) {
+        return drawsRepository.findByGoodsId(goodsId);
+    }
+
+    public List<Draws> findByMemberId(Members member) {
+        return drawsRepository.findByMemberId(member.getId());
     }
 
     public void downloadExcel(Members members, Long goodsId, HttpServletResponse response) {
@@ -130,7 +118,6 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
                 cell = row.createCell(i);
                 cell.setCellValue(rowdata.get(i));
             }
-
         }
 
         int rowCount = 0;
@@ -152,5 +139,6 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
             throw new ApiException(ErrorStatus._FILE_OUTPUT_DISABLED);
         }
     }
+
 
 }
