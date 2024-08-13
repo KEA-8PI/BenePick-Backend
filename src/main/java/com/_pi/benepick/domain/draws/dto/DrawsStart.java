@@ -24,7 +24,7 @@ public class DrawsStart {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor
     public static class DrawsStartListDTO {
-        private List<DrawsStart.DrawsStartDTO> drawsStartDTOList;
+        private List<DrawsStartDTO> drawsStartDTOList;
     }
 
 }

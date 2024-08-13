@@ -1,6 +1,6 @@
 package com._pi.benepick.domain.draws.repository;
 
-import com._pi.benepick.domain.draws.dto.DrawsResponse;
+import com._pi.benepick.domain.draws.dto.DrawsResponse.DrawsAndGoodsCategory;
 import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.draws.entity.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,7 +22,7 @@ public interface DrawsRepository extends JpaRepository<Draws, Long> {
             "LEFT JOIN GoodsCategories gc ON g.id = gc.goodsId.id " +
             "LEFT JOIN Categories c ON gc.categoryId.id = c.id " +
             "WHERE r.memberId.id = :memberId ORDER BY d.id")
-    List<DrawsResponse.DrawsAndGoodsCategory> findDrawsAndGoodsCategoryByMemberId(@Param("memberId") String memberId);
+    List<DrawsAndGoodsCategory> findDrawsAndGoodsCategoryByMemberId(@Param("memberId") String memberId);
 
     @Query("SELECT d FROM Draws d LEFT JOIN Raffles r ON d.raffleId.id = r.id WHERE r.goodsId.id = :goodsId AND d.status = :status ORDER BY d.sequence ASC")
     List<Draws> findAllByGoodsIdAndStatus(@Param("goodsId") Long goodsId, @Param("status") Status status);

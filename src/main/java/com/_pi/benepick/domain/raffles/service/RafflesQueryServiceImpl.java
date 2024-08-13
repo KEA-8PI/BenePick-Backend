@@ -4,7 +4,7 @@ import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
-import com._pi.benepick.domain.raffles.dto.RafflesResponse;
+import com._pi.benepick.domain.raffles.dto.RafflesResponse.*;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import com._pi.benepick.domain.raffles.repository.RafflesRepository;
 import com._pi.benepick.global.common.exception.ApiException;
@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,16 +34,16 @@ public class RafflesQueryServiceImpl implements RafflesQueryService {
         return rafflesRepository.findAllByGoodsIdOrderByPointDesc(goods);
     }
 
-    public RafflesResponse.RafflesResponseByMembersListDTO getProgressRafflesByMemberId(Members member) {
+    public RafflesResponseByMembersListDTO getProgressRafflesByMemberId(Members member) {
         if(member.getRole().equals(Role.ADMIN)) throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        List<RafflesResponse.RafflesAndGoodsCategory> rafflesList = rafflesRepository.findRafflsAndGoodsCategoryByMemberId(member.getId());
+        List<RafflesAndGoodsCategory> rafflesList = rafflesRepository.findRafflsAndGoodsCategoryByMemberId(member.getId());
 
-        List<RafflesResponse.RafflesResponseByMembersDTO> rafflesResponseByMembersDTOS = rafflesList.stream()
+        List<RafflesResponseByMembersDTO> rafflesResponseByMembersDTOS = rafflesList.stream()
                 .filter(raffles -> raffles.getRaffles().getGoodsId().getGoodsStatus() == GoodsStatus.PROGRESS)
-                .map(raffles -> RafflesResponse.RafflesResponseByMembersDTO.of(raffles.getRaffles(), raffles.getCategory()))
+                .map(raffles -> RafflesResponseByMembersDTO.of(raffles.getRaffles(), raffles.getCategory()))
                 .toList();
 
-        return RafflesResponse.RafflesResponseByMembersListDTO.builder()
+        return RafflesResponseByMembersListDTO.builder()
                 .rafflesResponseByMembersList(rafflesResponseByMembersDTOS)
                 .build();
     }

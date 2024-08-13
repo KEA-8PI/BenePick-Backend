@@ -1,7 +1,7 @@
 package com._pi.benepick.domain.draws.service;
 
-import com._pi.benepick.domain.draws.dto.DrawsRequest;
-import com._pi.benepick.domain.draws.dto.DrawsResponse;
+import com._pi.benepick.domain.draws.dto.DrawsRequest.DrawsRequestDTO;
+import com._pi.benepick.domain.draws.dto.DrawsResponse.*;
 import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.draws.entity.Status;
 import com._pi.benepick.domain.draws.service.algorithm.DrawAlgorithm;
@@ -9,7 +9,6 @@ import com._pi.benepick.domain.draws.service.algorithm.RaffleDraw;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goods.service.GoodsQueryService;
-import com._pi.benepick.domain.goodsCategories.service.GoodsCategoriesQueryService;
 import com._pi.benepick.domain.hash.entity.Hash;
 import com._pi.benepick.domain.hash.service.HashCommandService;
 import com._pi.benepick.domain.hash.service.HashQueryService;
@@ -69,7 +68,7 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
 
     }
 
-    public DrawsResponse.EditWinnerStatus editWinnerStatus(Members members, Long winnerId, DrawsRequest.DrawsRequestDTO dto) {
+    public EditWinnerStatus editWinnerStatus(Members members, Long winnerId, DrawsRequestDTO dto) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         Draws draws = drawsQueryService.findDrawsById(winnerId);
         try {
@@ -100,7 +99,7 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
                 throw new ApiException(ErrorStatus._BAD_REQUEST);
         }
 
-        return DrawsResponse.EditWinnerStatus.from(draws);
+        return EditWinnerStatus.from(draws);
     }
 
     private void waitlistUpdate(Draws draws) {
@@ -139,7 +138,7 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
         ));
     }
 
-    public DrawsResponse.DrawsResponseResultListDTO verificationSeed(Long goodsId, String hash) {
+    public DrawsResponseResultListDTO verificationSeed(Long goodsId, String hash) {
         Hash findHash = hashQueryService.findByCryptoHash(hash);
         double seed = findHash.getSeed();
 
@@ -147,11 +146,11 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
         List<Raffles> rafflesList = rafflesQueryService.findAllByGoodsIdOrderByPointAsc(goods);
 
         List<Draws> drawsListResult = RaffleDraw.performDraw(seed, rafflesList, goods);
-        List<DrawsResponse.DrawsResponseResultDTO> drawsResponseResultDTOList = drawsListResult.stream()
-                .map(DrawsResponse.DrawsResponseResultDTO::from)
+        List<DrawsResponseResultDTO> drawsResponseResultDTOList = drawsListResult.stream()
+                .map(DrawsResponseResultDTO::from)
                 .toList();
 
-        return DrawsResponse.DrawsResponseResultListDTO.builder()
+        return DrawsResponseResultListDTO.builder()
                 .drawsList(drawsResponseResultDTOList)
                 .build();
     }
