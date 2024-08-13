@@ -33,6 +33,8 @@ public class CookieUtils {
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setMaxAge(0);
+        cookie.setSecure(true);
+        cookie.setAttribute("SameSite", "None"); //프론트 개발용. 배포시 제거
         response.addCookie(cookie);
     }
 
