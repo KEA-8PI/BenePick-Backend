@@ -2,12 +2,7 @@ package com._pi.benepick.domain.alarm.service;
 
 import com._pi.benepick.domain.alarm.domain.Message;
 import com._pi.benepick.domain.alarm.domain.MessageType;
-import com._pi.benepick.domain.alarm.messageObject.HeaderBlock;
-import com._pi.benepick.domain.alarm.messageObject.ImageBlock;
-import com._pi.benepick.domain.alarm.messageObject.MessageContent;
-import com._pi.benepick.domain.alarm.messageObject.TextBlock;
-import com._pi.benepick.domain.alarm.messageObject.ButtonBlock;
-import com._pi.benepick.domain.alarm.messageObject.Action;
+import com._pi.benepick.domain.alarm.messageObject.*;
 import com._pi.benepick.domain.alarm.repository.MessageRepository;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.global.common.exception.ApiException;
@@ -25,7 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -115,7 +109,7 @@ public class KakaoWorkAlarmServiceImpl implements AlarmService {
 
     @Override
     public void sendAlarmStart() {
-        List<Message> messages = messageRepository.findAllByIsDeleted(false);
+        List<Message> messages = messageRepository.findAll();
         for (Message message : messages) {
             sendAlarm(message.getContents());
             log.info("send alarm to {}", message.getEmail());
