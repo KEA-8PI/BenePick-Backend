@@ -35,16 +35,9 @@ public class RafflesComposeServiceImpl implements RafflesComposeService {
 
     public RafflesResponseByGoodsListDTO getAllRafflesByGoodsId(Members members, Long goodsId) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
-<<<<<<< HEAD
         List<RafflesResponseByGoodsDTO> rafflesResponseByGoodsDTOS = rafflesQueryService
-                .findAllByGoodsId(goodsQueryService.findById(goodsId)).stream()
-                .map(RafflesResponseByGoodsDTO::from)
-=======
-        List<RafflesResponse.RafflesResponseByGoodsDTO> rafflesResponseByGoodsDTOS = rafflesQueryService
                 .findAllByGoodsId(goodsQueryService.getGoodsById(goodsId)).stream()
-
-                .map(RafflesResponse.RafflesResponseByGoodsDTO::from)
->>>>>>> 35df897ece953f76e3842c693a9ba4cd133a65df
+                .map(RafflesResponseByGoodsDTO::from)
                 .toList();
 
         return RafflesResponseByGoodsListDTO.builder()
@@ -83,13 +76,8 @@ public class RafflesComposeServiceImpl implements RafflesComposeService {
         return RafflesResponseByGoodsDTO.from(raffles);
     }
 
-<<<<<<< HEAD
     public CurrentStateByGoodsListDTO getCurrentStateByGoods(Long goodsId) {
-        List<Raffles> rafflesList = rafflesQueryService.findAllByGoodsIdOrderByPointDesc(goodsQueryService.findById(goodsId));
-=======
-    public RafflesResponse.CurrentStateByGoodsListDTO getCurrentStateByGoods(Long goodsId) {
         List<Raffles> rafflesList = rafflesQueryService.findAllByGoodsIdOrderByPointDesc(goodsQueryService.getGoodsById(goodsId));
->>>>>>> 35df897ece953f76e3842c693a9ba4cd133a65df
 
         List<CurrentStateByGoodsDTO> currentStateByGoodsDTOS = new ArrayList<>();
         for (int i = 0; i < Math.min(5, rafflesList.size()); i++) {

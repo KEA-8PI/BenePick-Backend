@@ -1,14 +1,9 @@
 package com._pi.benepick.domain.draws.service;
 
-<<<<<<< HEAD
-import com._pi.benepick.domain.draws.dto.DrawsRequest.DrawsRequestDTO;
-import com._pi.benepick.domain.draws.dto.DrawsResponse.*;
-=======
 import com._pi.benepick.domain.alarm.domain.MessageType;
 import com._pi.benepick.domain.alarm.service.AlarmService;
-import com._pi.benepick.domain.draws.dto.DrawsRequest;
-import com._pi.benepick.domain.draws.dto.DrawsResponse;
->>>>>>> 35df897ece953f76e3842c693a9ba4cd133a65df
+import com._pi.benepick.domain.draws.dto.DrawsRequest.DrawsRequestDTO;
+import com._pi.benepick.domain.draws.dto.DrawsResponse.*;
 import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.draws.entity.Status;
 import com._pi.benepick.domain.draws.service.algorithm.DrawAlgorithm;
@@ -78,9 +73,6 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
 
     }
 
-<<<<<<< HEAD
-    public EditWinnerStatus editWinnerStatus(Members members, Long winnerId, DrawsRequestDTO dto) {
-=======
     private void sendAlarm(Draws draws, MessageType type) {
         Members members = draws.getRaffleId().getMemberId();
         String url = "http://localhost:3000/goods/" + draws.getRaffleId().getGoodsId();
@@ -88,8 +80,7 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
         alarmService.saveMessage(members.getId(), members.getName(), contents);
     }
 
-    public DrawsResponse.EditWinnerStatus editWinnerStatus(Members members, Long winnerId, DrawsRequest.DrawsRequestDTO dto) {
->>>>>>> 35df897ece953f76e3842c693a9ba4cd133a65df
+    public EditWinnerStatus editWinnerStatus(Members members, Long winnerId, DrawsRequestDTO dto) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         Draws draws = drawsQueryService.findDrawsById(winnerId);
         try {

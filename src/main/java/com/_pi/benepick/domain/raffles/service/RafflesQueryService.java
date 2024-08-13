@@ -12,10 +12,5 @@ public interface RafflesQueryService {
 
     List<Raffles> findAllByGoodsId(Goods goods);
     List<Raffles> findAllByGoodsIdOrderByPointDesc(Goods goods);
-<<<<<<< HEAD
     RafflesResponseByMembersListDTO getProgressRafflesByMemberId(Members member);
-=======
-    RafflesResponse.RafflesResponseByMembersListDTO getProgressRafflesByMemberId(Members member);
-
->>>>>>> 35df897ece953f76e3842c693a9ba4cd133a65df
 }
