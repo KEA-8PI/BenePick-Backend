@@ -1,4 +1,4 @@
-package com._pi.benepick.domain.alarm.message;
+package com._pi.benepick.domain.alarm.messageObject;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Message {
+public class MessageContent {
 
     @JsonProperty("email")
     private String email;
@@ -21,7 +21,7 @@ public class Message {
     @JsonProperty("blocks")
     private List<Object> blocks;
 
-    public Message(String email, String text) {
+    public MessageContent(String email, String text) {
         this.email = email;
         this.text = text;
     }

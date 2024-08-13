@@ -2,6 +2,8 @@ package com._pi.benepick.domain.draws.dto;
 
 import com._pi.benepick.domain.draws.entity.Status;
 import com._pi.benepick.domain.draws.entity.Draws;
+import com._pi.benepick.domain.raffles.entity.Raffles;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,7 +31,7 @@ public class DrawsResponse {
         private LocalDateTime rafflesAt;
         private String categoryName; //카테고리 이름
 
-        public static DrawsResponse.DrawsResponseByMembersDTO of(Draws draws, String categoryName) {
+        public static DrawsResponseByMembersDTO of(Draws draws, String categoryName) {
             return DrawsResponseByMembersDTO.builder()
                     .goodsId(draws.getRaffleId().getGoodsId().getId())
                     .goodsName(draws.getRaffleId().getGoodsId().getName())
@@ -41,7 +43,7 @@ public class DrawsResponse {
                     .build();
         }
 
-        public static DrawsResponse.DrawsResponseByMembersDTO from(Draws draws) {
+        public static DrawsResponseByMembersDTO from(Draws draws) {
             return DrawsResponseByMembersDTO.builder()
                     .goodsId(draws.getRaffleId().getGoodsId().getId())
                     .goodsName(draws.getRaffleId().getGoodsId().getName())
@@ -68,7 +70,7 @@ public class DrawsResponse {
         private Status drawStatus; // 당첨 상태
         private LocalDateTime rafflesAt;
 
-        public static DrawsResponse.DrawsResponseByGoodsDTO from(Draws draws) {
+        public static DrawsResponseByGoodsDTO from(Draws draws) {
             return DrawsResponseByGoodsDTO.builder()
                     .id(draws.getRaffleId().getId())
                     .memberId(draws.getRaffleId().getMemberId().getId())
@@ -94,7 +96,7 @@ public class DrawsResponse {
         private Status status; // WINNER, WAITLIST, CANCLE, NOSHOW
 
         public static EditWinnerStatus from(Draws draws) {
-            return DrawsResponse.EditWinnerStatus.builder()
+            return EditWinnerStatus.builder()
                     .id(draws.getId())
                     .raffleId(draws.getRaffleId().getId())
                     .status(draws.getStatus())
@@ -132,7 +134,7 @@ public class DrawsResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class DrawsResponseByWinnerGoodsIdListDTO {
-        private List<DrawsResponse.DrawsResponseByWinnerGoodsIdDTO> drawsResponseByWinnerGoodsIdDTOS;
+        private List<DrawsResponseByWinnerGoodsIdDTO> drawsResponseByWinnerGoodsIdDTOS;
     }
 
     @Builder
@@ -162,7 +164,7 @@ public class DrawsResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class DrawsResponseByWaitlistGoodsIdListDTO {
-        private List<DrawsResponse.DrawsResponseByWaitlistGoodsIdDTO> drawsResponseByWaitlistGoodsIdDTOS;
+        private List<DrawsResponseByWaitlistGoodsIdDTO> drawsResponseByWaitlistGoodsIdDTOS;
     }
 
     @Builder
@@ -177,7 +179,7 @@ public class DrawsResponse {
         private Long point;
 
         public static DrawsResponseResultDTO from(Draws draws) {
-            return DrawsResponse.DrawsResponseResultDTO.builder()
+            return DrawsResponseResultDTO.builder()
                     .status(draws.getStatus())
                     .sequence(draws.getSequence())
                     .memberId(draws.getRaffleId().getMemberId().getId())
@@ -186,12 +188,21 @@ public class DrawsResponse {
         }
     }
 
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class DrawsAndGoodsCategory {
+        private Draws draws;
+        private String category;
+
+    }
+
     @Builder
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
     public static class DrawsResponseByMembersListDTO {
-        private List<DrawsResponse.DrawsResponseByMembersDTO> drawsResponseByMembersList;
+        private List<DrawsResponseByMembersDTO> drawsResponseByMembersList;
     }
 
     @Builder
@@ -199,7 +210,7 @@ public class DrawsResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class DrawsResponseByGoodsListDTO {
-        private List<DrawsResponse.DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOList;
+        private List<DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOList;
     }
 
     @Builder
@@ -207,7 +218,7 @@ public class DrawsResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class DrawsResponseResultListDTO {
-        private List<DrawsResponse.DrawsResponseResultDTO> drawsList;
+        private List<DrawsResponseResultDTO> drawsList;
     }
 
 }

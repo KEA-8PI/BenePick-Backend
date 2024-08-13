@@ -3,15 +3,14 @@ package com._pi.benepick.domain.raffles.service;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goods.service.GoodsQueryService;
-import com._pi.benepick.domain.goodsCategories.service.GoodsCategoriesQueryService;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.domain.penaltyHists.dto.PenaltyRequest;
 import com._pi.benepick.domain.penaltyHists.service.PenaltyHistsCommandService;
 import com._pi.benepick.domain.pointHists.dto.PointHistsRequest;
 import com._pi.benepick.domain.pointHists.service.PointHistsCommandService;
-import com._pi.benepick.domain.raffles.dto.RafflesRequest;
-import com._pi.benepick.domain.raffles.dto.RafflesResponse;
+import com._pi.benepick.domain.raffles.dto.RafflesRequest.RafflesRequestDTO;
+import com._pi.benepick.domain.raffles.dto.RafflesResponse.*;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
@@ -33,39 +32,20 @@ public class RafflesComposeServiceImpl implements RafflesComposeService {
     private final GoodsQueryService goodsQueryService;
     private final PenaltyHistsCommandService penaltyHistsCommandService;
     private final PointHistsCommandService pointHistsCommandService;
-    private final GoodsCategoriesQueryService goodsCategoriesQueryService;
 
-    public RafflesResponse.RafflesResponseByMembersListDTO getProgressRafflesByMemberId(Members member) {
-        if(member.getRole().equals(Role.ADMIN)) throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        List<Raffles> rafflesList = rafflesQueryService.findAllByMemberId(member);
-
-        List<RafflesResponse.RafflesResponseByMembersDTO> rafflesResponseByMembersDTOS = rafflesList.stream()
-                .filter(raffles -> raffles.getGoodsId().getGoodsStatus() == GoodsStatus.PROGRESS)
-                .map(raffles -> {
-                    String categoryName = goodsCategoriesQueryService.getGoodsCategory(raffles);
-                    return RafflesResponse.RafflesResponseByMembersDTO.of(raffles, categoryName);
-                })
-                .toList();
-
-        return RafflesResponse.RafflesResponseByMembersListDTO.builder()
-                .rafflesResponseByMembersList(rafflesResponseByMembersDTOS)
-                .build();
-
-    }
-
-    public RafflesResponse.RafflesResponseByGoodsListDTO getAllRafflesByGoodsId(Members members, Long goodsId) {
+    public RafflesResponseByGoodsListDTO getAllRafflesByGoodsId(Members members, Long goodsId) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        List<RafflesResponse.RafflesResponseByGoodsDTO> rafflesResponseByGoodsDTOS = rafflesQueryService
+        List<RafflesResponseByGoodsDTO> rafflesResponseByGoodsDTOS = rafflesQueryService
                 .findAllByGoodsId(goodsQueryService.getGoodsById(goodsId)).stream()
-                .map(RafflesResponse.RafflesResponseByGoodsDTO::from)
+                .map(RafflesResponseByGoodsDTO::from)
                 .toList();
 
-        return RafflesResponse.RafflesResponseByGoodsListDTO.builder()
+        return RafflesResponseByGoodsListDTO.builder()
                 .rafflesResponseByGoodsList(rafflesResponseByGoodsDTOS)
                 .build();
     }
 
-    public RafflesResponse.RafflesResponseByGoodsDTO applyRaffle(Members members, Long goodsId, RafflesRequest.RafflesRequestDTO raffleAddDTO) {
+    public RafflesResponseByGoodsDTO applyRaffle(Members members, Long goodsId, RafflesRequestDTO raffleAddDTO) {
         if (raffleAddDTO.getPoint() <= 0) throw new ApiException(ErrorStatus._RAFFLES_POINT_TOO_LESS);
         if (!(members.getRole().equals(Role.MEMBER))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
 
@@ -93,15 +73,15 @@ public class RafflesComposeServiceImpl implements RafflesComposeService {
             ));
         }
 
-        return RafflesResponse.RafflesResponseByGoodsDTO.from(raffles);
+        return RafflesResponseByGoodsDTO.from(raffles);
     }
 
-    public RafflesResponse.CurrentStateByGoodsListDTO getCurrentStateByGoods(Long goodsId) {
+    public CurrentStateByGoodsListDTO getCurrentStateByGoods(Long goodsId) {
         List<Raffles> rafflesList = rafflesQueryService.findAllByGoodsIdOrderByPointDesc(goodsQueryService.getGoodsById(goodsId));
 
-        List<RafflesResponse.CurrentStateByGoodsDTO> currentStateByGoodsDTOS = new ArrayList<>();
+        List<CurrentStateByGoodsDTO> currentStateByGoodsDTOS = new ArrayList<>();
         for (int i = 0; i < Math.min(5, rafflesList.size()); i++) {
-            currentStateByGoodsDTOS.add(RafflesResponse.CurrentStateByGoodsDTO.builder()
+            currentStateByGoodsDTOS.add(CurrentStateByGoodsDTO.builder()
                     .grade(i + 1)
                     .point(rafflesList.get(i).getPoint())
                     .build());
@@ -113,14 +93,14 @@ public class RafflesComposeServiceImpl implements RafflesComposeService {
                     .mapToLong(Raffles::getPoint)
                     .sum();
 
-            currentStateByGoodsDTOS.add(RafflesResponse.CurrentStateByGoodsDTO.builder()
+            currentStateByGoodsDTOS.add(CurrentStateByGoodsDTO.builder()
                     .grade(6)
                     .point(totalRemainingPoints)
                     .build());
         }
 
         Long total = pointTotal(rafflesList);
-        return RafflesResponse.CurrentStateByGoodsListDTO.builder()
+        return CurrentStateByGoodsListDTO.builder()
                 .currentStateByGoodsDTOList(currentStateByGoodsDTOS)
                 .average(Math.round((float) total / rafflesList.size()))
                 .total(total)
