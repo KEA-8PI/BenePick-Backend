@@ -15,7 +15,7 @@ import org.hibernate.annotations.SQLRestriction;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @SQLRestriction("is_deleted = 'F'")
-@SQLDelete(sql = "UPDATE messages SET is_deleted = 'T' WHERE id = ?")
+@SQLDelete(sql = "UPDATE message SET is_deleted = 'T' WHERE id = ?")
 public class Message extends BaseJPATimeEntity {
 
     @Id
