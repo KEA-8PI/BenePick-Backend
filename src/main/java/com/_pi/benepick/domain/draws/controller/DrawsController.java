@@ -1,6 +1,6 @@
 package com._pi.benepick.domain.draws.controller;
 
-import com._pi.benepick.domain.draws.dto.DrawsRequest;
+import com._pi.benepick.domain.draws.dto.DrawsRequest.DrawsRequestDTO;
 import com._pi.benepick.domain.draws.service.DrawsComposeService;
 import com._pi.benepick.domain.draws.service.DrawsQueryService;
 import com._pi.benepick.domain.members.entity.Members;
@@ -11,8 +11,15 @@ import com._pi.benepick.domain.draws.dto.DrawsResponse.*;
 import com._pi.benepick.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,8 +56,20 @@ public class DrawsController {
 
     @Operation(summary = "당첨자 상태 관리", description = "당첨자들의 상태를 관리할 수 있습니다.")
     @PatchMapping("/winners/edit/{winnersId}")
-    public ApiResponse<EditWinnerStatus> editWinnerStatus(@Parameter(hidden = true) @MemberObject Members member,@PathVariable Long winnersId, @RequestBody DrawsRequest.DrawsRequestDTO dto) {
+    public ApiResponse<EditWinnerStatus> editWinnerStatus(@Parameter(hidden = true) @MemberObject Members member,@PathVariable Long winnersId, @Valid @RequestBody DrawsRequestDTO dto) {
         return ApiResponse.onSuccess(drawsComposeService.editWinnerStatus(member, winnersId, dto));
+    }
+    // 유효성 검사가 실패한 경우 예외를 처리하는 핸들러
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
     }
 
     @Operation(summary = "추첨 결과 다운로드", description = "추첨 결과가 정리된 엑셀 파일을 다운로드 할 수 있습니다.")

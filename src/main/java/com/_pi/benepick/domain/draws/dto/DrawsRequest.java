@@ -1,5 +1,7 @@
 package com._pi.benepick.domain.draws.dto;
 
+import com._pi.benepick.domain.draws.entity.Status;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 public class DrawsRequest {
@@ -13,7 +15,8 @@ public class DrawsRequest {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor
     public static class DrawsRequestDTO {
-        private String status;
+        @NotNull(message = "Status is required")
+        private Status status;
     }
 
 }
