@@ -1,8 +1,8 @@
 package com._pi.benepick.domain.pointHists.service;
 
-import com._pi.benepick.domain.pointHists.dto.PointHistsRequest.ChangePointHistDTO;
+import com._pi.benepick.domain.pointHists.dto.PointHistsRequest;
 
 public interface PointHistsCommandService {
-
-    void changePointHist(ChangePointHistDTO changePointHistDTO);
+    void createPointHists(PointHistsRequest.ChangePointHistDTO changePointRequestDTO);
+    void refundPointHists(PointHistsRequest.RefundPointHistDTO refundPointHistDTO);
 }

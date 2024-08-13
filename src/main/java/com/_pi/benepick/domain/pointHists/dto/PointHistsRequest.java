@@ -1,5 +1,6 @@
 package com._pi.benepick.domain.pointHists.dto;
 
+import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.pointHists.entity.PointHists;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,23 @@ public class PointHistsRequest {
                     .content(changePointHistDTO.getContent())
                     .totalPoint(result)
                     .memberId(changePointHistDTO.getMembers())
+                    .build();
+        }
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class RefundPointHistDTO {
+        private String content;
+        private Draws draws;
+
+        public PointHists toEntity(RefundPointHistDTO refundPointHistDTO){
+            return PointHists.builder()
+                    .content(refundPointHistDTO.getContent())
+                    .totalPoint(refundPointHistDTO.getDraws().getRaffleId().getMemberId().getPoint())
+                    .memberId(refundPointHistDTO.getDraws().getRaffleId().getMemberId())
                     .build();
         }
     }

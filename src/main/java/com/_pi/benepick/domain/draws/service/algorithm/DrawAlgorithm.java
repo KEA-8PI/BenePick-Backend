@@ -1,7 +1,6 @@
 package com._pi.benepick.domain.draws.service.algorithm;
 
 import com._pi.benepick.domain.draws.dto.DrawsStart;
-import com._pi.benepick.domain.raffles.entity.Raffles;
 import lombok.Getter;
 
 import java.security.SecureRandom;
@@ -12,6 +11,7 @@ import java.util.Random;
 public class DrawAlgorithm {
 
     private double seed;
+    private final Random random = new Random();
 
     public DrawAlgorithm(double seed) {
         this.seed = seed;
@@ -38,7 +38,6 @@ public class DrawAlgorithm {
     }
 
     private double random() {
-        Random random = new Random();
         random.setSeed(Double.doubleToLongBits(seed));
         double randomValue = random.nextDouble();
         seed = randomValue; // 새로운 랜덤 값을 시드로 업데이트
