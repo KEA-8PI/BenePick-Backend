@@ -1,7 +1,7 @@
 package com._pi.benepick.domain.members.dto;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
-import com._pi.benepick.validator.EnumValid;
+
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -30,7 +30,6 @@ public class MembersRequest {
         private Long penaltyCnt;
 
         @NotNull(message = "역할은 필수값입니다.")
-        @EnumValid(enumClass = Role.class, message = "Invalid role")
         private Role role;
 
     }
@@ -60,9 +59,7 @@ public class MembersRequest {
         @NotNull(message = "패널티수는 필수값입니다.")
         private Long penaltyCnt;
         @NotNull(message = "역할은 필수값입니다.")
-        @EnumValid(enumClass = Role.class, message = "Invalid role")
         private Role role;
-
         public Members toEntity(AdminMemberRequestDTO adminMemberRequestDTO){
             return Members.builder()
                     .id(adminMemberRequestDTO.getId())

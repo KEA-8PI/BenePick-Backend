@@ -27,6 +27,18 @@ public class MembersController {
     private final MembersCommandService membersCommandService;
     private final MembersQueryService membersQueryService;
     private final MembersComposeService membersComposeService;
+    // 유효성 검사가 실패한 경우 예외를 처리하는 핸들러
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+//        Map<String, String> errors = new HashMap<>();
+//        ex.getBindingResult().getAllErrors().forEach((error) -> {
+//            String fieldName = ((FieldError) error).getField();
+//            String errorMessage = error.getDefaultMessage();
+//            errors.put(fieldName, errorMessage);
+//        });
+//        return errors;
+//    }
 
     @Operation(summary = "복지포인트 조회 ", description = "사용자가 복지포인트를 조회합니다.")
     @GetMapping("/point")
@@ -56,7 +68,7 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
     }
     @Operation(summary = "사원 등록", description = "사원을 등록합니다 (관리자용)")
     @PostMapping("/add")
-    public ApiResponse<MembersDetailResponseDTO> addMember(@Parameter(hidden = true) @MemberObject Members member,@Valid @RequestBody AdminMemberRequestDTO membersRequestDTO){
+    public ApiResponse<MembersDetailResponseDTO> addMember(@Parameter(hidden = true) @MemberObject Members member, @Valid @RequestBody AdminMemberRequestDTO membersRequestDTO){
         return ApiResponse.onSuccess(membersComposeService.addMembers(membersRequestDTO,member));
     }
 
