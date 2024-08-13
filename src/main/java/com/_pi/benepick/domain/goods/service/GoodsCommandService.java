@@ -9,4 +9,5 @@ import java.time.LocalDateTime;
 public interface GoodsCommandService {
     GoodsStatus determineGoodsStatus(LocalDateTime raffleStartAt, LocalDateTime raffleEndAt);
     Goods createGoods(GoodsRequest.GoodsRequestDTO goodsAddDTO);
+    void updateGoodsStatus(LocalDateTime now);
 }

@@ -14,4 +14,5 @@ public interface GoodsQueryService {
     GoodsResponse.GoodsSeedsResponseDTO getSeeds(Long goodsId); //시드 값 조회
     PageRequest createPageRequest(Integer page, Integer size, GoodsFilter sortBy);
     Goods getGoodsById(Long id);
+    List<Goods> findByRaffleEndAtBeforeAndGoodsStatus(LocalDateTime now);
 }
