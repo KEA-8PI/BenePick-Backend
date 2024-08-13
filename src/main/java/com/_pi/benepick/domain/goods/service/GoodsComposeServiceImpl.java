@@ -155,9 +155,9 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
 
     // 상품 상세 조회
     @Override
-    public GoodsResponse.GoodsDetailResponseDTO getGoodsInfo(Long goodsId) {
+    public GoodsResponse.GoodsDetailResponseDTO getGoodsInfo(Long goodsId, Members member) {
         Goods goods = goodsQueryService.getGoodsById(goodsId);
-        return GoodsResponse.GoodsDetailResponseDTO.of(goods);
+        return GoodsResponse.GoodsDetailResponseDTO.of(goods,member);
     }
 
     // 상품 검색

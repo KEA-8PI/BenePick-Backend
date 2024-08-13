@@ -41,8 +41,8 @@ public class GoodsController {
     //상품 상세 조회
     @Operation(summary = "상품 상세 조회", description = "상품의 상세 정보를 조회합니다.(진행:PROGRESS,예정:SCHEDULED,종료:COMPLETED)")
     @GetMapping("/{goodsId}")
-    public ApiResponse<GoodsResponse.GoodsDetailResponseDTO> getGoodsInfo(@PathVariable Long goodsId) {
-        return ApiResponse.onSuccess(goodsComposeService.getGoodsInfo(goodsId));
+    public ApiResponse<GoodsResponse.GoodsDetailResponseDTO> getGoodsInfo(@Parameter(hidden = true) @MemberObject Members member, @PathVariable Long goodsId) {
+        return ApiResponse.onSuccess(goodsComposeService.getGoodsInfo(goodsId, member));
     }
 
     //시드 값 조회
