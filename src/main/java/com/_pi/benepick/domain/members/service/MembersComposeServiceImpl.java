@@ -94,8 +94,8 @@ public class MembersComposeServiceImpl implements MembersComposeService{
                 0L,"사원 등록",members,membersRequestDTO.getPenaltyCnt()
         );
 
-        pointHistsCommandService.changePointHist(changePointRequestDTO);
-        penaltyHistsCommandService.changePenaltyHist(changePenaltyHistDTO);
+        pointHistsCommandService.createPointHists(changePointRequestDTO);
+        penaltyHistsCommandService.createPenaltyHists(changePenaltyHistDTO);
         return MembersDetailResponseDTO.from(members);
     }
 
