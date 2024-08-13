@@ -11,5 +11,4 @@ public interface DrawsComposeService {
     void drawStart(LocalDateTime now);
     DrawsResponse.EditWinnerStatus editWinnerStatus(Members members, Long winnerId, DrawsRequest.DrawsRequestDTO dto);
     DrawsResponse.DrawsResponseResultListDTO verificationSeed(Long goodsId, String seed);
-    DrawsResponse.DrawsResponseByMembersListDTO getCompleteRafflesByMemberId(Members member);
 }

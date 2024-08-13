@@ -5,6 +5,7 @@ import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.draws.repository.DrawsRepository;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.draws.entity.Status;
+import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.global.common.exception.ApiException;
@@ -77,8 +78,16 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         return drawsRepository.findByGoodsId(goodsId);
     }
 
-    public List<Draws> findByMemberId(Members member) {
-        return drawsRepository.findByMemberId(member.getId());
+    public DrawsResponse.DrawsResponseByMembersListDTO getCompleteRafflesByMemberId(Members member) {
+        if (!(member.getRole().equals(Role.MEMBER))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
+        List<DrawsResponse.DrawsResponseByMembersDTO> drawsResponseByMembersDTOS = (drawsRepository.findDrawsAndGoodsCategoryByMemberId(member.getId()))
+                .stream().filter(draws -> draws.getDraws().getRaffleId().getGoodsId().getGoodsStatus() == GoodsStatus.COMPLETED)
+                .map(draws -> DrawsResponse.DrawsResponseByMembersDTO.of(draws.getDraws(), draws.getCategory()))
+                .toList();
+
+        return DrawsResponse.DrawsResponseByMembersListDTO.builder()
+                .drawsResponseByMembersList(drawsResponseByMembersDTOS)
+                .build();
     }
 
     public void downloadExcel(Members members, Long goodsId, HttpServletResponse response) {

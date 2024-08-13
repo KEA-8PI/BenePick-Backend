@@ -1,5 +1,6 @@
 package com._pi.benepick.domain.raffles.dto;
 
+import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -106,5 +107,14 @@ public class RafflesResponse {
         private List<CurrentStateByGoodsDTO> currentStateByGoodsDTOList;
         private int average;
         private Long total;
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class RafflesAndGoodsCategory {
+        private Raffles raffles;
+        private String category;
     }
 }

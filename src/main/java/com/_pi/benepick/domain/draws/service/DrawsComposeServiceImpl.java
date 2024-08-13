@@ -43,23 +43,6 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
     private final PointHistsCommandService pointHistsCommandService;
     private final PenaltyHistsCommandService penaltyHistsCommandService;
     private final HashQueryService hashQueryService;
-    private final GoodsCategoriesQueryService goodsCategoriesQueryService;
-
-    public DrawsResponse.DrawsResponseByMembersListDTO getCompleteRafflesByMemberId(Members member) {
-        if (!(member.getRole().equals(Role.MEMBER))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        List<DrawsResponse.DrawsResponseByMembersDTO> drawsResponseByMembersDTOS = (drawsQueryService.findByMemberId(member)).stream()
-                .filter(draws -> draws.getRaffleId().getGoodsId().getGoodsStatus() == GoodsStatus.COMPLETED)
-                .map(draws -> {
-                    String categoryName = goodsCategoriesQueryService.getGoodsCategory(draws.getRaffleId());
-
-                    return DrawsResponse.DrawsResponseByMembersDTO.of(draws, categoryName);
-                })
-                .toList();
-
-        return DrawsResponse.DrawsResponseByMembersListDTO.builder()
-                .drawsResponseByMembersList(drawsResponseByMembersDTOS)
-                .build();
-    }
 
     public void drawStart(LocalDateTime now) {
         List<Goods> goodsList = goodsQueryService.findByRaffleEndAtBeforeAndGoodsStatus(now);

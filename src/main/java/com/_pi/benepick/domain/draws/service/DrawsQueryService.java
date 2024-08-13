@@ -16,6 +16,6 @@ public interface DrawsQueryService {
     Draws findDrawsById(Long drawsId);
     List<Draws> findAllByGoodsIdAndStatus(Goods goods, Status status);
     List<Draws> findByGoodsId(Long goodsId);
-    List<Draws> findByMemberId(Members member);
+    DrawsResponse.DrawsResponseByMembersListDTO getCompleteRafflesByMemberId(Members member);
     void downloadExcel(Members members, Long goodsId, HttpServletResponse response);
 }

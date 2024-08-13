@@ -35,24 +35,6 @@ public class RafflesComposeServiceImpl implements RafflesComposeService {
     private final PointHistsCommandService pointHistsCommandService;
     private final GoodsCategoriesQueryService goodsCategoriesQueryService;
 
-    public RafflesResponse.RafflesResponseByMembersListDTO getProgressRafflesByMemberId(Members member) {
-        if(member.getRole().equals(Role.ADMIN)) throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        List<Raffles> rafflesList = rafflesQueryService.findAllByMemberId(member);
-
-        List<RafflesResponse.RafflesResponseByMembersDTO> rafflesResponseByMembersDTOS = rafflesList.stream()
-                .filter(raffles -> raffles.getGoodsId().getGoodsStatus() == GoodsStatus.PROGRESS)
-                .map(raffles -> {
-                    String categoryName = goodsCategoriesQueryService.getGoodsCategory(raffles);
-                    return RafflesResponse.RafflesResponseByMembersDTO.of(raffles, categoryName);
-                })
-                .toList();
-
-        return RafflesResponse.RafflesResponseByMembersListDTO.builder()
-                .rafflesResponseByMembersList(rafflesResponseByMembersDTOS)
-                .build();
-
-    }
-
     public RafflesResponse.RafflesResponseByGoodsListDTO getAllRafflesByGoodsId(Members members, Long goodsId) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         List<RafflesResponse.RafflesResponseByGoodsDTO> rafflesResponseByGoodsDTOS = rafflesQueryService

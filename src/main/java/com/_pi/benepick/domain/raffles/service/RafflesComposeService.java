@@ -6,7 +6,6 @@ import com._pi.benepick.domain.raffles.dto.RafflesResponse;
 
 public interface RafflesComposeService {
     RafflesResponse.RafflesResponseByGoodsDTO applyRaffle(Members members, Long goodsId, RafflesRequest.RafflesRequestDTO raffleAddDTO);
-    RafflesResponse.RafflesResponseByMembersListDTO getProgressRafflesByMemberId(Members member);
     RafflesResponse.RafflesResponseByGoodsListDTO getAllRafflesByGoodsId(Members members, Long goodsId);
     RafflesResponse.CurrentStateByGoodsListDTO getCurrentStateByGoods(Long goodsId);
 }

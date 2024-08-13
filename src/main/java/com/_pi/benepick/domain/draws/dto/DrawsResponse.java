@@ -2,6 +2,8 @@ package com._pi.benepick.domain.draws.dto;
 
 import com._pi.benepick.domain.draws.entity.Status;
 import com._pi.benepick.domain.draws.entity.Draws;
+import com._pi.benepick.domain.raffles.entity.Raffles;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -184,6 +186,15 @@ public class DrawsResponse {
                     .memberName(draws.getRaffleId().getMemberId().getName())
                     .build();
         }
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class DrawsAndGoodsCategory {
+        private Draws draws;
+        private String category;
     }
 
     @Builder
