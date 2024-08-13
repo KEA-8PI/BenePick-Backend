@@ -10,6 +10,7 @@ import com._pi.benepick.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.*;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -55,7 +56,7 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
     }
     @Operation(summary = "사원 등록", description = "사원을 등록합니다 (관리자용)")
     @PostMapping("/add")
-    public ApiResponse<MembersDetailResponseDTO> addMember(@Parameter(hidden = true) @MemberObject Members member,@RequestBody AdminMemberRequestDTO membersRequestDTO){
+    public ApiResponse<MembersDetailResponseDTO> addMember(@Parameter(hidden = true) @MemberObject Members member,@RequestBody @Valid AdminMemberRequestDTO membersRequestDTO){
         return ApiResponse.onSuccess(membersComposeService.addMembers(membersRequestDTO,member));
     }
 
