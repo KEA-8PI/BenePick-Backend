@@ -20,11 +20,4 @@ public class GoodsCategoriesQueryServiceImpl implements GoodsCategoriesQueryServ
     public GoodsCategories getGoodsCategoriesByGoodsId(Goods goods){
         return goodsCategoriesRepository.findByGoodsId(goods).orElseThrow(()->new ApiException(ErrorStatus._GOODS_NOT_FOUND));
     }
-
-    @Override
-    public String getGoodsCategory(Raffles raffles) {
-        String categoryName = (goodsCategoriesRepository.findByGoodsId(raffles.getGoodsId()))
-                .map(goodsCategories -> goodsCategories.getCategoryId().getName()).orElse("NONE");
-        return categoryName;
-    }
 }

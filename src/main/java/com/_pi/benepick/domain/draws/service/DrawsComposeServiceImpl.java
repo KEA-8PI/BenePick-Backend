@@ -2,8 +2,8 @@ package com._pi.benepick.domain.draws.service;
 
 import com._pi.benepick.domain.alarm.domain.MessageType;
 import com._pi.benepick.domain.alarm.service.AlarmService;
-import com._pi.benepick.domain.draws.dto.DrawsRequest;
-import com._pi.benepick.domain.draws.dto.DrawsResponse;
+import com._pi.benepick.domain.draws.dto.DrawsRequest.DrawsRequestDTO;
+import com._pi.benepick.domain.draws.dto.DrawsResponse.*;
 import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.draws.entity.Status;
 import com._pi.benepick.domain.draws.service.algorithm.DrawAlgorithm;
@@ -11,7 +11,6 @@ import com._pi.benepick.domain.draws.service.algorithm.RaffleDraw;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goods.service.GoodsQueryService;
-import com._pi.benepick.domain.goodsCategories.service.GoodsCategoriesQueryService;
 import com._pi.benepick.domain.hash.entity.Hash;
 import com._pi.benepick.domain.hash.service.HashCommandService;
 import com._pi.benepick.domain.hash.service.HashQueryService;
@@ -45,24 +44,7 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
     private final PointHistsCommandService pointHistsCommandService;
     private final PenaltyHistsCommandService penaltyHistsCommandService;
     private final HashQueryService hashQueryService;
-    private final GoodsCategoriesQueryService goodsCategoriesQueryService;
     private final AlarmService alarmService;
-
-    public DrawsResponse.DrawsResponseByMembersListDTO getCompleteRafflesByMemberId(Members member) {
-        if (!(member.getRole().equals(Role.MEMBER))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        List<DrawsResponse.DrawsResponseByMembersDTO> drawsResponseByMembersDTOS = (drawsQueryService.findByMemberId(member)).stream()
-                .filter(draws -> draws.getRaffleId().getGoodsId().getGoodsStatus() == GoodsStatus.COMPLETED)
-                .map(draws -> {
-                    String categoryName = goodsCategoriesQueryService.getGoodsCategory(draws.getRaffleId());
-
-                    return DrawsResponse.DrawsResponseByMembersDTO.of(draws, categoryName);
-                })
-                .toList();
-
-        return DrawsResponse.DrawsResponseByMembersListDTO.builder()
-                .drawsResponseByMembersList(drawsResponseByMembersDTOS)
-                .build();
-    }
 
     public void drawStart(LocalDateTime now) {
         List<Goods> goodsList = goodsQueryService.findByRaffleEndAtBeforeAndGoodsStatus(now);
@@ -98,7 +80,7 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
         alarmService.saveMessage(members.getId(), members.getName(), contents);
     }
 
-    public DrawsResponse.EditWinnerStatus editWinnerStatus(Members members, Long winnerId, DrawsRequest.DrawsRequestDTO dto) {
+    public EditWinnerStatus editWinnerStatus(Members members, Long winnerId, DrawsRequestDTO dto) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         Draws draws = drawsQueryService.findDrawsById(winnerId);
         try {
@@ -133,7 +115,7 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
                 throw new ApiException(ErrorStatus._BAD_REQUEST);
         }
 
-        return DrawsResponse.EditWinnerStatus.from(draws);
+        return EditWinnerStatus.from(draws);
     }
 
     private void waitlistUpdate(Draws draws) {
@@ -172,7 +154,7 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
         ));
     }
 
-    public DrawsResponse.DrawsResponseResultListDTO verificationSeed(Long goodsId, String hash) {
+    public DrawsResponseResultListDTO verificationSeed(Long goodsId, String hash) {
         Hash findHash = hashQueryService.findByCryptoHash(hash);
         double seed = findHash.getSeed();
 
@@ -180,11 +162,11 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
         List<Raffles> rafflesList = rafflesQueryService.findAllByGoodsIdOrderByPointAsc(goods);
 
         List<Draws> drawsListResult = RaffleDraw.performDraw(seed, rafflesList, goods);
-        List<DrawsResponse.DrawsResponseResultDTO> drawsResponseResultDTOList = drawsListResult.stream()
-                .map(DrawsResponse.DrawsResponseResultDTO::from)
+        List<DrawsResponseResultDTO> drawsResponseResultDTOList = drawsListResult.stream()
+                .map(DrawsResponseResultDTO::from)
                 .toList();
 
-        return DrawsResponse.DrawsResponseResultListDTO.builder()
+        return DrawsResponseResultListDTO.builder()
                 .drawsList(drawsResponseResultDTOList)
                 .build();
     }
