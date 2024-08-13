@@ -21,26 +21,14 @@ public class MembersCommandServiceImpl implements MembersCommandService{
     private final PasswordEncoder passwordEncoder;
     @Override
     public MembersuccessDTO changePassword(MemberPasswordDTO memberPasswordDTO, Members members){
-        if (members.getPassword().equals(memberPasswordDTO.getPassword())){
+        if (members.getPassword().equals(memberPasswordDTO.getPassword())) {
             throw new ApiException(ErrorStatus._PASSWORD_ALREADY_EXISTS);
-        }
-        if(!isValid(memberPasswordDTO.getPassword())){
-            throw new ApiException(ErrorStatus._PASSWORD_DISABLED);
         }
         members.updatePassword(memberPasswordDTO.getPassword(),passwordEncoder);
         return MembersuccessDTO.builder()
                 .msg("성공입니다.")
                 .build();
     }
-
-    public boolean isValid(String password) {
-        if (password == null) {
-            return false;
-        }
-        String passwordRegex = "^(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,12}$";
-        return password.matches(passwordRegex);
-    }
-
     public MembersDetailResponseDTO addMembers(AdminMemberRequestDTO membersRequestDTO,Members member){
         if(membersRepository.findById(membersRequestDTO.getId()).isPresent()){
             throw new ApiException(ErrorStatus._ALREADY_EXIST_MEMBER);
