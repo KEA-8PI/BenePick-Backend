@@ -1,4 +1,5 @@
 package com._pi.benepick.domain.penaltyHists.service;
+
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.repository.MembersRepository;
 import com._pi.benepick.domain.penaltyHists.dto.PenaltyResponse.*;
@@ -6,11 +7,12 @@ import com._pi.benepick.domain.penaltyHists.entity.PenaltyHists;
 import com._pi.benepick.domain.penaltyHists.repository.PenaltyHistsRepository;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
+
+import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @Service

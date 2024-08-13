@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -72,8 +73,11 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
         return PageRequest.of(page, size, sort);
     }
 
-    @Override
-    public Goods getGoodsById(Long id){
-        return goodsRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._GOODS_NOT_FOUND));
+    public Goods findById(Long goodsId) {
+        return goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
+    }
+
+    public List<Goods> findByRaffleEndAtBeforeAndGoodsStatus(LocalDateTime now) {
+        return goodsRepository.findByRaffleEndAtBeforeAndGoodsStatus(now, GoodsStatus.PROGRESS);
     }
 }

@@ -8,9 +8,12 @@ import com._pi.benepick.domain.raffles.entity.Raffles;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class RaffleDraw {
+
+    private RaffleDraw() {
+        throw new IllegalStateException("Utility Class.");
+    }
 
     public static List<Draws> performDraw(double seed, List<Raffles> rafflesList, Goods goods) {
         DrawAlgorithm drawAlgorithm = new DrawAlgorithm(seed);

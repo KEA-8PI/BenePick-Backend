@@ -1,22 +1,19 @@
 package com._pi.benepick.domain.raffles.dto;
 
-import com._pi.benepick.domain.goods.entity.Goods;
-import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.raffles.entity.Raffles;
-import jakarta.persistence.Column;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class RafflesResponse {
+
+    private RafflesResponse() {
+        throw new IllegalStateException("Utility Class.");
+    }
 
     // 상품별 응모 조회 반환 값에 사용되는 format
     @Builder
