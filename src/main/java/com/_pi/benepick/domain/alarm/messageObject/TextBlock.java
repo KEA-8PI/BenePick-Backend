@@ -1,4 +1,4 @@
-package com._pi.benepick.domain.alarm.message;
+package com._pi.benepick.domain.alarm.messageObject;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
