@@ -1,5 +1,7 @@
 package com._pi.benepick.domain.draws.service;
 
+import com._pi.benepick.domain.alarm.domain.MessageType;
+import com._pi.benepick.domain.alarm.service.AlarmService;
 import com._pi.benepick.domain.draws.dto.DrawsRequest;
 import com._pi.benepick.domain.draws.dto.DrawsResponse;
 import com._pi.benepick.domain.draws.entity.Draws;
@@ -62,11 +64,20 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
             for (Draws draws : drawsList) {
                 if (draws.getStatus().equals(Status.NON_WINNER)) {
                     nonWinnerPointRefund(draws);
+                } else if (draws.getStatus().equals(Status.WINNER)) {
+                    sendAlarm(draws, MessageType.CONGRATULATIONS);
                 }
             }
             drawsCommandService.saveDrawsList(drawsList);
         }
 
+    }
+
+    private void sendAlarm(Draws draws, MessageType type) {
+        Members members = draws.getRaffleId().getMemberId();
+        String url = "http://localhost:3000/goods/" + draws.getRaffleId().getGoodsId();
+        String contents = alarmService.getMessageFactory(members, url, type);
+        alarmService.saveMessage(members.getId(), members.getName(), contents);
     }
 
     public DrawsResponse.EditWinnerStatus editWinnerStatus(Members members, Long winnerId, DrawsRequest.DrawsRequestDTO dto) {
@@ -94,6 +105,10 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
 
             case CANCEL:
                 waitlistUpdate(draws);
+                break;
+
+            case WINNER:
+                sendAlarm(draws, MessageType.ADDITIONAL);
                 break;
 
             default:

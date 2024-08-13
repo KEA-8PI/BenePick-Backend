@@ -1,4 +1,4 @@
-package com._pi.benepick.domain.alarm.message;
+package com._pi.benepick.domain.alarm.messageObject;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -8,13 +8,16 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class ImageBlock {
+@NoArgsConstructor
+public class Action {
 
     @JsonProperty("type")
     private String type;
 
-    @JsonProperty("url")
-    private String url;
+    @JsonProperty("name")
+    private String name;
+
+    @JsonProperty("value")
+    private String value;
 }
