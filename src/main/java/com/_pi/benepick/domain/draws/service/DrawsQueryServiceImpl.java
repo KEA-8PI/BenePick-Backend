@@ -7,7 +7,6 @@ import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.draws.entity.Status;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
-import com._pi.benepick.domain.raffles.entity.Raffles;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import jakarta.servlet.http.HttpServletResponse;
@@ -142,8 +141,8 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
     }
 
     @Override
-    public Double getAveragePointByGoodsIdAndStatus(Long goodsId, Status status){
-        return drawsRepository.findAveragePointByGoodsIdAndStatus(goodsId, status);
+    public Double getAveragePointByGoodsIdAndStatuses(Long goodsId, List<Status> statuses){
+        return drawsRepository.findAveragePointByGoodsIdAndStatuses(goodsId, statuses);
     }
 
     @Override

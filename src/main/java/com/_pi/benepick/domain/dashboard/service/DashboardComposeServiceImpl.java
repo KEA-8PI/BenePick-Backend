@@ -54,7 +54,7 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
     // 회차별 당첨자 평균 응모 포인트
     private List<Double> calculateAvgWinnerPointsPerRaffles(List<Goods> goodsList) {
         return goodsList.stream()
-                .map(goods -> drawsQueryService.getAveragePointByGoodsIdAndStatus(goods.getId(), Status.WINNER))
+                .map(goods -> drawsQueryService.getAveragePointByGoodsIdAndStatuses(goods.getId(),WinnedStatus))
                 .map(avg -> avg != null ? avg : 0.0)
                 .toList();
     }
