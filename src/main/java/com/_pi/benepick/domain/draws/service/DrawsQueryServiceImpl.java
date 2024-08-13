@@ -85,10 +85,15 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
                 .map(draws -> DrawsResponseByMembersDTO.of(draws.getDraws(), draws.getCategory()))
                 .toList();
 
+<<<<<<< HEAD
         return DrawsResponseByMembersListDTO.builder()
+=======
+                return DrawsResponse.DrawsResponseByMembersListDTO.builder()
+>>>>>>> 35df897ece953f76e3842c693a9ba4cd133a65df
                 .drawsResponseByMembersList(drawsResponseByMembersDTOS)
                 .build();
-    }
+            }
+
 
     public void downloadExcel(Members members, Long goodsId, HttpServletResponse response) {
         if (!(members.getRole().equals(Role.ADMIN))) {

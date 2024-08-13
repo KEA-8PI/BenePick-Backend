@@ -35,9 +35,16 @@ public class RafflesComposeServiceImpl implements RafflesComposeService {
 
     public RafflesResponseByGoodsListDTO getAllRafflesByGoodsId(Members members, Long goodsId) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
+<<<<<<< HEAD
         List<RafflesResponseByGoodsDTO> rafflesResponseByGoodsDTOS = rafflesQueryService
                 .findAllByGoodsId(goodsQueryService.findById(goodsId)).stream()
                 .map(RafflesResponseByGoodsDTO::from)
+=======
+        List<RafflesResponse.RafflesResponseByGoodsDTO> rafflesResponseByGoodsDTOS = rafflesQueryService
+                .findAllByGoodsId(goodsQueryService.getGoodsById(goodsId)).stream()
+
+                .map(RafflesResponse.RafflesResponseByGoodsDTO::from)
+>>>>>>> 35df897ece953f76e3842c693a9ba4cd133a65df
                 .toList();
 
         return RafflesResponseByGoodsListDTO.builder()
@@ -49,7 +56,7 @@ public class RafflesComposeServiceImpl implements RafflesComposeService {
         if (raffleAddDTO.getPoint() <= 0) throw new ApiException(ErrorStatus._RAFFLES_POINT_TOO_LESS);
         if (!(members.getRole().equals(Role.MEMBER))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
 
-        Goods goods = goodsQueryService.findById(goodsId);
+        Goods goods = goodsQueryService.getGoodsById(goodsId);
         if (!(goods.getGoodsStatus().equals(GoodsStatus.PROGRESS))) throw new ApiException(ErrorStatus._RAFFLES_CANNOT_APPLY);
 
         // 포인트 소모 히스토리 반영 부분
@@ -76,8 +83,13 @@ public class RafflesComposeServiceImpl implements RafflesComposeService {
         return RafflesResponseByGoodsDTO.from(raffles);
     }
 
+<<<<<<< HEAD
     public CurrentStateByGoodsListDTO getCurrentStateByGoods(Long goodsId) {
         List<Raffles> rafflesList = rafflesQueryService.findAllByGoodsIdOrderByPointDesc(goodsQueryService.findById(goodsId));
+=======
+    public RafflesResponse.CurrentStateByGoodsListDTO getCurrentStateByGoods(Long goodsId) {
+        List<Raffles> rafflesList = rafflesQueryService.findAllByGoodsIdOrderByPointDesc(goodsQueryService.getGoodsById(goodsId));
+>>>>>>> 35df897ece953f76e3842c693a9ba4cd133a65df
 
         List<CurrentStateByGoodsDTO> currentStateByGoodsDTOS = new ArrayList<>();
         for (int i = 0; i < Math.min(5, rafflesList.size()); i++) {

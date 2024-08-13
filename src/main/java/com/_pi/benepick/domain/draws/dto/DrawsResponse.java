@@ -188,13 +188,13 @@ public class DrawsResponse {
         }
     }
 
-    @Builder
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
     public static class DrawsAndGoodsCategory {
         private Draws draws;
         private String category;
+
     }
 
     @Builder

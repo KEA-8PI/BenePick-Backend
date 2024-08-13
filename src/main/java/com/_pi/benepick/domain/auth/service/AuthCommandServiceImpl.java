@@ -15,6 +15,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,16 +26,15 @@ public class AuthCommandServiceImpl implements AuthCommandService {
     private final JwtTokenProvider jwtTokenProvider;
     private final MembersRepository membersRepository;
     private final JwtCommandService jwtCommandService;
-
+    private final PasswordEncoder passwordEncoder;
     @Override
     public AuthLoginResponseDTO login(AuthLoginRequestDTO requestDTO, HttpServletResponse response) {
         Members member = membersRepository.findById(requestDTO.getId())
                 .orElseThrow(() -> new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
 
-        if (!member.getPassword().equals(requestDTO.getPassword())) {
+        if(!passwordEncoder.matches(requestDTO.getPassword(),member.getPassword())){
             throw new ApiException(ErrorStatus._MEMBER_PASSWORD_NOT_MATCH);
         }
-
         JwtPairDTO jwtTokens = jwtCommandService.createJwtPair(jwtTokenProvider.createAccessToken(
             member.getId()), jwtTokenProvider.createRefreshToken(member.getId()));
 

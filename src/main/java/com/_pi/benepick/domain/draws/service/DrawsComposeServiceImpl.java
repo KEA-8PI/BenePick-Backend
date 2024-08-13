@@ -1,7 +1,14 @@
 package com._pi.benepick.domain.draws.service;
 
+<<<<<<< HEAD
 import com._pi.benepick.domain.draws.dto.DrawsRequest.DrawsRequestDTO;
 import com._pi.benepick.domain.draws.dto.DrawsResponse.*;
+=======
+import com._pi.benepick.domain.alarm.domain.MessageType;
+import com._pi.benepick.domain.alarm.service.AlarmService;
+import com._pi.benepick.domain.draws.dto.DrawsRequest;
+import com._pi.benepick.domain.draws.dto.DrawsResponse;
+>>>>>>> 35df897ece953f76e3842c693a9ba4cd133a65df
 import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.draws.entity.Status;
 import com._pi.benepick.domain.draws.service.algorithm.DrawAlgorithm;
@@ -42,6 +49,7 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
     private final PointHistsCommandService pointHistsCommandService;
     private final PenaltyHistsCommandService penaltyHistsCommandService;
     private final HashQueryService hashQueryService;
+    private final AlarmService alarmService;
 
     public void drawStart(LocalDateTime now) {
         List<Goods> goodsList = goodsQueryService.findByRaffleEndAtBeforeAndGoodsStatus(now);
@@ -61,6 +69,8 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
             for (Draws draws : drawsList) {
                 if (draws.getStatus().equals(Status.NON_WINNER)) {
                     nonWinnerPointRefund(draws);
+                } else if (draws.getStatus().equals(Status.WINNER)) {
+                    sendAlarm(draws, MessageType.CONGRATULATIONS);
                 }
             }
             drawsCommandService.saveDrawsList(drawsList);
@@ -68,7 +78,18 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
 
     }
 
+<<<<<<< HEAD
     public EditWinnerStatus editWinnerStatus(Members members, Long winnerId, DrawsRequestDTO dto) {
+=======
+    private void sendAlarm(Draws draws, MessageType type) {
+        Members members = draws.getRaffleId().getMemberId();
+        String url = "http://localhost:3000/goods/" + draws.getRaffleId().getGoodsId();
+        String contents = alarmService.getMessageFactory(members, url, type);
+        alarmService.saveMessage(members.getId(), members.getName(), contents);
+    }
+
+    public DrawsResponse.EditWinnerStatus editWinnerStatus(Members members, Long winnerId, DrawsRequest.DrawsRequestDTO dto) {
+>>>>>>> 35df897ece953f76e3842c693a9ba4cd133a65df
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         Draws draws = drawsQueryService.findDrawsById(winnerId);
         try {
@@ -93,6 +114,10 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
 
             case CANCEL:
                 waitlistUpdate(draws);
+                break;
+
+            case WINNER:
+                sendAlarm(draws, MessageType.ADDITIONAL);
                 break;
 
             default:
@@ -142,7 +167,7 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
         Hash findHash = hashQueryService.findByCryptoHash(hash);
         double seed = findHash.getSeed();
 
-        Goods goods = goodsQueryService.findById(goodsId);
+        Goods goods = goodsQueryService.getGoodsById(goodsId);
         List<Raffles> rafflesList = rafflesQueryService.findAllByGoodsIdOrderByPointAsc(goods);
 
         List<Draws> drawsListResult = RaffleDraw.performDraw(seed, rafflesList, goods);
