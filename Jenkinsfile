@@ -53,5 +53,13 @@ EOF
                 }
             }
         }
+        
+        stage('Cleanup Docker Images') {
+            steps {
+                script {
+                    sh "docker rmi ${DOCKER_IMAGE} || true"
+                }
+            }
+        }
     }
 }
