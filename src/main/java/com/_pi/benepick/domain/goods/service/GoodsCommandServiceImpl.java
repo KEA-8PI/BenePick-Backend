@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com._pi.benepick.domain.goods.entity.GoodsStatus.COMPLETED;
 
@@ -38,6 +39,14 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
             return COMPLETED; // 현재 시간보다 종료 시간이 빠르면 완료 상태
         } else {
             return GoodsStatus.PROGRESS; // 시작 시간이 지나고 종료 시간이 아직 오지 않았으면 진행 중 상태
+        }
+    }
+
+    @Override
+    public void updateGoodsStatus(LocalDateTime now) {
+        List<Goods> goodsList = goodsRepository.findByRaffleStartAtBeforeAndGoodsStatus(now, GoodsStatus.SCHEDULED);
+        for (Goods goods : goodsList) {
+            goods.updateStatus(GoodsStatus.PROGRESS);
         }
     }
 }

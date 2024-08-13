@@ -3,6 +3,7 @@ package com._pi.benepick.domain.goods.service;
 import com._pi.benepick.domain.goods.entity.GoodsFilter;
 import com._pi.benepick.domain.goods.dto.GoodsResponse;
 import com._pi.benepick.domain.goods.entity.Goods;
+import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.goods.repository.GoodsRepository;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
@@ -73,8 +74,8 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
         return PageRequest.of(page, size, sort);
     }
 
-    public Goods findById(Long goodsId) {
-        return goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
+    public Goods getGoodsById(Long id){
+        return goodsRepository.findById(id).orElseThrow(()->new ApiException(ErrorStatus._GOODS_NOT_FOUND));
     }
 
     public List<Goods> findByRaffleEndAtBeforeAndGoodsStatus(LocalDateTime now) {
