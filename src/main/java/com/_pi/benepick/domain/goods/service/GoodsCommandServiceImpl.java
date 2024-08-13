@@ -22,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+import static com._pi.benepick.domain.goods.entity.GoodsStatus.COMPLETED;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -52,6 +54,9 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
         goodsUpdateDTO.restrictName();
 
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new ApiException(ErrorStatus._GOODS_NOT_FOUND));
+        if(goods.getGoodsStatus() == COMPLETED){
+            throw new ApiException(ErrorStatus._COMPLETED_GOODS);
+        }
         // 현재시간과 비교하여 GoodsStatus를 결정
         GoodsStatus status = determineGoodsStatus(goodsUpdateDTO.getRaffleStartAt(), goodsUpdateDTO.getRaffleEndAt());
         goodsRepository.updateGoods(
@@ -80,7 +85,7 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
         if (raffleStartAt.isAfter(now)) {
             return GoodsStatus.SCHEDULED; // 현재 시간보다 시작 시간이 늦으면 예정 상태
         } else if (raffleEndAt.isBefore(now)) {
-            return GoodsStatus.COMPLETED; // 현재 시간보다 종료 시간이 빠르면 완료 상태
+            return COMPLETED; // 현재 시간보다 종료 시간이 빠르면 완료 상태
         } else {
             return GoodsStatus.PROGRESS; // 시작 시간이 지나고 종료 시간이 아직 오지 않았으면 진행 중 상태
         }
@@ -107,4 +112,12 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
             throw new ApiException(ErrorStatus._ACCESS_DENIED_FOR_MEMBER);
         }
     }
+
+    public void updateGoodsStatus(LocalDateTime now) {
+        List<Goods> goodsList = goodsRepository.findByRaffleStartAtBeforeAndGoodsStatus(now, GoodsStatus.SCHEDULED);
+        for (Goods goods : goodsList) {
+            goods.updateStatus(GoodsStatus.PROGRESS);
+        }
+    }
+
 }

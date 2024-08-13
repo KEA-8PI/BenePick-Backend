@@ -3,12 +3,10 @@ package com._pi.benepick.global.common.utils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CookieUtils {
-
     public static Cookie getCookie(HttpServletRequest request, String name) {
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
@@ -35,6 +33,8 @@ public class CookieUtils {
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setMaxAge(0);
+        cookie.setSecure(true);
+        cookie.setAttribute("SameSite", "None"); //프론트 개발용. 배포시 제거
         response.addCookie(cookie);
     }
 
@@ -44,7 +44,6 @@ public class CookieUtils {
         cookie.setMaxAge(maxAge);
         cookie.setPath(path);
         cookie.setSecure(true);
-        cookie.setDomain("benepick.o-r.kr");
         cookie.setAttribute("SameSite", "None"); //프론트 개발용. 배포시 제거
         return cookie;
     }

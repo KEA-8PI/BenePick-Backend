@@ -1,7 +1,6 @@
 package com._pi.benepick.domain.penaltyHists.dto;
 
 import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 

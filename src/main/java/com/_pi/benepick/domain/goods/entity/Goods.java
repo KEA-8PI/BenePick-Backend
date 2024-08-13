@@ -72,4 +72,9 @@ public class Goods extends BaseJPATimeEntity {
     public void updateStatus(GoodsStatus newStatus) {
         this.goodsStatus = newStatus;
     }
+
+    public boolean isWishlistForMember(String memberId) {
+        return wishlists.stream()
+                .anyMatch(wishlist -> wishlist.getMemberId().getId().equals(memberId));
+    }
 }

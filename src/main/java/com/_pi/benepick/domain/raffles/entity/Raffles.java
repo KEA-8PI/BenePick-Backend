@@ -1,7 +1,6 @@
 package com._pi.benepick.domain.raffles.entity;
 
 import com._pi.benepick.domain.draws.entity.Draws;
-import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.global.common.BaseJPATimeEntity;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.members.entity.Members;
