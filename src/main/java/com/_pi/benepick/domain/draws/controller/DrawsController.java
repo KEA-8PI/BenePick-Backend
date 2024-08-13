@@ -46,7 +46,7 @@ public class DrawsController {
     @Operation(summary = "사원별 종료된 응모 내역 조회", description = "사원이 응모한 추첨 종료된 상품들과 그 내역을 확인할 수 있습니다.")
     @GetMapping("/complete/list")
     public ApiResponse<DrawsResponse.DrawsResponseByMembersListDTO> getCompleteRafflesByMemberId(@Parameter(hidden = true) @MemberObject Members member) {
-        return ApiResponse.onSuccess(drawsQueryService.getCompleteRafflesByMemberId(member));
+        return ApiResponse.onSuccess(drawsComposeService.getCompleteRafflesByMemberId(member));
     }
 
     @Operation(summary = "당첨자 상태 관리", description = "당첨자들의 상태를 관리할 수 있습니다.")

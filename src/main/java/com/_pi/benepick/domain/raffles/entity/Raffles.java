@@ -36,6 +36,7 @@ public class Raffles extends BaseJPATimeEntity {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "raffleId", cascade = CascadeType.ALL, orphanRemoval = true)
     private Draws draw; // 추첨
     @Column(nullable = false)
+    @Builder.Default
     private char penaltyFlag = 'F';
 
     public void updatePenaltyFlag(char penaltyFlag) {

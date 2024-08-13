@@ -15,7 +15,10 @@ public class CategoriesQueryServiceImpl implements CategoriesQueryService {
     private final CategoriesRepository categoriesRepository;
     @Override
     public Categories getCategoriesByName(String categoryName) {
-        return categoriesRepository.findByName(categoryName).orElseThrow(() -> new ApiException(
-            ErrorStatus._CATEGORY_NOT_FOUND));
+        return categoriesRepository.findByName(categoryName).orElseThrow(() -> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
+    }
+    @Override
+    public Categories getCategoriesById(Long id) {
+        return categoriesRepository.findById(id).orElseThrow(() -> new ApiException(ErrorStatus._CATEGORY_NOT_FOUND));
     }
 }

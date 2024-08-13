@@ -38,7 +38,8 @@ public class RafflesComposeServiceImpl implements RafflesComposeService {
     public RafflesResponse.RafflesResponseByGoodsListDTO getAllRafflesByGoodsId(Members members, Long goodsId) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         List<RafflesResponse.RafflesResponseByGoodsDTO> rafflesResponseByGoodsDTOS = rafflesQueryService
-                .findAllByGoodsId(goodsQueryService.findById(goodsId)).stream()
+                .findAllByGoodsId(goodsQueryService.getGoodsById(goodsId)).stream()
+
                 .map(RafflesResponse.RafflesResponseByGoodsDTO::from)
                 .toList();
 
@@ -51,7 +52,7 @@ public class RafflesComposeServiceImpl implements RafflesComposeService {
         if (raffleAddDTO.getPoint() <= 0) throw new ApiException(ErrorStatus._RAFFLES_POINT_TOO_LESS);
         if (!(members.getRole().equals(Role.MEMBER))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
 
-        Goods goods = goodsQueryService.findById(goodsId);
+        Goods goods = goodsQueryService.getGoodsById(goodsId);
         if (!(goods.getGoodsStatus().equals(GoodsStatus.PROGRESS))) throw new ApiException(ErrorStatus._RAFFLES_CANNOT_APPLY);
 
         // 포인트 소모 히스토리 반영 부분
@@ -79,7 +80,7 @@ public class RafflesComposeServiceImpl implements RafflesComposeService {
     }
 
     public RafflesResponse.CurrentStateByGoodsListDTO getCurrentStateByGoods(Long goodsId) {
-        List<Raffles> rafflesList = rafflesQueryService.findAllByGoodsIdOrderByPointDesc(goodsQueryService.findById(goodsId));
+        List<Raffles> rafflesList = rafflesQueryService.findAllByGoodsIdOrderByPointDesc(goodsQueryService.getGoodsById(goodsId));
 
         List<RafflesResponse.CurrentStateByGoodsDTO> currentStateByGoodsDTOS = new ArrayList<>();
         for (int i = 0; i < Math.min(5, rafflesList.size()); i++) {

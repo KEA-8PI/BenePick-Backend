@@ -56,7 +56,7 @@ return ApiResponse.onSuccess(membersCommandService.changePassword(memberPassword
     @Operation(summary = "사원 등록", description = "사원을 등록합니다 (관리자용)")
     @PostMapping("/add")
     public ApiResponse<MembersDetailResponseDTO> addMember(@Parameter(hidden = true) @MemberObject Members member,@RequestBody AdminMemberRequestDTO membersRequestDTO){
-        return ApiResponse.onSuccess(membersCommandService.addMembers(membersRequestDTO,member));
+        return ApiResponse.onSuccess(membersComposeService.addMembers(membersRequestDTO,member));
     }
 
     @Operation(summary = "복지포인트 파일 업로드", description = "복지 포인트 파일을 업로드합니다. (관리자용)")

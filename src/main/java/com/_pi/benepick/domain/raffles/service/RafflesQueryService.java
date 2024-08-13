@@ -9,7 +9,9 @@ import java.util.List;
 
 public interface RafflesQueryService {
     List<Raffles> findAllByGoodsIdOrderByPointAsc(Goods goods);
+
     List<Raffles> findAllByGoodsId(Goods goods);
     List<Raffles> findAllByGoodsIdOrderByPointDesc(Goods goods);
     RafflesResponse.RafflesResponseByMembersListDTO getProgressRafflesByMemberId(Members member);
+
 }

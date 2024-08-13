@@ -1,6 +1,5 @@
 package com._pi.benepick.domain.raffles.dto;
 
-import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

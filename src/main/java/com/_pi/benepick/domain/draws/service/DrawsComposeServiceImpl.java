@@ -143,7 +143,7 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
         Hash findHash = hashQueryService.findByCryptoHash(hash);
         double seed = findHash.getSeed();
 
-        Goods goods = goodsQueryService.findById(goodsId);
+        Goods goods = goodsQueryService.getGoodsById(goodsId);
         List<Raffles> rafflesList = rafflesQueryService.findAllByGoodsIdOrderByPointAsc(goods);
 
         List<Draws> drawsListResult = RaffleDraw.performDraw(seed, rafflesList, goods);
