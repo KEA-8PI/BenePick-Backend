@@ -6,8 +6,10 @@ import com._pi.benepick.global.common.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -19,7 +21,16 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 public class WebSecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
 
-    private static final String[] SWAGGER_PERMIT_URL_ARRAY = {
+    private static final String[] EXCLUDE_URL_ARRAY = {
+        "/auth/login",
+        "/goods/{goods_id}",
+        "/goods/seeds/**",
+        "/goods/search/**",
+        "/draws/result/{goods_id}",
+        "/draws/verification/**",
+        "/dashboard/**",
+        "/v3/**",
+        "/swagger-ui/**",
         /* swagger v2 */
         "/v2/api-docs",
         "/swagger-resources",
@@ -34,14 +45,11 @@ public class WebSecurityConfig {
         "/swagger-ui/**",
     };
 
-    private static final String[] EXCLUDE_URL_ARRAY = {
-        "/goods/{goods_id}",
-        "/goods/seeds/**",
-        "/goods/search/**",
-        "/draws/result/{goods_id}",
-        "/draws/verification/**",
-        "/dashboard/**",
-    };
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().requestMatchers(EXCLUDE_URL_ARRAY);
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -52,13 +60,7 @@ public class WebSecurityConfig {
                 )
                 // 회원가입, 로그인 관련 API는 Jwt 인증 없이 접근 가능
                 .authorizeHttpRequests(requests ->
-                        requests.requestMatchers("/auth/login").permitAll()
-                            .requestMatchers(EXCLUDE_URL_ARRAY).permitAll()
-                        //Swagger 관련 권한 설정
-                        .requestMatchers(SWAGGER_PERMIT_URL_ARRAY).permitAll()
-                            .requestMatchers("/actuator/**").permitAll()    // actuator 모니터링 허용(추후 인증 추가 예정)
-                        // USER 권한이 있어야 요청할 수 있음
-                        .requestMatchers("/auth/test").hasAnyRole(Role.MEMBER.name(), Role.ADMIN.name())
+                        requests.requestMatchers("/actuator/**").permitAll()    // actuator 모니터링 허용(추후 인증 추가 예정)
                         .anyRequest().authenticated())
                 // Http 요청에 대한 Jwt 유효성 선 검사
                 .addFilterBefore(new JwtAuthFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);

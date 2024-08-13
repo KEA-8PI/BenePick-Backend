@@ -23,6 +23,7 @@ public class WishlistResponse {
         private LocalDateTime raffleEndAt;
         private String category;
         private Long count;
+        private Long goodId;
 
         public static WishlistDTO from(Wishlists wishlists){
             return WishlistDTO.builder()
@@ -34,6 +35,7 @@ public class WishlistResponse {
                     .raffleEndAt(wishlists.getGoodsId().getRaffleEndAt())
                     .raffleStartAt(wishlists.getGoodsId().getRaffleStartAt())
                     .count((long)wishlists.getGoodsId().getRaffles().size())
+                    .goodId(wishlists.getGoodsId().getId())
                     .build();
         }
     }
