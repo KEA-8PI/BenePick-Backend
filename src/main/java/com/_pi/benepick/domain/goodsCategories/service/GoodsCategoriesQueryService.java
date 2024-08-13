@@ -1,7 +1,8 @@
 package com._pi.benepick.domain.goodsCategories.service;
 
-import com._pi.benepick.domain.raffles.entity.Raffles;
+import com._pi.benepick.domain.goods.entity.Goods;
+import com._pi.benepick.domain.goodsCategories.entity.GoodsCategories;
 
 public interface GoodsCategoriesQueryService {
-    String getGoodsCategory(Raffles raffles);
+    GoodsCategories getGoodsCategoriesByGoodsId(Goods goods);
 }
