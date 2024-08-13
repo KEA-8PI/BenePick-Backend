@@ -64,14 +64,9 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) { continue;}
 
-                String name = row.getCell(0).getStringCellValue();
-                if (name.length() > 50) {
-                    name = name.substring(0, 50);
-                }
-
                 // 상품 정보
                 Goods goods = goodsCommandService.createGoods(GoodsRequestDTO.builder()
-                    .name(name)
+                    .name(row.getCell(0).getStringCellValue())
                     .amounts((long) row.getCell(1).getNumericCellValue())
                     .description(row.getCell(2).getStringCellValue())
                     .price((long) row.getCell(3).getNumericCellValue())
@@ -103,7 +98,6 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
         if (member.getRole() == Role.MEMBER) {
             throw new ApiException(ErrorStatus._ACCESS_DENIED_FOR_MEMBER);
         }
-        goodsAddDTO.restrictName();
 
         Goods goods = goodsCommandService.createGoods(goodsAddDTO);
         Categories category = categoriesQueryService.getCategoriesByName(goodsAddDTO.getCategory());

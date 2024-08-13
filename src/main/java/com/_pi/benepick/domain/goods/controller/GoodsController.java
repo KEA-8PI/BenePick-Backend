@@ -34,7 +34,6 @@ public class GoodsController {
     private final GoodsQueryService goodsQueryService;
     private final GoodsComposeService goodsComposeService;
 
-    // 유효성 검사가 실패한 경우 예외를 처리하는 핸들러
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
