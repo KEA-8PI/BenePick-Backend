@@ -81,15 +81,11 @@ public class MembersComposeServiceImpl implements MembersComposeService{
         if(membersRepository.findById(membersRequestDTO.getId()).isPresent()){
             throw new ApiException(ErrorStatus._ALREADY_EXIST_MEMBER);
         }
-
         if(member.getRole() == Role.MEMBER){
             throw new ApiException(ErrorStatus._UNAUTHORIZED);
         }
-
-
         Members members=membersRequestDTO.toEntity(membersRequestDTO);
         membersRepository.save(members);
-
         ChangePointHistDTO changePointRequestDTO = new ChangePointHistDTO(
                 0L, "사원 등록", membersRequestDTO.getPoint(), members
         );
