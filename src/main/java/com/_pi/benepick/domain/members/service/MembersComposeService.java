@@ -11,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 public interface MembersComposeService {
     MembersResponse.UpdateMemberResponseDTO updateMemberInfo(String memberid, MembersRequest.MembersRequestDTO membersRequestDTO, Members member);
 
+    MembersResponse.MembersDetailResponseDTO addMembers(MembersRequest.AdminMemberRequestDTO membersRequestDTO, Members member);
+
     MembersResponse.DeleteResponseDTO deleteMembers(List<String> memberIdList, Members members);
 
     MembersDetailListResponseDTO uploadPointFile(MultipartFile file);

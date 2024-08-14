@@ -1,7 +1,6 @@
 package com._pi.benepick.domain.raffles.entity;
 
 import com._pi.benepick.domain.draws.entity.Draws;
-import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.global.common.BaseJPATimeEntity;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.members.entity.Members;
@@ -37,6 +36,7 @@ public class Raffles extends BaseJPATimeEntity {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "raffleId", cascade = CascadeType.ALL, orphanRemoval = true)
     private Draws draw; // 추첨
     @Column(nullable = false)
+    @Builder.Default
     private char penaltyFlag = 'F';
 
     public void updatePenaltyFlag(char penaltyFlag) {

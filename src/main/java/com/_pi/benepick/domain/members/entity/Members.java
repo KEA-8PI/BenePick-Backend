@@ -15,6 +15,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.util.Objects;
 
 @Entity
@@ -35,9 +37,8 @@ public class Members extends BaseJPATimeEntity {
     @Column(nullable = false)
     private String deptName; //소속부서
 
-    @Builder.Default
     @Column(nullable = false)
-    private String password="0000"; //비밀번호
+    private String password; //비밀번호
 
     @Column(nullable = false)
     private Long penaltyCnt; //잔여 패널티
@@ -68,8 +69,13 @@ public class Members extends BaseJPATimeEntity {
     public void updatePenalty(Long penaltyCnt) {
         this.penaltyCnt = penaltyCnt;
     }
-    public void updatePassword(String password) {
-        this.password = password;
+    public void updatePassword(String password, PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(password);
+    }
+
+    public void initPassword( PasswordEncoder passwordEncoder){
+        // detault 비밀번호 0000 hash 값
+        this.password=passwordEncoder.encode("9af15b336e6a9619928537df30b2e6a2376569fcf9d7e773eccede65606529a0");
     }
 
 }

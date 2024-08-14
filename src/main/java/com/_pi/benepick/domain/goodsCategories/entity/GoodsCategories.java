@@ -30,9 +30,8 @@ public class GoodsCategories extends BaseJPATimeEntity {
     @JoinColumn(name = "goods_id")
     private Goods goodsId; //상품_id
 
-    public GoodsCategories changeCategory(Categories category) {
-        this.categoryId = category;
-        return this;
+    public void updateGoodsCategories(Goods goods, Categories categories) {
+        this.goodsId = goods;
+        this.categoryId = categories;
     }
-
 }

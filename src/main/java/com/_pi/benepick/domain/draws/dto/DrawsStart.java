@@ -2,10 +2,13 @@ package com._pi.benepick.domain.draws.dto;
 
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import lombok.*;
-
 import java.util.List;
 
 public class DrawsStart {
+
+    private DrawsStart() {
+        throw new IllegalStateException("Utility Class.");
+    }
 
     @Builder
     @Getter
@@ -21,7 +24,7 @@ public class DrawsStart {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor
     public static class DrawsStartListDTO {
-        private List<DrawsStart.DrawsStartDTO> drawsStartDTOList;
+        private List<DrawsStartDTO> drawsStartDTOList;
     }
 
 }
