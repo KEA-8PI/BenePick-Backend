@@ -16,7 +16,7 @@ public interface GoodsComposeService {
     GoodsResponse.GoodsAddResponseDTO addGoods(GoodsRequest.GoodsRequestDTO goodsAddDTO, Members member); //상품 추가
     GoodsResponse.GoodsAddResponseDTO updateGoods(Long goodsId, GoodsRequest.GoodsRequestDTO goodsUpdateDTO, Members member); //상품 수정
     GoodsResponse.GoodsDeleteResponseDTO deleteGoods(List<Long> goodsDeleteRequestDTO, Members member); //상품 삭제
-    GoodsResponse.GoodsDetailResponseDTO getGoodsInfo(Long goodsId); // 상품 상세 조회
+    GoodsResponse.GoodsDetailResponseDTO getGoodsInfo(Long goodsId, Members member); // 상품 상세 조회
     GoodsResponse.GoodsListSearchResponseDTO searchGoods(GoodsStatus goodsStatus, Integer page, Integer size, String keyword, GoodsFilter sortBy, String category, Members member); //상품 검색
     List<Goods> getGoodsList(String categoryName, LocalDateTime startDate, LocalDateTime endDate);
 }
