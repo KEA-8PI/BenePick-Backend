@@ -69,13 +69,8 @@ tasks.register('copyGitSubmodule', Copy) {
 		mkdir 'src/main/resources'
 	}
 	from 'config/benepick'
-	include '*.yml', 'keystore.p12'
+	include '*.yml'
 	into 'src/main/resources'
-
-	// Only run this task if the env is not 'prod'
-	onlyIf {
-		!project.hasProperty('env') || !project.env.equals('prod')
-	}
 }
 
 tasks.named('test') {
