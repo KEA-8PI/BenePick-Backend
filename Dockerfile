@@ -18,9 +18,7 @@ COPY gradle gradle
 COPY src src
 COPY config config
 
-COPY config/benepick/keystore.p12 src/main/resources/keystore.p12
-
-COPY config/benepick/application-prod.yml src/main/resources/application.yml
+COPY config/benepick/* src/main/resources/
 
 # Run the Gradle build to create the executable JAR file
 RUN ./gradlew build --no-daemon -x test -Penv=${BUILD_ENV}
@@ -36,8 +34,6 @@ COPY --from=builder /app/build/libs/*.jar benepick-backend.jar
 
 # Expose the application port (change this if your application uses a different port)
 EXPOSE 8080
-# EXPOSE HTTPS PORT
-EXPOSE 8443
 
 # Set the entry point to run the application
 ENTRYPOINT ["java", "-jar", "benepick-backend.jar"]
