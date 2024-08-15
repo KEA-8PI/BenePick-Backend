@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -184,7 +185,7 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
     }
 
     @Override
-    public List<Goods> getGoodsList(String categoryName, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<Goods> getGoodsList(String categoryName, LocalDate startDate, LocalDate endDate) {
         List<Goods> goodsList;
         if (categoryName != null && !categoryName.isEmpty()) {
             Categories category = categoriesQueryService.getCategoriesByName(categoryName);
@@ -193,7 +194,7 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
             goodsList = goodsQueryService.getAll();
         }
         return goodsList.stream()
-                .filter(goods -> goods.getRaffleEndAt().isAfter(startDate) && goods.getRaffleEndAt().isBefore(endDate))
+                .filter(goods -> goods.getRaffleEndAt().isAfter(startDate.atStartOfDay()) && goods.getRaffleEndAt().isBefore(endDate.atStartOfDay()))
                 .sorted(Comparator.comparing(Goods::getRaffleEndAt))
                 .toList();
     }

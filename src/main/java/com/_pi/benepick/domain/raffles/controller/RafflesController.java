@@ -10,10 +10,17 @@ import com._pi.benepick.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,7 +33,7 @@ public class RafflesController {
 
     @Operation(summary = "응모하기", description = "물품 아이디, 포인트를 사용하여 응모합니다.")
     @PostMapping("/apply/{goodsId}")
-    public ApiResponse<RafflesResponseByGoodsDTO> getApplyRaffleByGoodsId(@Parameter(hidden = true) @MemberObject Members member, @PathVariable Long goodsId, @RequestBody RafflesRequestDTO raffleAddDTO) {
+    public ApiResponse<RafflesResponseByGoodsDTO> getApplyRaffleByGoodsId(@Parameter(hidden = true) @MemberObject Members member, @PathVariable Long goodsId, @Valid @RequestBody RafflesRequestDTO raffleAddDTO) {
         return ApiResponse.onSuccess(rafflesComposeService.applyRaffle(member, goodsId, raffleAddDTO));
     }
 
