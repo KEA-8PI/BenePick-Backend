@@ -8,6 +8,7 @@ import com._pi.benepick.domain.goods.service.GoodsComposeService;
 import com._pi.benepick.domain.raffles.entity.Raffles;
 import com._pi.benepick.domain.raffles.service.RafflesQueryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,6 +53,7 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
                 .build();
     }
 
+    @Cacheable(value = "winnerPointsPerRaffles", key = "'winnerPointsPerRaffles:' + #category + #startDate + #endDate")
     @Override
     public DashboardResponse.WinnerPointsPerRafflesDto getWinnerPointsPerRaffles(String category, LocalDate startDate, LocalDate endDate) {
         List<Goods> goods = goodsComposeService.getGoodsList(category, startDate, endDate);
@@ -70,6 +72,7 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
                 .toList();
     }
 
+    @Cacheable(value = "totalPointsPerRaffles", key = "'totalPointsPerRaffles:' + #category + #startDate + #endDate")
     @Override
     public DashboardResponse.TotalPointsPerRafflesDto getTotalPointsPerRaffles(String category, LocalDate startDate, LocalDate endDate) {
         List<Goods> goods = goodsComposeService.getGoodsList(category, startDate, endDate);
@@ -93,6 +96,7 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
                 .toList();
     }
 
+    @Cacheable(value = "refillRatesPerRaffles", key = "'refillRatesPerRaffles:' + #category + #startDate + #endDate")
     @Override
     public DashboardResponse.RefillRatesPerRafflesDto getRefillRatesPerRaffles(String category, LocalDate startDate, LocalDate endDate) {
         List<Goods> goods = goodsComposeService.getGoodsList(category, startDate, endDate);
@@ -116,6 +120,7 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
                 .toList();
     }
 
+    @Cacheable(value = "mostWonRanks", key = "'mostWonRanks:' + #category + #startDate + #endDate")
     @Override
     public DashboardResponse.MostWonRanksDto getMostWonRanks(String category, LocalDate startDate, LocalDate endDate) {
         List<Goods> goods = goodsComposeService.getGoodsList(category, startDate, endDate);
@@ -147,6 +152,7 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
                 .toList();
     }
 
+    @Cacheable(value = "avgWinnerPoints", key = "'avgWinnerPoints:' + #category + #startDate + #endDate")
     @Override
     public DashboardResponse.AvgWinnerPointsDto getAvgWinnerPoints(String category, LocalDate startDate, LocalDate endDate) {
         List<Goods> goods = goodsComposeService.getGoodsList(category, startDate, endDate);
