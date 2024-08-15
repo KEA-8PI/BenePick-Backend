@@ -59,18 +59,6 @@ public class DrawsController {
     public ApiResponse<EditWinnerStatus> editWinnerStatus(@Parameter(hidden = true) @MemberObject Members member,@PathVariable Long winnersId, @Valid @RequestBody DrawsRequestDTO dto) {
         return ApiResponse.onSuccess(drawsComposeService.editWinnerStatus(member, winnersId, dto));
     }
-    // 유효성 검사가 실패한 경우 예외를 처리하는 핸들러
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
-    }
 
     @Operation(summary = "추첨 결과 다운로드", description = "추첨 결과가 정리된 엑셀 파일을 다운로드 할 수 있습니다.")
     @GetMapping("/download/{goodsId}")

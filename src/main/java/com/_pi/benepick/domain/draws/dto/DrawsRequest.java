@@ -18,5 +18,4 @@ public class DrawsRequest {
         @NotNull(message = "Status is required")
         private Status status;
     }
-
 }
