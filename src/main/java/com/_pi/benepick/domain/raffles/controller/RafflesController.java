@@ -31,19 +31,6 @@ public class RafflesController {
     private final RafflesComposeService rafflesComposeService;
     private final RafflesQueryService rafflesQueryService;
 
-    // 유효성 검사가 실패한 경우 예외를 처리하는 핸들러
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
-    }
-
     @Operation(summary = "응모하기", description = "물품 아이디, 포인트를 사용하여 응모합니다.")
     @PostMapping("/apply/{goodsId}")
     public ApiResponse<RafflesResponseByGoodsDTO> getApplyRaffleByGoodsId(@Parameter(hidden = true) @MemberObject Members member, @PathVariable Long goodsId, @Valid @RequestBody RafflesRequestDTO raffleAddDTO) {
