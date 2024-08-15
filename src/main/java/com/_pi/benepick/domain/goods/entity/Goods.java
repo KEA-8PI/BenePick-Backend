@@ -20,7 +20,6 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-@ToString
 @SQLRestriction("is_deleted = 'F'")
 @SQLDelete(sql = "UPDATE goods SET is_deleted = 'T' WHERE id = ?")
 public class Goods extends BaseJPATimeEntity {
