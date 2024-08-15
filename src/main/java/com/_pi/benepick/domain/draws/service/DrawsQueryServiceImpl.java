@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -140,7 +142,10 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         }
 
         response.setContentType("ms-vnd/excel");
-        response.setHeader("Content-Disposition", "attachment;filename=student.xlsx");
+        String fileName = "응모 추첨 결과 " + drawsList.get(0).getRaffleId().getGoodsId().getName() + ".xlsx";
+
+        String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
+        response.setHeader("Content-Disposition", "attachment;filename*=UTF-8''" + encodedFileName);
 
         try {
             workbook.write(response.getOutputStream());
