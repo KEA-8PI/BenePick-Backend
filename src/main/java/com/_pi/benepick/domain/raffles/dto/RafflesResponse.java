@@ -107,4 +107,13 @@ public class RafflesResponse {
         private int average;
         private Long total;
     }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class RafflesAndGoodsCategory {
+        private Raffles raffles;
+        private String category;
+    }
 }

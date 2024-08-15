@@ -1,4 +1,4 @@
-package com._pi.benepick.domain.alarm.message;
+package com._pi.benepick.domain.alarm.messageObject;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

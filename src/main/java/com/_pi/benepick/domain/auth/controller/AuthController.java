@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +29,7 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "로그인", description = "사용자 아이디와 비밀번호를 입력받아 로그인 요청을 수행합니다.")
-    public ApiResponse<AuthLoginResponseDTO> login(@RequestBody AuthLoginRequestDTO requestDTO, HttpServletResponse response){
+    public ApiResponse<AuthLoginResponseDTO> login(@Valid @RequestBody AuthLoginRequestDTO requestDTO, HttpServletResponse response){
         return ApiResponse.onSuccess(authCommandService.login(requestDTO, response));
     }
 

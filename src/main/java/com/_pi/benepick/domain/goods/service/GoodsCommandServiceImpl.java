@@ -49,4 +49,5 @@ public class GoodsCommandServiceImpl implements GoodsCommandService {
             goods.updateStatus(GoodsStatus.PROGRESS);
         }
     }
+
 }

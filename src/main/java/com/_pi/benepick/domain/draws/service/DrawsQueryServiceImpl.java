@@ -1,10 +1,11 @@
 package com._pi.benepick.domain.draws.service;
 
-import com._pi.benepick.domain.draws.dto.DrawsResponse;
+import com._pi.benepick.domain.draws.dto.DrawsResponse.*;
 import com._pi.benepick.domain.draws.entity.Draws;
 import com._pi.benepick.domain.draws.repository.DrawsRepository;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.draws.entity.Status;
+import com._pi.benepick.domain.goods.entity.GoodsStatus;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.global.common.exception.ApiException;
@@ -30,37 +31,37 @@ import java.util.List;
 public class DrawsQueryServiceImpl implements DrawsQueryService {
     private final DrawsRepository drawsRepository;
 
-    public DrawsResponse.DrawsResponseByGoodsListDTO getResultByGoodsId(Long goodsId) {
-        List<DrawsResponse.DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
+    public DrawsResponseByGoodsListDTO getResultByGoodsId(Long goodsId) {
+        List<DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
                 .filter(draws -> draws.getStatus() == Status.WINNER || draws.getStatus() == Status.CONFIRM)
-                .map(DrawsResponse.DrawsResponseByGoodsDTO::from)
+                .map(DrawsResponseByGoodsDTO::from)
                 .toList();
 
-        return DrawsResponse.DrawsResponseByGoodsListDTO.builder()
+        return DrawsResponseByGoodsListDTO.builder()
                 .drawsResponseByGoodsDTOList(drawsResponseByGoodsDTOS)
                 .build();
     }
 
-    public DrawsResponse.DrawsResponseByWaitlistGoodsIdListDTO getWaitlistByGoodsId(Members members, Long goodsId) {
+    public DrawsResponseByWaitlistGoodsIdListDTO getWaitlistByGoodsId(Members members, Long goodsId) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        List<DrawsResponse.DrawsResponseByWaitlistGoodsIdDTO> waitlistGoodsIdDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
+        List<DrawsResponseByWaitlistGoodsIdDTO> waitlistGoodsIdDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
                 .filter(draws -> draws.getStatus() == Status.WAITLIST)
-                .map(DrawsResponse.DrawsResponseByWaitlistGoodsIdDTO::from)
+                .map(DrawsResponseByWaitlistGoodsIdDTO::from)
                 .toList();
 
-        return DrawsResponse.DrawsResponseByWaitlistGoodsIdListDTO.builder()
+        return DrawsResponseByWaitlistGoodsIdListDTO.builder()
                 .drawsResponseByWaitlistGoodsIdDTOS(waitlistGoodsIdDTOS)
                 .build();
     }
 
-    public DrawsResponse.DrawsResponseByWinnerGoodsIdListDTO getWinnersByGoodsId(Members members, Long goodsId) {
+    public DrawsResponseByWinnerGoodsIdListDTO getWinnersByGoodsId(Members members, Long goodsId) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        List<DrawsResponse.DrawsResponseByWinnerGoodsIdDTO> winnerGoodsIdDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
+        List<DrawsResponseByWinnerGoodsIdDTO> winnerGoodsIdDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
                 .filter(draws -> draws.getStatus() != Status.WAITLIST && draws.getStatus() != Status.NON_WINNER)
-                .map(DrawsResponse.DrawsResponseByWinnerGoodsIdDTO::from)
+                .map(DrawsResponseByWinnerGoodsIdDTO::from)
                 .toList();
 
-        return DrawsResponse.DrawsResponseByWinnerGoodsIdListDTO.builder()
+        return DrawsResponseByWinnerGoodsIdListDTO.builder()
                 .drawsResponseByWinnerGoodsIdDTOS(winnerGoodsIdDTOS)
                 .build();
     }
@@ -77,9 +78,18 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         return drawsRepository.findByGoodsId(goodsId);
     }
 
-    public List<Draws> findByMemberId(Members member) {
-        return drawsRepository.findByMemberId(member.getId());
-    }
+    public DrawsResponseByMembersListDTO getCompleteRafflesByMemberId(Members member) {
+        if (!(member.getRole().equals(Role.MEMBER))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
+        List<DrawsResponseByMembersDTO> drawsResponseByMembersDTOS = (drawsRepository.findDrawsAndGoodsCategoryByMemberId(member.getId()))
+                .stream().filter(draws -> draws.getDraws().getRaffleId().getGoodsId().getGoodsStatus() == GoodsStatus.COMPLETED)
+                .map(draws -> DrawsResponseByMembersDTO.of(draws.getDraws(), draws.getCategory()))
+                .toList();
+
+        return DrawsResponseByMembersListDTO.builder()
+                .drawsResponseByMembersList(drawsResponseByMembersDTOS)
+                .build();
+            }
+
 
     public void downloadExcel(Members members, Long goodsId, HttpServletResponse response) {
         if (!(members.getRole().equals(Role.ADMIN))) {
@@ -140,5 +150,18 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         }
     }
 
+    @Override
+    public Double getAveragePointByGoodsIdAndStatuses(Long goodsId, List<Status> statuses){
+        return drawsRepository.findAveragePointByGoodsIdAndStatuses(goodsId, statuses);
+    }
 
+    @Override
+    public Long countByRaffleIdsAndStatuses(List<Long> rafflesId, List<Status> statuses){
+        return drawsRepository.countByRaffleIdsAndStatuses(rafflesId, statuses);
+    }
+
+    @Override
+    public List<Draws> getDrawsByGoodsIdAndStatuses(Long goodsId, List<Status> statuses){
+        return drawsRepository.findDrawsByGoodsIdAndStatuses(goodsId, statuses);
+    }
 }
