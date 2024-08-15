@@ -107,7 +107,6 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
                 .toList();
     }
 
-
     // 당첨자 평균 응모 포인트
     private Double calculateAvgWinnerPoints(List<Goods> goodsList) {
         List<Long> points = goodsList.stream()
