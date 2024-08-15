@@ -24,12 +24,12 @@ public class MembersQueryServiceImpl implements MembersQueryService {
         Page<Members> membersPage;
         int total=0;
         if(keyword !=null && !keyword.isEmpty()){
-            membersPage=membersRepository.findByNameContainingIgnoreCase(keyword, pageRequest);
+            membersPage=membersRepository.findByNameContainingIgnoreCase(keyword, pageRequest, Role.MEMBER);
            total=(int)membersPage.getTotalElements();
         }
         else {
-            membersPage=membersRepository.findAll(pageRequest);
-            total= (int)membersRepository.count();
+            membersPage=membersRepository.findAllByRole(Role.MEMBER,pageRequest);
+            total=(int)membersPage.getTotalElements();
         }
         List<MembersDetailResponseDTO> membersDetailResponseDTOList=membersPage.getContent().stream().map(MembersDetailResponseDTO::from).toList();
 

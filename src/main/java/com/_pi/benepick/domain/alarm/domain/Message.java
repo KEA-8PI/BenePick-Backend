@@ -1,10 +1,7 @@
 package com._pi.benepick.domain.alarm.domain;
 
 import com._pi.benepick.global.common.BaseJPATimeEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -26,6 +23,7 @@ public class Message extends BaseJPATimeEntity {
 
     private String name;
 
+    @Column(columnDefinition = "TEXT")
     private String contents;
 
     public static Message of(String email, String name, String contents) {

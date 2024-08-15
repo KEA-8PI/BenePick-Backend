@@ -46,7 +46,6 @@ public class RafflesComposeServiceImpl implements RafflesComposeService {
     }
 
     public RafflesResponseByGoodsDTO applyRaffle(Members members, Long goodsId, RafflesRequestDTO raffleAddDTO) {
-        if (raffleAddDTO.getPoint() <= 0) throw new ApiException(ErrorStatus._RAFFLES_POINT_TOO_LESS);
         if (!(members.getRole().equals(Role.MEMBER))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
 
         Goods goods = goodsQueryService.getGoodsById(goodsId);
