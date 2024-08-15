@@ -23,9 +23,11 @@ public class MembersRequest {
         private String name;
 
         @NotNull(message = "포인트는 필수값입니다.")
+        @Min(value = 0,message = "포인트는 0 이상 입력가능합니다.")
         private Long point;
 
         @NotNull(message = "패널티수는 필수값입니다.")
+        @Min(value = 0,message = "패널티는 0 이상 입력가능합니다.")
         private Long penaltyCnt;
 
         @NotNull(message = "역할은 필수값입니다.")
@@ -57,6 +59,7 @@ public class MembersRequest {
         @Min(value = 0,message = "포인트는 0 이상 입력가능합니다.")
         private Long point;
         @NotNull(message = "패널티수는 필수값입니다.")
+        @Min(value = 0,message = "패널티는 0 이상 입력가능합니다.")
         private Long penaltyCnt;
         @NotNull(message = "역할은 필수값입니다.")
         private Role role;

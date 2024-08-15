@@ -44,7 +44,7 @@ public class MembersController {
 
     @Operation(summary = "비밀번호 변경", description = "사용자가 비밀번호를 변경합니다.")
     @PatchMapping("/password")
-    public ApiResponse<MembersuccessDTO> updatePassword(@Parameter(hidden = true) @MemberObject Members member,@RequestBody MemberPasswordDTO memberPasswordDTO){
+    public ApiResponse<MembersuccessDTO> updatePassword(@Parameter(hidden = true) @MemberObject Members member, @Valid @RequestBody MemberPasswordDTO memberPasswordDTO){
 return ApiResponse.onSuccess(membersCommandService.changePassword(memberPasswordDTO,member));
     }
 
