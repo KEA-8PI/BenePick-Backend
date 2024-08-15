@@ -77,12 +77,17 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
                 if (raffleEndAt.isBefore(raffleStartAt) || raffleStartAt.isBefore(LocalDateTime.now())) {
                     throw new ApiException(ErrorStatus._INVALID_DATE_RANGE);
                 }
+                Long price = (long) row.getCell(3).getNumericCellValue();
+                Long discountPrice = (long) row.getCell(4).getNumericCellValue();
+                if (price >= discountPrice) {
+                    throw new ApiException(ErrorStatus._INVALID_PRICE);
+                }
                 Goods goods = goodsCommandService.createGoods(GoodsRequestDTO.builder()
                         .name(row.getCell(0).getStringCellValue())
                         .amounts((long) row.getCell(1).getNumericCellValue())
                         .description(row.getCell(2).getStringCellValue())
-                        .price((long) row.getCell(3).getNumericCellValue())
-                        .discountPrice((long) row.getCell(4).getNumericCellValue())
+                        .price(price)
+                        .discountPrice(discountPrice)
                         .raffleStartAt(raffleStartAt)
                         .raffleEndAt(raffleEndAt)
                         .build());

@@ -30,6 +30,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _FILE_INPUT_DISABLED(HttpStatus.BAD_REQUEST, "FILE_001", "파일 추가가 불가능합니다."),
     _INVALID_FILE_FORMAT(HttpStatus.BAD_REQUEST, "FILE_002", "파일 형식이 올바르지 않습니다."),
     _INVALID_DATE_RANGE(HttpStatus.BAD_REQUEST, "FILE_003", "기간이 올바르지 않습니다."),
+    _INVALID_PRICE(HttpStatus.BAD_REQUEST, "FILE_004", "정가와 할인가가 올바르지 않습니다."),
 
     //raffle 관련
     _RAFFLES_NOT_FOUND(HttpStatus.NOT_FOUND, "RAFFLES_001", "존재하지 않는 응모입니다."),
