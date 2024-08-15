@@ -75,7 +75,7 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
 
     private void sendAlarm(Draws draws, MessageType type) {
         Members members = draws.getRaffleId().getMemberId();
-        String url = "http://localhost:3000/goods/" + draws.getRaffleId().getGoodsId();
+        String url = "https://benepick.kro.kr/goods/" + draws.getRaffleId().getGoodsId().getId();
         String contents = alarmService.getMessageFactory(members, url, type);
         alarmService.saveMessage(members.getId(), members.getName(), contents);
     }
@@ -84,7 +84,7 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         Draws draws = drawsQueryService.findDrawsById(winnerId);
         try {
-            if ((dto.getStatus()).equals(Status.valueOf("CONFIRM")) && !((draws.getStatus()).equals(Status.WINNER))) {
+            if ((dto.getStatus()).equals(Status.CONFIRM) && !((draws.getStatus()).equals(Status.WINNER))) {
                 throw new ApiException(ErrorStatus._CONFIRM_REQUIRE_WINNER);
             }
         } catch (IllegalArgumentException e) {
