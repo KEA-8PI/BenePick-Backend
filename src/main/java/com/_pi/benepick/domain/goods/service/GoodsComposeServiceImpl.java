@@ -32,6 +32,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -56,38 +58,49 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
         if (member.getRole() == Role.MEMBER) {
             throw new ApiException(ErrorStatus._ACCESS_DENIED_FOR_MEMBER);
         }
+
         List<GoodsResponse.GoodsAddResponseDTO> goodsAddResponseDTOList = new ArrayList<>();
 
         try (InputStream inputStream = file.getInputStream();
              Workbook workbook = new XSSFWorkbook(inputStream)) {
 
             XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
-            for (Row row : sheet) {
-                if (row.getRowNum() == 0) { continue;}
 
+            Row headerRow = sheet.getRow(0);
+            if (headerRow == null || !headerRow.getCell(0).getStringCellValue().equals("상품 이름")) {
+                throw new ApiException(ErrorStatus._INVALID_FILE_FORMAT);
+            }
+
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) { continue; } // 헤더 행은 스킵
                 // 상품 정보
+                LocalDateTime raffleStartAt = parseDate(row.getCell(5).getStringCellValue(), true);
+                LocalDateTime raffleEndAt = parseDate(row.getCell(6).getStringCellValue(), false);
+                if (raffleEndAt.isBefore(raffleStartAt) || raffleStartAt.isBefore(LocalDateTime.now())) {
+                    throw new ApiException(ErrorStatus._INVALID_DATE_RANGE);
+                }
+                log.info(String.valueOf(raffleEndAt));
                 Goods goods = goodsCommandService.createGoods(GoodsRequestDTO.builder()
-                    .name(row.getCell(0).getStringCellValue())
-                    .amounts((long) row.getCell(1).getNumericCellValue())
-                    .description(row.getCell(2).getStringCellValue())
-                    .price((long) row.getCell(3).getNumericCellValue())
-                    .discountPrice((long) row.getCell(4).getNumericCellValue())
-                    .raffleStartAt(LocalDateTime.parse(row.getCell(5).getStringCellValue()))
-                    .raffleEndAt(LocalDateTime.parse(row.getCell(6).getStringCellValue()))
-                    .build());
+                        .name(row.getCell(0).getStringCellValue())
+                        .amounts((long) row.getCell(1).getNumericCellValue())
+                        .description(row.getCell(2).getStringCellValue())
+                        .price((long) row.getCell(3).getNumericCellValue())
+                        .discountPrice((long) row.getCell(4).getNumericCellValue())
+                        .raffleStartAt(raffleStartAt)
+                        .raffleEndAt(raffleEndAt)
+                        .build());
                 // 카테고리
                 String categoryName = row.getCell(7).getStringCellValue();
                 Categories category = categoriesQueryService.getCategoriesByName(categoryName);
                 goodsCategoriesCommandService.createGoodsCategories(goods, category);
 
+                log.info("save: " + goods.getRaffleEndAt());
                 GoodsResponse.GoodsAddResponseDTO goodsAddResponseDTO = GoodsResponse.GoodsAddResponseDTO.of(goods, category.getName());
                 goodsAddResponseDTOList.add(goodsAddResponseDTO);
             }
-
         } catch (IOException e) {
             throw new ApiException(ErrorStatus._FILE_INPUT_DISABLED);
         }
-
         return GoodsResponse.GoodsUploadResponseDTO.builder()
                 .goodsUploadDTOList(goodsAddResponseDTOList)
                 .build();
@@ -197,6 +210,16 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
                 .filter(goods -> goods.getRaffleEndAt().isAfter(startDate.atStartOfDay()) && goods.getRaffleEndAt().isBefore(endDate.atStartOfDay()))
                 .sorted(Comparator.comparing(Goods::getRaffleEndAt))
                 .toList();
+    }
+
+    private LocalDateTime parseDate(String dateString, boolean isStartTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(dateString, formatter);
+        if(isStartTime){
+            return date.atTime(LocalTime.MIN);
+        }else {
+            return date.atTime(LocalTime.MAX);
+        }
     }
 }
 
