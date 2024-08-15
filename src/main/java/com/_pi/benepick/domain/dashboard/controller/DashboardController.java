@@ -5,6 +5,7 @@ import com._pi.benepick.domain.dashboard.service.DashboardComposeService;
 import com._pi.benepick.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,7 +24,7 @@ public class DashboardController {
 
     @Operation(summary = "대시보드 조회", description = "대시보드를 조회합니다.")
     @GetMapping("/dashboard")
-    public ApiResponse<DashboardResponse.DashboardResponseDTO> getDashboard(@RequestParam(required = false) String category, @RequestParam @DateTimeFormat LocalDateTime startDate, @RequestParam @DateTimeFormat LocalDateTime endDate) {
+    public ApiResponse<DashboardResponse.DashboardResponseDTO> getDashboard(@RequestParam(required = false) @Valid String category, @RequestParam @DateTimeFormat @Valid LocalDateTime startDate, @RequestParam @DateTimeFormat @Valid LocalDateTime endDate) {
         return ApiResponse.onSuccess(dashboardComposeService.getDashboard(category, startDate, endDate));
     }
 }

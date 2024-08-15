@@ -1,5 +1,6 @@
 package com._pi.benepick.domain.goods.dto;
 
+import com._pi.benepick.domain.categories.entity.Categories;
 import com._pi.benepick.domain.goods.entity.Goods;
 import java.util.List;
 
@@ -32,8 +33,9 @@ public class GoodsResponse {
         private LocalDateTime raffleEndAt; //응모 종료일
         private String category; //카테고리
         private Long count; //응모자 수
+        private boolean isWishlist; //위시리스트 등록 여부
 
-        public static GoodsDetailResponseDTO of(Goods goods){
+        public static GoodsDetailResponseDTO of(Goods goods, Members member){
             return GoodsDetailResponseDTO.builder()
                     .id(goods.getId())
                     .name(goods.getName())
@@ -47,6 +49,7 @@ public class GoodsResponse {
                     .raffleEndAt(goods.getRaffleEndAt())
                     .category(goods.getGoodsCategories().getCategoryId().getName())
                     .count((long) goods.getRaffles().size())
+                    .isWishlist(member != null && goods.isWishlistForMember(member.getId()))
                     .build();
         }
     }
@@ -193,6 +196,20 @@ public class GoodsResponse {
         public static GoodsDeleteResponseDTO from(List<Long> goodsList){
             return GoodsDeleteResponseDTO.builder()
                     .deletedGoodsList(goodsList)
+                    .build();
+        }
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    public static class CategoryInfoDTO{
+        private String name;
+
+        public static CategoryInfoDTO from(Categories categories){
+            return CategoryInfoDTO.builder()
+                    .name(categories.getName())
                     .build();
         }
     }
