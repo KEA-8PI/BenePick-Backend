@@ -35,5 +35,4 @@ public interface DrawsRepository extends JpaRepository<Draws, Long> {
 
     @Query("SELECT AVG(d.raffleId.point) FROM Draws d WHERE d.raffleId.goodsId.id = :goodsId AND d.status IN :statuses")
     Double findAveragePointByGoodsIdAndStatuses(Long goodsId, List<Status> statuses);
-
 }

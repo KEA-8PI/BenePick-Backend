@@ -18,5 +18,5 @@ public interface GoodsComposeService {
     GoodsResponse.GoodsDeleteResponseDTO deleteGoods(List<Long> goodsDeleteRequestDTO, Members member); //상품 삭제
     GoodsResponse.GoodsDetailResponseDTO getGoodsInfo(Long goodsId, Members member); // 상품 상세 조회
     GoodsResponse.GoodsListSearchResponseDTO searchGoods(GoodsStatus goodsStatus, Integer page, Integer size, String keyword, GoodsFilter sortBy, String category, Members member); //상품 검색
-    List<Goods> getGoodsList(String categoryName, LocalDate startDate, LocalDate endDate);
+    List<Goods> getGoods(String categoryName, LocalDate startDate, LocalDate endDate);
 }
