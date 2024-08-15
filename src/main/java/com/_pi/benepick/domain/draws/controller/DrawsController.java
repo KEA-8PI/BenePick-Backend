@@ -1,6 +1,6 @@
 package com._pi.benepick.domain.draws.controller;
 
-import com._pi.benepick.domain.draws.dto.DrawsRequest;
+import com._pi.benepick.domain.draws.dto.DrawsRequest.DrawsRequestDTO;
 import com._pi.benepick.domain.draws.service.DrawsComposeService;
 import com._pi.benepick.domain.draws.service.DrawsQueryService;
 import com._pi.benepick.domain.members.entity.Members;
@@ -11,8 +11,15 @@ import com._pi.benepick.domain.draws.dto.DrawsResponse.*;
 import com._pi.benepick.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,7 +56,7 @@ public class DrawsController {
 
     @Operation(summary = "당첨자 상태 관리", description = "당첨자들의 상태를 관리할 수 있습니다.")
     @PatchMapping("/winners/edit/{winnersId}")
-    public ApiResponse<EditWinnerStatus> editWinnerStatus(@Parameter(hidden = true) @MemberObject Members member,@PathVariable Long winnersId, @RequestBody DrawsRequest.DrawsRequestDTO dto) {
+    public ApiResponse<EditWinnerStatus> editWinnerStatus(@Parameter(hidden = true) @MemberObject Members member,@PathVariable Long winnersId, @Valid @RequestBody DrawsRequestDTO dto) {
         return ApiResponse.onSuccess(drawsComposeService.editWinnerStatus(member, winnersId, dto));
     }
 
