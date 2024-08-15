@@ -131,8 +131,13 @@ public class MembersComposeServiceImpl implements MembersComposeService{
 
         try (InputStream inputStream = file.getInputStream();
             Workbook workbook = new XSSFWorkbook(inputStream)) {
-
             XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
+
+            Row headerRow = sheet.getRow(0);
+            if (headerRow == null || !headerRow.getCell(1).getStringCellValue().equals("복지포인트 증감")) {
+                throw new ApiException(ErrorStatus._INVALID_FILE_FORMAT);
+            }
+
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) { continue;}
 
@@ -165,6 +170,10 @@ public class MembersComposeServiceImpl implements MembersComposeService{
             Workbook workbook = new XSSFWorkbook(inputStream)) {
             XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
 
+            Row headerRow = sheet.getRow(0);
+            if (headerRow == null || !headerRow.getCell(1).getStringCellValue().equals("이름")) {
+                throw new ApiException(ErrorStatus._INVALID_FILE_FORMAT);
+            }
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) { continue;}
                 String id = row.getCell(0).getStringCellValue();

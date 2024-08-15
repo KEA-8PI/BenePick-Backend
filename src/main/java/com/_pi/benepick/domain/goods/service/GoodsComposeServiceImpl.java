@@ -18,7 +18,6 @@ import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.global.common.exception.ApiException;
 import com._pi.benepick.global.common.response.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -43,7 +42,6 @@ import static com._pi.benepick.domain.goods.entity.GoodsStatus.COMPLETED;
 @Service
 @RequiredArgsConstructor
 @Transactional
-@Slf4j
 public class GoodsComposeServiceImpl implements GoodsComposeService {
     private final GoodsRepository goodsRepository;
     private final GoodsCategoriesCommandService goodsCategoriesCommandService;
@@ -79,7 +77,6 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
                 if (raffleEndAt.isBefore(raffleStartAt) || raffleStartAt.isBefore(LocalDateTime.now())) {
                     throw new ApiException(ErrorStatus._INVALID_DATE_RANGE);
                 }
-                log.info(String.valueOf(raffleEndAt));
                 Goods goods = goodsCommandService.createGoods(GoodsRequestDTO.builder()
                         .name(row.getCell(0).getStringCellValue())
                         .amounts((long) row.getCell(1).getNumericCellValue())
@@ -94,7 +91,6 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
                 Categories category = categoriesQueryService.getCategoriesByName(categoryName);
                 goodsCategoriesCommandService.createGoodsCategories(goods, category);
 
-                log.info("save: " + goods.getRaffleEndAt());
                 GoodsResponse.GoodsAddResponseDTO goodsAddResponseDTO = GoodsResponse.GoodsAddResponseDTO.of(goods, category.getName());
                 goodsAddResponseDTOList.add(goodsAddResponseDTO);
             }
