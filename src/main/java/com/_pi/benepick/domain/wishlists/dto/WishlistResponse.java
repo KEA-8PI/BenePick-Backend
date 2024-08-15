@@ -1,14 +1,8 @@
 package com._pi.benepick.domain.wishlists.dto;
 
-import com._pi.benepick.domain.categories.entity.Categories;
+
 import com._pi.benepick.domain.goods.dto.GoodsResponse;
-import com._pi.benepick.domain.goods.entity.Goods;
-import com._pi.benepick.domain.goodsCategories.entity.GoodsCategories;
 import com._pi.benepick.domain.wishlists.entity.Wishlists;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
