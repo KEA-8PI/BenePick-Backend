@@ -1,5 +1,6 @@
 package com._pi.benepick.domain.goods.dto;
 
+import com._pi.benepick.domain.categories.entity.Categories;
 import com._pi.benepick.domain.goods.entity.Goods;
 import java.util.List;
 
@@ -195,6 +196,20 @@ public class GoodsResponse {
         public static GoodsDeleteResponseDTO from(List<Long> goodsList){
             return GoodsDeleteResponseDTO.builder()
                     .deletedGoodsList(goodsList)
+                    .build();
+        }
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    public static class CategoryInfoDTO{
+        private String name;
+
+        public static CategoryInfoDTO from(Categories categories){
+            return CategoryInfoDTO.builder()
+                    .name(categories.getName())
                     .build();
         }
     }
