@@ -84,16 +84,15 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         Draws draws = drawsQueryService.findDrawsById(winnerId);
         try {
-            if (Status.valueOf(dto.getStatus()).equals(Status.CONFIRM) && !(draws.getStatus().equals(Status.WINNER))) {
+            if ((dto.getStatus()).equals(Status.valueOf("CONFIRM")) && !((draws.getStatus()).equals(Status.WINNER))) {
                 throw new ApiException(ErrorStatus._CONFIRM_REQUIRE_WINNER);
             }
         } catch (IllegalArgumentException e) {
             throw new ApiException(ErrorStatus._BAD_REQUEST);
         }
 
-        Status newStatus = Status.valueOf(dto.getStatus());
-        draws.updateStatus(newStatus);
-        switch (newStatus) {
+        draws.updateStatus(dto.getStatus());
+        switch (dto.getStatus()) {
             case CONFIRM:
                 changeConfirmRaffleEnd(draws);
                 break;

@@ -24,6 +24,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +45,7 @@ public class MembersComposeServiceImpl implements MembersComposeService{
     private final PointHistsRepository pointHistsRepository;
     private final WishlistsRepository wishlistsRepository;
     private final RafflesRepository rafflesRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UpdateMemberResponseDTO updateMemberInfo(String memberid, MembersRequest.MembersRequestDTO membersRequestDTO, Members member){
@@ -85,6 +87,7 @@ public class MembersComposeServiceImpl implements MembersComposeService{
             throw new ApiException(ErrorStatus._UNAUTHORIZED);
         }
         Members members=membersRequestDTO.toEntity(membersRequestDTO);
+        members.initPassword(passwordEncoder);
         membersRepository.save(members);
         ChangePointHistDTO changePointRequestDTO = new ChangePointHistDTO(
                 0L, "사원 등록", membersRequestDTO.getPoint(), members
