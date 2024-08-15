@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +30,7 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
 
     @Override
     public DashboardResponse.DashboardResponseDTO getDashboard(String categoryName, LocalDateTime startDate, LocalDateTime endDate) {
-        List<Goods> goodsList = goodsComposeService.getGoodsList(categoryName, startDate, endDate);
+        List<Goods> goodsList = goodsComposeService.getGoodsList(categoryName, startDate.toLocalDate(), endDate.toLocalDate());
 
         // 회차별 당첨자 평균 응모 포인트
         List<Double> avgWinnerPointsPerRaffles = calculateAvgWinnerPointsPerRaffles(goodsList);
@@ -52,7 +53,7 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
     }
 
     @Override
-    public DashboardResponse.WinnerPointsPerRafflesDto getWinnerPointsPerRaffles(String category, LocalDateTime startDate, LocalDateTime endDate) {
+    public DashboardResponse.WinnerPointsPerRafflesDto getWinnerPointsPerRaffles(String category, LocalDate startDate, LocalDate endDate) {
         List<Goods> goods = goodsComposeService.getGoodsList(category, startDate, endDate);
         List<Double> avgWinnerPointsPerRaffles = calculateAvgWinnerPointsPerRaffles(goods);
 
@@ -70,7 +71,7 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
     }
 
     @Override
-    public DashboardResponse.TotalPointsPerRafflesDto getTotalPointsPerRaffles(String category, LocalDateTime startDate, LocalDateTime endDate) {
+    public DashboardResponse.TotalPointsPerRafflesDto getTotalPointsPerRaffles(String category, LocalDate startDate, LocalDate endDate) {
         List<Goods> goods = goodsComposeService.getGoodsList(category, startDate, endDate);
         List<Double> totalPointsPerRaffles = calculateTotalPointsPerRaffles(goods);
 
@@ -93,7 +94,7 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
     }
 
     @Override
-    public DashboardResponse.RefillRatesPerRafflesDto getRefillRatesPerRaffles(String category, LocalDateTime startDate, LocalDateTime endDate) {
+    public DashboardResponse.RefillRatesPerRafflesDto getRefillRatesPerRaffles(String category, LocalDate startDate, LocalDate endDate) {
         List<Goods> goods = goodsComposeService.getGoodsList(category, startDate, endDate);
         List<Double> refillRatesPerRaffles = calculateRefillRatesPerRaffles(goods);
 
@@ -116,7 +117,7 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
     }
 
     @Override
-    public DashboardResponse.MostWonRanksDto getMostWonRanks(String category, LocalDateTime startDate, LocalDateTime endDate) {
+    public DashboardResponse.MostWonRanksDto getMostWonRanks(String category, LocalDate startDate, LocalDate endDate) {
         List<Goods> goods = goodsComposeService.getGoodsList(category, startDate, endDate);
         List<Map.Entry<Integer, Double>> mostWonRanks = calculateMostWinnedRanks(goods);
 
@@ -147,7 +148,7 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
     }
 
     @Override
-    public DashboardResponse.AvgWinnerPointsDto getAvgWinnerPoints(String category, LocalDateTime startDate, LocalDateTime endDate) {
+    public DashboardResponse.AvgWinnerPointsDto getAvgWinnerPoints(String category, LocalDate startDate, LocalDate endDate) {
         List<Goods> goods = goodsComposeService.getGoodsList(category, startDate, endDate);
         Double avgWinnerPoints = calculateAvgWinnerPoints(goods);
 
