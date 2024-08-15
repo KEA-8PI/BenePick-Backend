@@ -74,7 +74,7 @@ public class Members extends BaseJPATimeEntity {
     }
 
     public void initPassword( PasswordEncoder passwordEncoder){
-        // detault 비밀번호 0000 hash 값
+        // default 비밀번호 0000 hash 값
         this.password=passwordEncoder.encode("9af15b336e6a9619928537df30b2e6a2376569fcf9d7e773eccede65606529a0");
     }
 

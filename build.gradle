@@ -57,8 +57,10 @@ dependencies {
 	// spring actuator
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'io.micrometer:micrometer-registry-prometheus'
-	// validation
+	// Spring Boot validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework:spring-web'
+
 }
 
 println "Current environment: ${project.hasProperty('env') ? project.env : 'not set'}"
