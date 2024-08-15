@@ -12,6 +12,7 @@ import com._pi.benepick.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -40,8 +41,8 @@ public class GoodsController {
     //상품 상세 조회
     @Operation(summary = "상품 상세 조회", description = "상품의 상세 정보를 조회합니다.(진행:PROGRESS,예정:SCHEDULED,종료:COMPLETED)")
     @GetMapping("/{goodsId}")
-    public ApiResponse<GoodsResponse.GoodsDetailResponseDTO> getGoodsInfo(@PathVariable Long goodsId) {
-        return ApiResponse.onSuccess(goodsComposeService.getGoodsInfo(goodsId));
+    public ApiResponse<GoodsResponse.GoodsDetailResponseDTO> getGoodsInfo(@Parameter(hidden = true) @MemberObject Members member, @PathVariable Long goodsId) {
+        return ApiResponse.onSuccess(goodsComposeService.getGoodsInfo(goodsId, member));
     }
 
     //시드 값 조회
@@ -60,14 +61,14 @@ public class GoodsController {
                                                                              @RequestParam Integer size,
                                                                              @RequestParam(required = false) String keyword,
                                                                              @RequestParam GoodsFilter sortBy,
-                                                                             @RequestParam(required = false) String category) {
+                                                                             @RequestParam(required = false ) String category) {
         return ApiResponse.onSuccess(goodsComposeService.searchGoods(goodsStatus, page, size, keyword, sortBy, category, member));
     }
 
     //상품 추가 (관리자)
     @Operation(summary = "상품 추가", description = "상품을 추가합니다.")
     @PostMapping("/add")
-    public ApiResponse<GoodsResponse.GoodsAddResponseDTO> addGoods(@Parameter(hidden = true) @MemberObject Members member, @RequestBody GoodsRequest.GoodsRequestDTO goodsAddDTO) {
+    public ApiResponse<GoodsResponse.GoodsAddResponseDTO> addGoods(@Parameter(hidden = true) @MemberObject Members member, @RequestBody @Valid GoodsRequest.GoodsRequestDTO goodsAddDTO) {
         return ApiResponse.onSuccess(goodsComposeService.addGoods(goodsAddDTO, member));
     }
 
@@ -83,7 +84,7 @@ public class GoodsController {
     @PostMapping("/update/{goodsId}")
     public ApiResponse<GoodsResponse.GoodsAddResponseDTO> updateGoods(@Parameter(hidden = true) @MemberObject Members member,
                                                                       @PathVariable Long goodsId,
-                                                                      @RequestBody GoodsRequest.GoodsRequestDTO goodsUpdateDTO) {
+                                                                      @RequestBody @Valid GoodsRequest.GoodsRequestDTO goodsUpdateDTO) {
         return ApiResponse.onSuccess(goodsComposeService.updateGoods(goodsId, goodsUpdateDTO, member));
     }
 
