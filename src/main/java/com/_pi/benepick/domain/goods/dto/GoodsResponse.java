@@ -199,19 +199,5 @@ public class GoodsResponse {
                     .build();
         }
     }
-
-    @Builder
-    @Getter
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    @NoArgsConstructor
-    public static class CategoryInfoDTO{
-        private String name;
-
-        public static CategoryInfoDTO from(Categories categories){
-            return CategoryInfoDTO.builder()
-                    .name(categories.getName())
-                    .build();
-        }
-    }
 }
 

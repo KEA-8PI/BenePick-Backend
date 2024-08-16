@@ -35,7 +35,7 @@ public class WishlistResponse {
                     .goodsStatus(wishlists.getGoodsId().getGoodsStatus().name())
                     .raffleEndAt(wishlists.getGoodsId().getRaffleEndAt())
                     .raffleStartAt(wishlists.getGoodsId().getRaffleStartAt())
-                    .category(GoodsResponse.CategoryInfoDTO.from( wishlists.getGoodsId().getGoodsCategories().getCategoryId()).getName())
+                    .category(wishlists.getGoodsId().getGoodsCategories().getCategoryId().getName())
                     .count((long)wishlists.getGoodsId().getRaffles().size())
                     .goodId(wishlists.getGoodsId().getId())
                     .build();
@@ -77,7 +77,5 @@ public class WishlistResponse {
         }
 
     }
-
-
 
 }
