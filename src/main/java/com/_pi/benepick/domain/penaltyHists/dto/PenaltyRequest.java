@@ -27,6 +27,5 @@ public class PenaltyRequest {
                     .totalPenalty(result.intValue())
                     .build();
         }
-
     }
 }
