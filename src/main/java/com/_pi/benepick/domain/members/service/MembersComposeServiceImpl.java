@@ -30,6 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -57,16 +59,20 @@ public class MembersComposeServiceImpl implements MembersComposeService{
         Long totalPoint=membersQueryService.getMembertotalPoint(updateMember);
         Long totalPenalty=membersQueryService.getMemberPenaltyCnt(updateMember);
 
-        ChangePointHistDTO changePointRequestDTO = new ChangePointHistDTO(
-                membersRequestDTO.getPoint(), "관리자가 변경", totalPoint, updateMember
-        );
+        if(!Objects.equals(totalPoint, membersRequestDTO.getPoint()) ){
+            ChangePointHistDTO changePointRequestDTO = new ChangePointHistDTO(
+                    membersRequestDTO.getPoint()-totalPoint, "관리자가 변경", membersRequestDTO.getPoint(), updateMember
+            );
 
-        ChangePenaltyHistDTO changePenaltyHistDTO= new ChangePenaltyHistDTO(
-                membersRequestDTO.getPenaltyCnt(),"관리자가 변경",updateMember,totalPenalty
-        );
+            pointHistsCommandService.createPointHists(changePointRequestDTO);
+        }
 
-        pointHistsCommandService.createPointHists(changePointRequestDTO);
-        penaltyHistsCommandService.createPenaltyHists(changePenaltyHistDTO);
+        if(!Objects.equals(totalPenalty, membersRequestDTO.getPenaltyCnt()) ){
+            ChangePenaltyHistDTO changePenaltyHistDTO= new ChangePenaltyHistDTO(
+                    membersRequestDTO.getPenaltyCnt()-totalPenalty,"관리자가 변경",updateMember,membersRequestDTO.getPenaltyCnt()
+            );
+            penaltyHistsCommandService.createPenaltyHists(changePenaltyHistDTO);
+        }
         updateMember.updateInfo(membersRequestDTO);
 
         return UpdateMemberResponseDTO.builder()
