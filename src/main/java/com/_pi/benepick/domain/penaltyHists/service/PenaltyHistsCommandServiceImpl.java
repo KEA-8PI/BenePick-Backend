@@ -18,7 +18,7 @@ public class PenaltyHistsCommandServiceImpl implements PenaltyHistsCommandServic
         PenaltyHists penaltyHists = PenaltyHists.builder()
                 .memberId(changePenaltyHistDTO.getMember())
                 .content(changePenaltyHistDTO.getContent())
-                .totalPenalty(Math.toIntExact(changePenaltyHistDTO.getMember().getPenaltyCnt()))
+                .totalPenalty(Math.toIntExact(changePenaltyHistDTO.getTotalPenalty()))
                 .penaltyCount(Math.toIntExact(changePenaltyHistDTO.getPenaltyCnt()))
                 .build();
         penaltyHistsRepository.save(penaltyHists);
