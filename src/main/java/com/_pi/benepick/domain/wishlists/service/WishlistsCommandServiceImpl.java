@@ -18,16 +18,15 @@ public class WishlistsCommandServiceImpl implements WishlistsCommandService {
 
     private final WishlistsRepository wishlistsRepository;
     @Override
-    public WishlistResponse.WishlistSuccessDTO deleteWishlist(Long wishlistId, Members members) {
-        Wishlists wishlists =wishlistsRepository.findById(wishlistId).orElseThrow(()->new ApiException(ErrorStatus._WISHLIST_NOT_FOUND));
+    public WishlistResponse.WishlistSuccessDTO deleteWishlist(Long goodsId, Members members) {
+        Wishlists wishlists =wishlistsRepository.findAllByGoodsId_IdAndMemberId(goodsId,members).orElseThrow(()-> new ApiException(ErrorStatus._WISHLIST_NOT_FOUND));
         if (!wishlists.getMemberId().getId().equals(members.getId())) {
             throw new ApiException(ErrorStatus._FORBIDDEN);
         }
-        wishlistsRepository.deleteById(wishlistId);
+        wishlistsRepository.deleteByGoodsId_IdAndMemberId(goodsId,members);
         return WishlistResponse.WishlistSuccessDTO.builder()
                 .id(wishlists.getId())
                 .build();
-
     }
 
     @Override
