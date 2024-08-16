@@ -40,10 +40,10 @@ public class WishlistsController {
     }
 
     @Operation(summary = "위시리스트 삭제",description = "사용자가 위시리스트를 삭제합니다." )
-    @DeleteMapping("/delete/{wishlistId}")
-    public ApiResponse<WishlistSuccessDTO> deleteWishList(@Parameter(hidden = true) @MemberObject Members member,@PathVariable Long wishlistId){
+    @DeleteMapping("/delete/{goodsId}")
+    public ApiResponse<WishlistSuccessDTO> deleteWishList(@Parameter(hidden = true) @MemberObject Members member,@PathVariable Long goodsId){
         return ApiResponse.onSuccess(
-                wishlistsCommandSerivce.deleteWishlist(wishlistId,member)
+                wishlistsCommandSerivce.deleteWishlist(goodsId,member)
         );
     }
 
