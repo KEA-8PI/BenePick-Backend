@@ -22,7 +22,7 @@ public class WishlistResponse {
         private String goodsStatus;
         private LocalDateTime raffleStartAt;
         private LocalDateTime raffleEndAt;
-        private String category;
+        private GoodsResponse.CategoryInfoDTO category;
         private Long count;
         private Long goodId;
 
