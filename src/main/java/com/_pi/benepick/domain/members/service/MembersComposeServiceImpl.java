@@ -131,8 +131,13 @@ public class MembersComposeServiceImpl implements MembersComposeService{
 
         try (InputStream inputStream = file.getInputStream();
             Workbook workbook = new XSSFWorkbook(inputStream)) {
-
             XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
+
+            Row headerRow = sheet.getRow(0);
+            if (headerRow == null || !headerRow.getCell(1).getStringCellValue().equals("복지포인트 증감")) {
+                throw new ApiException(ErrorStatus._INVALID_FILE_FORMAT);
+            }
+
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) { continue;}
 
@@ -165,19 +170,25 @@ public class MembersComposeServiceImpl implements MembersComposeService{
             Workbook workbook = new XSSFWorkbook(inputStream)) {
             XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
 
+            Row headerRow = sheet.getRow(0);
+            if (headerRow == null || !headerRow.getCell(1).getStringCellValue().equals("이름")) {
+                throw new ApiException(ErrorStatus._INVALID_FILE_FORMAT);
+            }
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) { continue;}
                 String id = row.getCell(0).getStringCellValue();
-                membersRepository.findByIdWithNativeQuery(id).orElseThrow(()->new ApiException(ErrorStatus._ALREADY_EXIST_MEMBER));
+                if(membersRepository.findByIdWithNativeQuery(id).isPresent()){
+                    throw new ApiException(ErrorStatus._ALREADY_EXIST_MEMBER);
+                }
                 Members members = Members.builder()
                     .id(id)
                     .name(row.getCell(1).getStringCellValue())
                     .deptName(row.getCell(2).getStringCellValue())
-                    .password(row.getCell(3).getStringCellValue())
-                    .penaltyCnt((long) row.getCell(4).getNumericCellValue())
-                    .point((long) row.getCell(5).getNumericCellValue())
+                    .penaltyCnt((long) row.getCell(3).getNumericCellValue())
+                    .point((long) row.getCell(4).getNumericCellValue())
                     .role(Role.MEMBER)
                     .build();
+                members.initPassword(passwordEncoder);
                 membersList.add(members);
             }
             membersRepository.saveAll(membersList);
