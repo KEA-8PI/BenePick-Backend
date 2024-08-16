@@ -7,11 +7,7 @@ import com._pi.benepick.domain.raffles.entity.Raffles;
 import com._pi.benepick.domain.wishlists.entity.Wishlists;
 import com._pi.benepick.global.common.BaseJPATimeEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 

@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 public interface DrawsRepository extends JpaRepository<Draws, Long> {
-    @Query("SELECT d FROM Draws d LEFT JOIN Raffles r ON d.raffleId.id = r.id WHERE r.goodsId.id = :goodsId")
+    @Query("SELECT d FROM Draws d LEFT JOIN Raffles r ON d.raffleId.id = r.id WHERE r.goodsId.id = :goodsId ORDER BY d.sequence")
     List<Draws> findByGoodsId(@Param("goodsId") Long goodsId);
 
     @Query("SELECT new com._pi.benepick.domain.draws.dto.DrawsResponse$DrawsAndGoodsCategory(d, c.name) " +
