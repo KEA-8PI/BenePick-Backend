@@ -79,7 +79,7 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
                 }
                 Long price = (long) row.getCell(3).getNumericCellValue();
                 Long discountPrice = (long) row.getCell(4).getNumericCellValue();
-                if (price >= discountPrice) {
+                if (price <= discountPrice) {
                     throw new ApiException(ErrorStatus._INVALID_PRICE);
                 }
                 Goods goods = goodsCommandService.createGoods(GoodsRequestDTO.builder()
