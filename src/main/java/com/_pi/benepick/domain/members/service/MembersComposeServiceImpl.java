@@ -69,7 +69,7 @@ public class MembersComposeServiceImpl implements MembersComposeService{
 
         if(!Objects.equals(totalPenalty, membersRequestDTO.getPenaltyCnt()) ){
             ChangePenaltyHistDTO changePenaltyHistDTO= new ChangePenaltyHistDTO(
-                    membersRequestDTO.getPenaltyCnt()-totalPenalty,"관리자가 변경",updateMember,membersRequestDTO.getPenaltyCnt()
+                    membersRequestDTO.getPenaltyCnt()-totalPenalty,"관리자가 변경", updateMember, membersRequestDTO.getPenaltyCnt()
             );
             penaltyHistsCommandService.createPenaltyHists(changePenaltyHistDTO);
         }
