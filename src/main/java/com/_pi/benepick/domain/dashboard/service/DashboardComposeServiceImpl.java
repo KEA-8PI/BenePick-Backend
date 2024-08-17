@@ -40,7 +40,7 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
         // 회차별 대기 충원율
         List<Double> refillRatesPerRaffles = calculateRefillRatesPerRaffles(goodsList);
         // 응모자 중 당첨자 순위 top5
-        List<Map.Entry<Integer, Double>> mostWinnedRanks = calculateMostWinnedRanks(goodsList);
+        List<Map.Entry<Integer, Double>> mostWonRanks = calculateMostWonRanks(goodsList);
         // 당첨자 평균 응모 포인트
         Double avgWinnerPoints = calculateAvgWinnerPoints(goodsList);
 
@@ -48,7 +48,7 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
                 .avgWinnerPointsPerRaffles(avgWinnerPointsPerRaffles)
                 .totalPointsPerRaffles(totalPointsPerRaffles)
                 .refillRatesPerRaffles(refillRatesPerRaffles)
-                .mostWinnedRanks(mostWinnedRanks)
+                .mostWinnedRanks(mostWonRanks)
                 .avgWinnerPoints(avgWinnerPoints)
                 .build();
     }
@@ -92,8 +92,7 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
                             .map(Raffles::getPoint)
                             .mapToDouble(Long::doubleValue)
                             .sum();
-                })
-                .toList();
+                }).toList();
     }
 
     @Cacheable(value = "refillRatesPerRaffles", key = "'refillRatesPerRaffles:' + #category + #startDate + #endDate")
@@ -116,15 +115,14 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
                     long totalDraws = drawsQueryService.countByRaffleIdsAndStatuses(raffleIds, List.of(Status.WINNER, Status.WAITLIST, Status.CANCEL, Status.NO_SHOW, Status.CONFIRM));
                     long refillCount = drawsQueryService.countByRaffleIdsAndStatuses(raffleIds, List.of(Status.CANCEL, Status.NO_SHOW));
                     return (totalDraws == 0) ? 0.0 : (refillCount / (double) totalDraws);
-                })
-                .toList();
+                }).toList();
     }
 
     @Cacheable(value = "mostWonRanks", key = "'mostWonRanks:' + #category + #startDate + #endDate")
     @Override
     public DashboardResponse.MostWonRanksDto getMostWonRanks(String category, LocalDate startDate, LocalDate endDate) {
         List<Goods> goods = goodsComposeService.getGoods(category, startDate, endDate);
-        List<Map.Entry<Integer, Double>> mostWonRanks = calculateMostWinnedRanks(goods);
+        List<Map.Entry<Integer, Double>> mostWonRanks = calculateMostWonRanks(goods);
 
         return DashboardResponse.MostWonRanksDto.builder()
                 .mostWonRanks(mostWonRanks)
@@ -132,13 +130,13 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
     }
 
     // 응모자 중 당첨자 순위 top5
-    private List<Map.Entry<Integer, Double>> calculateMostWinnedRanks(List<Goods> goodsList) {
+    private List<Map.Entry<Integer, Double>> calculateMostWonRanks(List<Goods> goodsList) {
         Map<Integer, Integer> rankCountMap = new HashMap<>();
         goodsList.forEach(goods -> {
             List<Raffles> sortedRaffles = rafflesQueryService.findAllByGoodsIdOrderByPointDesc(goods);
             for (int i = 0; i < sortedRaffles.size(); i++) {
                 Raffles raffle = sortedRaffles.get(i);
-                if(raffle.getDraw()!=null && wonStatus.contains(raffle.getDraw().getStatus())){
+                if (raffle.getDraw() != null && wonStatus.contains(raffle.getDraw().getStatus())) {
                     int rank = i + 1; // 1부터 시작하는 순위
                     rankCountMap.put(rank, rankCountMap.getOrDefault(rank, 0) + 1);
                 }
