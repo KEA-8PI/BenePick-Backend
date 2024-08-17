@@ -1,11 +1,12 @@
 package com._pi.benepick.domain.goods.repository;
 
+import com._pi.benepick.domain.categories.entity.Categories;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -37,4 +38,8 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
     List<Goods> findByRaffleEndAtBeforeAndGoodsStatus(LocalDateTime now, GoodsStatus status);
     List<Goods> findByRaffleStartAtBeforeAndGoodsStatus(LocalDateTime now, GoodsStatus status);
 
+    @Query("SELECT g FROM Goods g WHERE g.goodsCategories.categoryId = :category " +
+            "AND g.raffleEndAt BETWEEN :startDate AND :endDate " +
+            "ORDER BY g.raffleEndAt ASC")
+    List<Goods> getGoodsByCategoryIdAndDateRange(Categories category, LocalDateTime startDate, LocalDateTime endDate);
 }
