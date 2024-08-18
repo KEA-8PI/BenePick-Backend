@@ -36,6 +36,8 @@ import java.util.List;
 @Transactional
 public class DrawsComposeServiceImpl implements DrawsComposeService {
 
+    private static final String BASE_URL = "https://benepick.kro.kr";
+
     private final DrawsQueryService drawsQueryService;
     private final DrawsCommandService drawsCommandService;
     private final GoodsQueryService goodsQueryService;
@@ -75,7 +77,7 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
 
     private void sendAlarm(Draws draws, MessageType type) {
         Members members = draws.getRaffleId().getMemberId();
-        String url = "http://localhost:3000/goods/" + draws.getRaffleId().getGoodsId();
+        String url = BASE_URL + "/goods/" + draws.getRaffleId().getGoodsId();
         String contents = alarmService.getMessageFactory(members, url, type);
         alarmService.saveMessage(members.getId(), members.getName(), contents);
     }
