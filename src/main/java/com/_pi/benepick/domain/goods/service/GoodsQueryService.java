@@ -7,7 +7,6 @@ import com._pi.benepick.domain.goods.entity.GoodsFilter;
 import com._pi.benepick.domain.members.entity.Members;
 import org.springframework.data.domain.PageRequest;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,7 +16,6 @@ public interface GoodsQueryService {
     PageRequest createPageRequest(Integer page, Integer size, GoodsFilter sortBy);
     Goods getGoodsById(Long id);
     List<Goods> findByRaffleEndAtBeforeAndGoodsStatus(LocalDateTime now);
-    List<Goods> getGoodsByCategoryId(Long categoryId);
     List<Goods> getAll();
-    List<Goods> getGoodsByCategoryIdAndDateRange(Categories category, LocalDate startDate, LocalDate endDate);
+    List<Goods> getGoodsByCategoryIdAndDateRange(Categories category, LocalDateTime startDate, LocalDateTime endDate);
 }

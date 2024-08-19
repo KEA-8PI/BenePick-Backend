@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Sort;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -87,17 +86,12 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
     }
 
     @Override
-    public List<Goods> getGoodsByCategoryId(Long categoryId) {
-        return goodsRepository.findGoodsByCategoryId(categoryId);
-    }
-
-    @Override
     public List<Goods> getAll() {
         return goodsRepository.findAll();
     }
 
     @Override
-    public List<Goods> getGoodsByCategoryIdAndDateRange(Categories category, LocalDate startDate, LocalDate endDate) {
-        return goodsRepository.getGoodsByCategoryIdAndDateRange(category, startDate.atStartOfDay(), endDate.atStartOfDay());
+    public List<Goods> getGoodsByCategoryIdAndDateRange(Categories category, LocalDateTime startDate, LocalDateTime endDate) {
+        return goodsRepository.getGoodsByCategoryIdAndDateRange(category, startDate, endDate);
     }
 }
