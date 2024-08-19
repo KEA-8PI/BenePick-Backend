@@ -2,8 +2,6 @@ package com._pi.benepick.domain.draws.dto;
 
 import com._pi.benepick.domain.draws.entity.Status;
 import com._pi.benepick.domain.draws.entity.Draws;
-import com._pi.benepick.domain.raffles.entity.Raffles;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -172,7 +170,7 @@ public class DrawsResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class DrawsResponseResultDTO {
-        private Status status;
+        private Status drawStatus;
         private int sequence;
         private String memberId;
         private String memberName;
@@ -180,7 +178,7 @@ public class DrawsResponse {
 
         public static DrawsResponseResultDTO from(Draws draws) {
             return DrawsResponseResultDTO.builder()
-                    .status(draws.getStatus())
+                    .drawStatus(draws.getStatus())
                     .sequence(draws.getSequence())
                     .memberId(draws.getRaffleId().getMemberId().getId())
                     .memberName(draws.getRaffleId().getMemberId().getName())
