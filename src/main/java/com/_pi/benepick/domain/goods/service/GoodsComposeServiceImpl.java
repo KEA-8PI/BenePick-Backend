@@ -220,7 +220,7 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
         if(isStartTime){
             return date.atTime(LocalTime.MIN);
         }else {
-            return date.atTime(LocalTime.MAX);
+            return date.atTime(LocalTime.of(23, 59, 59, 999999000));
         }
     }
 }
