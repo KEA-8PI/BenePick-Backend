@@ -199,10 +199,10 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
     }
 
     @Override
-    public List<Goods> getGoods(String category, LocalDate startDate, LocalDate endDate) {
+    public List<Goods> getGoods(String category, LocalDateTime startDate, LocalDateTime endDate) {
         if (category == null) {
             return goodsQueryService.getAll().stream()
-                    .filter(good -> good.getRaffleEndAt().isAfter(startDate.atStartOfDay()) && good.getRaffleEndAt().isBefore(endDate.atStartOfDay()))
+                    .filter(good -> !good.getRaffleEndAt().isBefore(startDate) && !good.getRaffleEndAt().isAfter(endDate))
                     .sorted(Comparator.comparing(Goods::getRaffleEndAt))
                     .toList();
         }
