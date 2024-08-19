@@ -20,11 +20,11 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
     @Query("SELECT g FROM Goods g " +
             "WHERE g.goodsStatus = :goodsStatus " +
             "AND (:categoryId IS NULL OR EXISTS (SELECT 1 FROM GoodsCategories gc WHERE gc.goodsId.id = g.id AND gc.categoryId.id = :categoryId)) " +
-            "AND (:keyword IS NULL OR LOWER(g.name) LIKE LOWER(CONCAT(:keyword, '%')))")
+            "AND (:keyword IS NULL OR LOWER(g.name) LIKE LOWER(CONCAT('%', :keyword, '%')))")
     Page<Goods> searchGoods(GoodsStatus goodsStatus, Long categoryId, String keyword, Pageable pageable);
 
     @Query("SELECT g FROM Goods g LEFT JOIN g.raffles r " +
-            "WHERE (:keyword IS NULL OR LOWER(g.name) LIKE LOWER(CONCAT(:keyword, '%')))" +
+            "WHERE (:keyword IS NULL OR LOWER(g.name) LIKE LOWER(CONCAT('%', :keyword, '%')))" +
             "AND g.goodsStatus = :goodsStatus " +
             "AND (:categoryId IS NULL OR EXISTS (SELECT 1 FROM GoodsCategories gc WHERE gc.goodsId.id = g.id AND gc.categoryId.id = :categoryId)) " +
             "GROUP BY g " +
