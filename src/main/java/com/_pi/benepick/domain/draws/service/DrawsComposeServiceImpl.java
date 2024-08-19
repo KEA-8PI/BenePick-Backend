@@ -164,6 +164,7 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
 
         List<Draws> drawsListResult = RaffleDraw.performDraw(seed, rafflesList, goods);
         List<DrawsResponseResultDTO> drawsResponseResultDTOList = drawsListResult.stream()
+                .filter(draws -> draws.getStatus() != Status.NON_WINNER)
                 .map(DrawsResponseResultDTO::from)
                 .toList();
 
