@@ -6,6 +6,7 @@ import com._pi.benepick.domain.draws.repository.DrawsRepository;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.draws.entity.Status;
 import com._pi.benepick.domain.goods.entity.GoodsStatus;
+import com._pi.benepick.domain.goods.service.GoodsQueryService;
 import com._pi.benepick.domain.members.entity.Members;
 import com._pi.benepick.domain.members.entity.Role;
 import com._pi.benepick.global.common.exception.ApiException;
@@ -32,6 +33,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class DrawsQueryServiceImpl implements DrawsQueryService {
     private final DrawsRepository drawsRepository;
+    private final GoodsQueryService goodsQueryService;
 
     public DrawsResponseByGoodsListDTO getResultByGoodsId(Long goodsId) {
         List<DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findDrawsListByGoodsId(goodsId)).stream()
@@ -95,7 +97,6 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         }
 
         List<Draws> drawsList = drawsRepository.findDrawsListByGoodsId(goodsId);
-        if (drawsList.isEmpty()) throw new ApiException(ErrorStatus._RAFFLES_NOT_FOUND);
 
         // 변경 가능한 리스트 사용
         List<List<String>> data = new ArrayList<>();
@@ -139,7 +140,7 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         }
 
         response.setContentType("ms-vnd/excel");
-        String fileName = "응모 추첨 결과 " + drawsList.get(0).getRaffleId().getGoodsId().getName() + ".xlsx";
+        String fileName = "응모 추첨 결과 " + goodsQueryService.getGoodsById(goodsId).getName() + ".xlsx";
 
         String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
         response.setHeader("Content-Disposition", "attachment;filename*=UTF-8''" + encodedFileName);
