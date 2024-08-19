@@ -77,7 +77,7 @@ public class DrawsComposeServiceImpl implements DrawsComposeService {
 
     private void sendAlarm(Draws draws, MessageType type) {
         Members members = draws.getRaffleId().getMemberId();
-        String url = BASE_URL + "/goods/" + draws.getRaffleId().getGoodsId();
+        String url = BASE_URL + "/goods/" + draws.getRaffleId().getGoodsId().getId();
         String contents = alarmService.getMessageFactory(members, url, type);
         alarmService.saveMessage(members.getId(), members.getName(), contents);
     }
