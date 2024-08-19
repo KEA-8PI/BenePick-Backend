@@ -91,5 +91,8 @@ public class MembersRequest {
     public static class MemberPasswordDTO{
         @NotBlank(message = "비밀번호는 필수값입니다.")
         private String password;
+
+        @NotBlank(message = "비밀번호는 필수값입니다.")
+        private String newPassword;
     }
 }
