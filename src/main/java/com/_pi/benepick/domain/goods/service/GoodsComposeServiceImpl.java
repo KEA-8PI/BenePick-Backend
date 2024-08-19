@@ -74,7 +74,7 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
                 // 상품 정보
                 LocalDateTime raffleStartAt = parseDate(row.getCell(5).getStringCellValue(), true);
                 LocalDateTime raffleEndAt = parseDate(row.getCell(6).getStringCellValue(), false);
-                if (raffleEndAt.isBefore(raffleStartAt) || raffleStartAt.isBefore(LocalDateTime.now())) {
+                if (raffleEndAt.isBefore(raffleStartAt) || !raffleStartAt.isAfter(LocalDateTime.now())) {
                     throw new ApiException(ErrorStatus._INVALID_DATE_RANGE);
                 }
                 Long price = (long) row.getCell(3).getNumericCellValue();
