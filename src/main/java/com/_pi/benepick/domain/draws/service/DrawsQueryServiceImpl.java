@@ -34,7 +34,7 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
     private final DrawsRepository drawsRepository;
 
     public DrawsResponseByGoodsListDTO getResultByGoodsId(Long goodsId) {
-        List<DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
+        List<DrawsResponseByGoodsDTO> drawsResponseByGoodsDTOS = (drawsRepository.findDrawsListByGoodsId(goodsId)).stream()
                 .filter(draws -> draws.getStatus() == Status.WINNER || draws.getStatus() == Status.CONFIRM)
                 .map(DrawsResponseByGoodsDTO::from)
                 .toList();
@@ -46,7 +46,7 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
 
     public DrawsResponseByWaitlistGoodsIdListDTO getWaitlistByGoodsId(Members members, Long goodsId) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        List<DrawsResponseByWaitlistGoodsIdDTO> waitlistGoodsIdDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
+        List<DrawsResponseByWaitlistGoodsIdDTO> waitlistGoodsIdDTOS = (drawsRepository.findDrawsListByGoodsId(goodsId)).stream()
                 .filter(draws -> draws.getStatus() == Status.WAITLIST)
                 .map(DrawsResponseByWaitlistGoodsIdDTO::from)
                 .toList();
@@ -58,7 +58,7 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
 
     public DrawsResponseByWinnerGoodsIdListDTO getWinnersByGoodsId(Members members, Long goodsId) {
         if (!(members.getRole().equals(Role.ADMIN))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
-        List<DrawsResponseByWinnerGoodsIdDTO> winnerGoodsIdDTOS = (drawsRepository.findByGoodsId(goodsId)).stream()
+        List<DrawsResponseByWinnerGoodsIdDTO> winnerGoodsIdDTOS = (drawsRepository.findDrawsListByGoodsId(goodsId)).stream()
                 .filter(draws -> draws.getStatus() != Status.WAITLIST && draws.getStatus() != Status.NON_WINNER)
                 .map(DrawsResponseByWinnerGoodsIdDTO::from)
                 .toList();
@@ -94,7 +94,8 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
             throw new ApiException(ErrorStatus._UNAUTHORIZED);
         }
 
-        List<Draws> drawsList = drawsRepository.findByGoodsId(goodsId);
+        List<Draws> drawsList = drawsRepository.findDrawsListByGoodsId(goodsId);
+        if (drawsList.isEmpty()) throw new ApiException(ErrorStatus._RAFFLES_NOT_FOUND);
 
         // 변경 가능한 리스트 사용
         List<List<String>> data = new ArrayList<>();
