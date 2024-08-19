@@ -135,8 +135,9 @@ public class MembersComposeServiceImpl implements MembersComposeService{
     public MembersDetailListResponseDTO uploadPointFile(MultipartFile file) {
         List<MembersDetailResponseDTO> updatedMembersList = new ArrayList<>();
 
+        int total;
         try (InputStream inputStream = file.getInputStream();
-            Workbook workbook = new XSSFWorkbook(inputStream)) {
+             Workbook workbook = new XSSFWorkbook(inputStream)) {
             XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
 
             Row headerRow = sheet.getRow(0);
@@ -145,33 +146,38 @@ public class MembersComposeServiceImpl implements MembersComposeService{
             }
 
             for (Row row : sheet) {
-                if (row.getRowNum() == 0) { continue;}
+                if (row.getRowNum() == 0) {
+                    continue;
+                }
 
                 String id = row.getCell(0).getStringCellValue();
-                Long pointChange = (long)row.getCell(1).getNumericCellValue();
+                Long pointChange = (long) row.getCell(1).getNumericCellValue();
 
                 Members member = membersRepository.findById(id).orElseThrow(() -> new ApiException(ErrorStatus._MEMBERS_NOT_FOUND));
                 pointHistsCommandService.createPointHists(ChangePointHistDTO.builder()
-                    .point(pointChange)
-                    .content("관리자 수정")
-                    .totalPoint(member.getPoint())
-                    .members(member)
-                    .build());
+                        .point(pointChange)
+                        .content("관리자 수정")
+                        .totalPoint(member.getPoint())
+                        .members(member)
+                        .build());
                 member.increasePoint(pointChange);
 
                 updatedMembersList.add(MembersDetailResponseDTO.from(member));
             }
+            total = updatedMembersList.size();
         } catch (IOException e) {
             throw new ApiException(ErrorStatus._FILE_INPUT_DISABLED);
         }
         return MembersDetailListResponseDTO.builder()
-            .membersDetailResponseDTOList(updatedMembersList).build();
+                .membersDetailResponseDTOList(updatedMembersList)
+                .totalCnt(total)
+                .build();
     }
 
     @Override
     public MembersDetailListResponseDTO uploadMemberFile(MultipartFile file) {
         List<Members> membersList = new ArrayList<>();
-
+        int total;
         try (InputStream inputStream = file.getInputStream();
             Workbook workbook = new XSSFWorkbook(inputStream)) {
             XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
@@ -212,6 +218,7 @@ public class MembersComposeServiceImpl implements MembersComposeService{
                         .penaltyCnt(member.getPenaltyCnt())
                     .build());
             }
+            total = membersList.size();
         } catch (IOException e) {
             throw new ApiException(ErrorStatus._FILE_INPUT_DISABLED);
         }
@@ -220,7 +227,8 @@ public class MembersComposeServiceImpl implements MembersComposeService{
             .toList();
 
         return MembersResponse.MembersDetailListResponseDTO.builder()
-            .membersDetailResponseDTOList(responseDTOList)
-            .build();
+                .membersDetailResponseDTOList(responseDTOList)
+                .totalCnt(total)
+                .build();
     }
 }

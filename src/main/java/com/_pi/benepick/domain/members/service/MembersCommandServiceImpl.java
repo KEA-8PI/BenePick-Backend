@@ -18,10 +18,15 @@ public class MembersCommandServiceImpl implements MembersCommandService{
     private final PasswordEncoder passwordEncoder;
     @Override
     public MembersuccessDTO changePassword(MemberPasswordDTO memberPasswordDTO, Members members){
-        if (members.getPassword().equals(memberPasswordDTO.getPassword())) {
+        //기존 비밀번호 확인
+        if(!passwordEncoder.matches(memberPasswordDTO.getPassword(),members.getPassword())){
+            throw new ApiException(ErrorStatus._MEMBER_PASSWORD_NOT_MATCH);
+        }
+        //새로운 비밀번호랑 기존 비밀번호가 같은지 확인
+        if(passwordEncoder.matches(memberPasswordDTO.getNewPassword(),members.getPassword())){
             throw new ApiException(ErrorStatus._PASSWORD_ALREADY_EXISTS);
         }
-        members.updatePassword(memberPasswordDTO.getPassword(),passwordEncoder);
+        members.updatePassword(memberPasswordDTO.getNewPassword(),passwordEncoder);
         return MembersuccessDTO.builder()
                 .msg("성공입니다.")
                 .build();

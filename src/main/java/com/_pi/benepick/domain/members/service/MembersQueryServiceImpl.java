@@ -19,7 +19,6 @@ public class MembersQueryServiceImpl implements MembersQueryService {
     private final MembersRepository membersRepository;
     @Override
     public MembersDetailListResponseDTO getMembersList(Integer page, Integer size, String keyword){
-
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<Members> membersPage;
         int total=0;
@@ -32,7 +31,6 @@ public class MembersQueryServiceImpl implements MembersQueryService {
             total=(int)membersPage.getTotalElements();
         }
         List<MembersDetailResponseDTO> membersDetailResponseDTOList=membersPage.getContent().stream().map(MembersDetailResponseDTO::from).toList();
-
         return MembersDetailListResponseDTO.builder()
                 .membersDetailResponseDTOList(membersDetailResponseDTOList)
                 .totalCnt(total)
