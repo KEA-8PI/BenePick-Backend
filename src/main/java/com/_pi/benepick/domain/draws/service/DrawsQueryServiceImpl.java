@@ -76,10 +76,6 @@ public class DrawsQueryServiceImpl implements DrawsQueryService {
         return drawsRepository.findAllByGoodsIdAndStatus(goods.getId(), status);
     }
 
-    public List<Draws> findByGoodsId(Long goodsId) {
-        return drawsRepository.findByGoodsId(goodsId);
-    }
-
     public DrawsResponseByMembersListDTO getCompleteRafflesByMemberId(Members member) {
         if (!(member.getRole().equals(Role.MEMBER))) throw new ApiException(ErrorStatus._UNAUTHORIZED);
         List<DrawsResponseByMembersDTO> drawsResponseByMembersDTOS = (drawsRepository.findDrawsAndGoodsCategoryByMemberId(member.getId()))

@@ -1,5 +1,6 @@
 package com._pi.benepick.domain.goods.service;
 
+import com._pi.benepick.domain.categories.entity.Categories;
 import com._pi.benepick.domain.goods.entity.GoodsFilter;
 import com._pi.benepick.domain.goods.dto.GoodsResponse;
 import com._pi.benepick.domain.goods.entity.Goods;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -92,5 +94,10 @@ public class GoodsQueryServiceImpl implements GoodsQueryService {
     @Override
     public List<Goods> getAll() {
         return goodsRepository.findAll();
+    }
+
+    @Override
+    public List<Goods> getGoodsByCategoryIdAndDateRange(Categories category, LocalDate startDate, LocalDate endDate) {
+        return goodsRepository.getGoodsByCategoryIdAndDateRange(category, startDate.atStartOfDay(), endDate.atStartOfDay());
     }
 }

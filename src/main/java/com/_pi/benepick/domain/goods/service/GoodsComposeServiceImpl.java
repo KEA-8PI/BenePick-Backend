@@ -199,18 +199,19 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
     }
 
     @Override
-    public List<Goods> getGoodsList(String categoryName, LocalDate startDate, LocalDate endDate) {
-        List<Goods> goodsList;
-        if (categoryName != null && !categoryName.isEmpty()) {
-            Categories category = categoriesQueryService.getCategoriesByName(categoryName);
-            goodsList = goodsQueryService.getGoodsByCategoryId(category.getId());
-        } else {
-            goodsList = goodsQueryService.getAll();
+    public List<Goods> getGoods(String category, LocalDate startDate, LocalDate endDate) {
+        if (category == null) {
+            return goodsQueryService.getAll().stream()
+                    .filter(good -> good.getRaffleEndAt().isAfter(startDate.atStartOfDay()) && good.getRaffleEndAt().isBefore(endDate.atStartOfDay()))
+                    .sorted(Comparator.comparing(Goods::getRaffleEndAt))
+                    .toList();
         }
-        return goodsList.stream()
-                .filter(goods -> goods.getRaffleEndAt().isAfter(startDate.atStartOfDay()) && goods.getRaffleEndAt().isBefore(endDate.atStartOfDay()))
-                .sorted(Comparator.comparing(Goods::getRaffleEndAt))
-                .toList();
+
+        Categories categories = categoriesQueryService.getCategoriesByName(category);
+        return goodsQueryService.getGoodsByCategoryIdAndDateRange(
+                categories,
+                startDate,
+                endDate);
     }
 
     private LocalDateTime parseDate(String dateString, boolean isStartTime) {
@@ -219,7 +220,7 @@ public class GoodsComposeServiceImpl implements GoodsComposeService {
         if(isStartTime){
             return date.atTime(LocalTime.MIN);
         }else {
-            return date.atTime(LocalTime.MAX);
+            return date.atTime(LocalTime.of(23, 59, 59, 999999000));
         }
     }
 }

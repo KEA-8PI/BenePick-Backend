@@ -31,7 +31,7 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
 
     @Override
     public DashboardResponse.DashboardResponseDTO getDashboard(String categoryName, LocalDateTime startDate, LocalDateTime endDate) {
-        List<Goods> goodsList = goodsComposeService.getGoodsList(categoryName, startDate.toLocalDate(), endDate.toLocalDate());
+        List<Goods> goodsList = goodsComposeService.getGoods(categoryName, startDate.toLocalDate(), endDate.toLocalDate());
 
         // 회차별 당첨자 평균 응모 포인트
         List<Double> avgWinnerPointsPerRaffles = calculateAvgWinnerPointsPerRaffles(goodsList);
@@ -40,7 +40,7 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
         // 회차별 대기 충원율
         List<Double> refillRatesPerRaffles = calculateRefillRatesPerRaffles(goodsList);
         // 응모자 중 당첨자 순위 top5
-        List<Map.Entry<Integer, Double>> mostWinnedRanks = calculateMostWinnedRanks(goodsList);
+        List<Map.Entry<Integer, Double>> mostWonRanks = calculateMostWonRanks(goodsList);
         // 당첨자 평균 응모 포인트
         Double avgWinnerPoints = calculateAvgWinnerPoints(goodsList);
 
@@ -48,7 +48,7 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
                 .avgWinnerPointsPerRaffles(avgWinnerPointsPerRaffles)
                 .totalPointsPerRaffles(totalPointsPerRaffles)
                 .refillRatesPerRaffles(refillRatesPerRaffles)
-                .mostWinnedRanks(mostWinnedRanks)
+                .mostWinnedRanks(mostWonRanks)
                 .avgWinnerPoints(avgWinnerPoints)
                 .build();
     }
@@ -56,7 +56,7 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
     @Cacheable(value = "winnerPointsPerRaffles", key = "'winnerPointsPerRaffles:' + #category + #startDate + #endDate")
     @Override
     public DashboardResponse.WinnerPointsPerRafflesDto getWinnerPointsPerRaffles(String category, LocalDate startDate, LocalDate endDate) {
-        List<Goods> goods = goodsComposeService.getGoodsList(category, startDate, endDate);
+        List<Goods> goods = goodsComposeService.getGoods(category, startDate, endDate);
         List<Double> avgWinnerPointsPerRaffles = calculateAvgWinnerPointsPerRaffles(goods);
 
         return DashboardResponse.WinnerPointsPerRafflesDto.builder()
@@ -75,7 +75,7 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
     @Cacheable(value = "totalPointsPerRaffles", key = "'totalPointsPerRaffles:' + #category + #startDate + #endDate")
     @Override
     public DashboardResponse.TotalPointsPerRafflesDto getTotalPointsPerRaffles(String category, LocalDate startDate, LocalDate endDate) {
-        List<Goods> goods = goodsComposeService.getGoodsList(category, startDate, endDate);
+        List<Goods> goods = goodsComposeService.getGoods(category, startDate, endDate);
         List<Double> totalPointsPerRaffles = calculateTotalPointsPerRaffles(goods);
 
         return DashboardResponse.TotalPointsPerRafflesDto.builder()
@@ -92,14 +92,13 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
                             .map(Raffles::getPoint)
                             .mapToDouble(Long::doubleValue)
                             .sum();
-                })
-                .toList();
+                }).toList();
     }
 
     @Cacheable(value = "refillRatesPerRaffles", key = "'refillRatesPerRaffles:' + #category + #startDate + #endDate")
     @Override
     public DashboardResponse.RefillRatesPerRafflesDto getRefillRatesPerRaffles(String category, LocalDate startDate, LocalDate endDate) {
-        List<Goods> goods = goodsComposeService.getGoodsList(category, startDate, endDate);
+        List<Goods> goods = goodsComposeService.getGoods(category, startDate, endDate);
         List<Double> refillRatesPerRaffles = calculateRefillRatesPerRaffles(goods);
 
         return DashboardResponse.RefillRatesPerRafflesDto.builder()
@@ -116,15 +115,14 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
                     long totalDraws = drawsQueryService.countByRaffleIdsAndStatuses(raffleIds, List.of(Status.WINNER, Status.WAITLIST, Status.CANCEL, Status.NO_SHOW, Status.CONFIRM));
                     long refillCount = drawsQueryService.countByRaffleIdsAndStatuses(raffleIds, List.of(Status.CANCEL, Status.NO_SHOW));
                     return (totalDraws == 0) ? 0.0 : (refillCount / (double) totalDraws);
-                })
-                .toList();
+                }).toList();
     }
 
     @Cacheable(value = "mostWonRanks", key = "'mostWonRanks:' + #category + #startDate + #endDate")
     @Override
     public DashboardResponse.MostWonRanksDto getMostWonRanks(String category, LocalDate startDate, LocalDate endDate) {
-        List<Goods> goods = goodsComposeService.getGoodsList(category, startDate, endDate);
-        List<Map.Entry<Integer, Double>> mostWonRanks = calculateMostWinnedRanks(goods);
+        List<Goods> goods = goodsComposeService.getGoods(category, startDate, endDate);
+        List<Map.Entry<Integer, Double>> mostWonRanks = calculateMostWonRanks(goods);
 
         return DashboardResponse.MostWonRanksDto.builder()
                 .mostWonRanks(mostWonRanks)
@@ -132,13 +130,13 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
     }
 
     // 응모자 중 당첨자 순위 top5
-    private List<Map.Entry<Integer, Double>> calculateMostWinnedRanks(List<Goods> goodsList) {
+    private List<Map.Entry<Integer, Double>> calculateMostWonRanks(List<Goods> goodsList) {
         Map<Integer, Integer> rankCountMap = new HashMap<>();
         goodsList.forEach(goods -> {
             List<Raffles> sortedRaffles = rafflesQueryService.findAllByGoodsIdOrderByPointDesc(goods);
             for (int i = 0; i < sortedRaffles.size(); i++) {
                 Raffles raffle = sortedRaffles.get(i);
-                if(raffle.getDraw()!=null && wonStatus.contains(raffle.getDraw().getStatus())){
+                if (raffle.getDraw() != null && wonStatus.contains(raffle.getDraw().getStatus())) {
                     int rank = i + 1; // 1부터 시작하는 순위
                     rankCountMap.put(rank, rankCountMap.getOrDefault(rank, 0) + 1);
                 }
@@ -155,7 +153,7 @@ public class DashboardComposeServiceImpl implements DashboardComposeService {
     @Cacheable(value = "avgWinnerPoints", key = "'avgWinnerPoints:' + #category + #startDate + #endDate")
     @Override
     public DashboardResponse.AvgWinnerPointsDto getAvgWinnerPoints(String category, LocalDate startDate, LocalDate endDate) {
-        List<Goods> goods = goodsComposeService.getGoodsList(category, startDate, endDate);
+        List<Goods> goods = goodsComposeService.getGoods(category, startDate, endDate);
         Double avgWinnerPoints = calculateAvgWinnerPoints(goods);
 
         return DashboardResponse.AvgWinnerPointsDto.builder()

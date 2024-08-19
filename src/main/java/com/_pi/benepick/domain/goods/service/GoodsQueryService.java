@@ -1,14 +1,13 @@
 package com._pi.benepick.domain.goods.service;
 
+import com._pi.benepick.domain.categories.entity.Categories;
 import com._pi.benepick.domain.goods.dto.GoodsResponse;
 import com._pi.benepick.domain.goods.entity.Goods;
 import com._pi.benepick.domain.goods.entity.GoodsFilter;
 import com._pi.benepick.domain.members.entity.Members;
 import org.springframework.data.domain.PageRequest;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,4 +19,5 @@ public interface GoodsQueryService {
     List<Goods> findByRaffleEndAtBeforeAndGoodsStatus(LocalDateTime now);
     List<Goods> getGoodsByCategoryId(Long categoryId);
     List<Goods> getAll();
+    List<Goods> getGoodsByCategoryIdAndDateRange(Categories category, LocalDate startDate, LocalDate endDate);
 }
