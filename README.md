@@ -1,7 +1,7 @@
 
 # BenePick BackEnd Repository
 
-> 가천대학교 SW아카데미 4기 PBL 프로젝트 8PI팀의 BenePick프로젝트 백엔드 레포지토리입니다.
+> 카카오엔터프라이즈 SW아카데미 4기 PBL 프로젝트 8PI팀의 BenePick프로젝트 백엔드 레포지토리입니다.
 
 사내 추첨 서비스를 위한 백엔드 프로젝트로 Spring boot기반으로 개발하였습니다.
 
